@@ -3,16 +3,18 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
-const baseDataOffsetPresent uint32 = 0x000001
-const sampleDescriptionIndexPresent uint32 = 0x000002
-const defaultSampleDurationPresent uint32 = 0x000008
-const defaultSampleSizePresent uint32 = 0x000010
-const defaultSampleFlagsPresent uint32 = 0x000020
-const durationIsEmpty uint32 = 0x010000
-const defaultBaseIsMoof uint32 = 0x020000
+const (
+	baseDataOffsetPresent         uint32 = 0x000001
+	sampleDescriptionIndexPresent uint32 = 0x000002
+	defaultSampleDurationPresent  uint32 = 0x000008
+	defaultSampleSizePresent      uint32 = 0x000010
+	defaultSampleFlagsPresent     uint32 = 0x000020
+	durationIsEmpty               uint32 = 0x010000
+	defaultBaseIsMoof             uint32 = 0x020000
+)
 
 // TfhdBox - Track Fragment Header Box (tfhd)
 //
@@ -188,27 +190,26 @@ func (t *TfhdBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write specific box information
 func (t *TfhdBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, t, int(t.Version), t.Flags)
-	bd.write(" - trackID: %d", t.TrackID)
+	bd.writef(" - trackID: %d", t.TrackID)
 
 	if t.Flags&defaultBaseIsMoof != 0 {
-		bd.write(" - defaultBaseIsMoof: true")
+		bd.writef(" - defaultBaseIsMoof: true")
 	}
 
 	if t.HasBaseDataOffset() {
-		bd.write(" - baseDataOffset=%d", t.BaseDataOffset)
+		bd.writef(" - baseDataOffset=%d", t.BaseDataOffset)
 	}
 	if t.HasSampleDescriptionIndex() {
-		bd.write(" - sampleDescriptionIndex: %d", t.SampleDescriptionIndex)
+		bd.writef(" - sampleDescriptionIndex: %d", t.SampleDescriptionIndex)
 	}
 	if t.HasDefaultSampleDuration() {
-		bd.write(" - defaultSampleDuration: %d", t.DefaultSampleDuration)
+		bd.writef(" - defaultSampleDuration: %d", t.DefaultSampleDuration)
 	}
 	if t.HasDefaultSampleSize() {
-		bd.write(" - defaultSampleSize: %d", t.DefaultSampleSize)
+		bd.writef(" - defaultSampleSize: %d", t.DefaultSampleSize)
 	}
 	if t.HasDefaultSampleFlags() {
-		bd.write(" - defaultSampleFlags: %08x (%s)", t.DefaultSampleFlags, DecodeSampleFlags(t.DefaultSampleFlags))
-
+		bd.writef(" - defaultSampleFlags: %08x (%s)", t.DefaultSampleFlags, DecodeSampleFlags(t.DefaultSampleFlags))
 	}
 	return bd.err
 }

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/aac"
-	"github.com/Eyevinn/mp4ff/avc"
-	"github.com/Eyevinn/mp4ff/bits"
-	"github.com/Eyevinn/mp4ff/hevc"
+	"github.com/vtpl1/mp4ff/aac"
+	"github.com/vtpl1/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/hevc"
 )
 
 // InitSegment - MP4/CMAF init segment
@@ -256,7 +256,6 @@ func (s *InitSegment) TweakSingleTrakLive() error {
 	mvex := s.Moov.Mvex
 	if mvex == nil {
 		return fmt.Errorf("no mvex box found")
-
 	}
 	mehd := mvex.Mehd
 	if mehd != nil {

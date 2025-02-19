@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // AVC parsing errors
@@ -193,9 +193,8 @@ func (a *DecConfRec) Encode(w io.Writer) error {
 	return err
 }
 
-// Encode - write an AVCDecConfRec to w
+// EncodeSW - write an AVCDecConfRec to w
 func (a *DecConfRec) EncodeSW(sw bits.SliceWriter) error {
-
 	var configurationVersion byte = 1
 	sw.WriteUint8(configurationVersion)
 	sw.WriteUint8(a.AVCProfileIndication)
@@ -227,7 +226,7 @@ func (a *DecConfRec) EncodeSW(sw bits.SliceWriter) error {
 		sw.WriteUint8(0xf8 | a.BitDepthChromaMinus1)
 		sw.WriteUint8(a.NumSPSExt)
 	default:
-		//Nothing more to write
+		// Nothing more to write
 	}
 
 	return sw.AccError()

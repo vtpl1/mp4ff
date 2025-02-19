@@ -11,8 +11,10 @@ import (
 	"github.com/go-test/deep"
 )
 
-const sps1nalu = "674d401fe4605017fcb80b4f00000300010000030032e4800753003a9e08200e58e189c0"
-const pps1nalu = "685bdf20"
+const (
+	sps1nalu = "674d401fe4605017fcb80b4f00000300010000030032e4800753003a9e08200e58e189c0"
+	pps1nalu = "685bdf20"
+)
 
 func parseInitFile(fileName string) (*File, error) {
 	fd, err := os.Open(fileName)
@@ -53,7 +55,6 @@ func TestInitSegmentParsing(t *testing.T) {
 	if got != wanted {
 		t.Errorf("Got level %d insted of %d", got, wanted)
 	}
-
 }
 
 func TestMoovParsingWithBtrt(t *testing.T) {
@@ -135,7 +136,6 @@ func TestMoovWithCenc(t *testing.T) {
 	}
 
 	err = compareOrUpdateInfo(t, f, initDumpGoldenPath)
-
 	if err != nil {
 		t.Error(err)
 	}

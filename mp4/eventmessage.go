@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // EvteBox - EventMessageSampleEntry box as defined in ISO/IEC 23001-18 Section 7.2
@@ -119,7 +119,7 @@ func (b *EvteBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write specific box info to w
 func (b *EvteBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - dataReferenceIndex: %d", b.DataReferenceIndex)
+	bd.writef(" - dataReferenceIndex: %d", b.DataReferenceIndex)
 	if bd.err != nil {
 		return bd.err
 	}
@@ -156,7 +156,6 @@ func DecodeSilb(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 	}
 	sr := bits.NewFixedSliceReader(data)
 	return DecodeSilbSR(hdr, startPos, sr)
-
 }
 
 // DecodeSilbSR - Decode Scheme Identifier Box (silb)
@@ -238,7 +237,7 @@ func (b *SilbBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	nrEntries := len(b.Schemes)
 	for i := 0; i < nrEntries; i++ {
-		bd.write(" - entry[%d]: schemeIdURI=%q value=%q atLeastOneFlag=%t", i+1,
+		bd.writef(" - entry[%d]: schemeIdURI=%q value=%q atLeastOneFlag=%t", i+1,
 			b.Schemes[i].SchemeIdURI, b.Schemes[i].Value, b.Schemes[i].AtLeastOneFlag)
 	}
 	return bd.err
@@ -319,21 +318,20 @@ func (b *EmibBox) EncodeSW(sw bits.SliceWriter) error {
 
 func (b *EmibBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - presentationTimeDelta: %d", b.PresentationTimeDelta)
-	bd.write(" - eventDuration: %d", b.EventDuration)
-	bd.write(" - id: %d", b.Id)
+	bd.writef(" - presentationTimeDelta: %d", b.PresentationTimeDelta)
+	bd.writef(" - eventDuration: %d", b.EventDuration)
+	bd.writef(" - id: %d", b.Id)
 	level := getInfoLevel(b, specificBoxLevels)
 	if level > 0 {
-		bd.write(" - schemeIdURI: %q", b.SchemeIdURI)
-		bd.write(" - value: %q", b.Value)
-		bd.write(" - messageData: %s", hex.EncodeToString(b.MessageData))
+		bd.writef(" - schemeIdURI: %q", b.SchemeIdURI)
+		bd.writef(" - value: %q", b.Value)
+		bd.writef(" - messageData: %s", hex.EncodeToString(b.MessageData))
 	}
 	return bd.err
 }
 
 // EmebBox - EventMessageBox as defined in ISO/IEC 23001-18 Section 6.2
-type EmebBox struct {
-}
+type EmebBox struct{}
 
 // DecodeEmeb - box-specific decode
 func DecodeEmeb(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {

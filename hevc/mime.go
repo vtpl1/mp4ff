@@ -34,7 +34,7 @@ func CodecString(sampleEntry string, sps *SPS) string {
 	nrBytes := 6
 	for i := 0; i < 5; i++ { // Remove trailing zero bytes
 		if cif&0xff == 0 {
-			cif = cif >> 8
+			cif >>= 8
 			nrBytes--
 		} else {
 			break

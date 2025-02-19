@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestDecodEncodeFileSRW(t *testing.T) {

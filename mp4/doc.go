@@ -199,7 +199,7 @@ The actual storage in slices is zero-based, so sample nr 1 has index 0 in the co
 
 [examples/initcreator]: https://pkg.go.dev/Eyevinn/mp4ff/examples/initcreator
 [examples/segmenter]: https://pkg.go.dev/Eyevinn/mp4ff/examples/segmenter
-[README.md of the mp4ff module]: https://pkg.go.dev/github.com/Eyevinn/mp4ff#section-readme
+[README.md of the mp4ff module]: https://pkg.go.dev/github.com/vtpl1/mp4ff#section-readme
 [bits/SliceReader]: https://pkg.go.dev/Eyevinn/mp4ff/bits#SliceReader
 
 [bits/SliceWriter]: https://pkg.go.dev/Eyevinn/mp4ff/bits#SliceWriter

@@ -7,8 +7,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/Eyevinn/mp4ff/internal"
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/internal"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 const (
@@ -52,7 +52,6 @@ func main() {
 func run(args []string) error {
 	fs := flag.NewFlagSet(appName, flag.ContinueOnError)
 	opts, err := parseOptions(fs, args)
-
 	if err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil
@@ -70,8 +69,8 @@ func run(args []string) error {
 		return fmt.Errorf("need input and output file")
 	}
 
-	var inFilePath = fs.Arg(0)
-	var outFilePath = fs.Arg(1)
+	inFilePath := fs.Arg(0)
+	outFilePath := fs.Arg(1)
 
 	if opts.keyStr == "" {
 		fs.Usage()

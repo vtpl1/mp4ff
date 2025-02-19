@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // Errors for parsing and handling AVC slices
@@ -47,7 +47,6 @@ const (
 
 // GetSliceTypeFromNALU - parse slice header to get slice type in interval 0 to 4
 func GetSliceTypeFromNALU(data []byte) (sliceType SliceType, err error) {
-
 	if len(data) <= 1 {
 		err = ErrTooFewBytesToParse
 		return

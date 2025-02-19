@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
 	"github.com/go-test/deep"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestSE1AVCCLock(t *testing.T) {

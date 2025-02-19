@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // DefaultTrakID - trakID used when generating new fragmented content
@@ -87,8 +87,8 @@ func (t *TrakBox) Encode(w io.Writer) error {
 }
 
 // Encode - write trak container to sw
-func (b *TrakBox) EncodeSW(sw bits.SliceWriter) error {
-	return EncodeContainerSW(b, sw)
+func (t *TrakBox) EncodeSW(sw bits.SliceWriter) error {
+	return EncodeContainerSW(t, sw)
 }
 
 // Info - write box info to w
@@ -137,7 +137,7 @@ func createSampleFlagsFromProgressiveBoxes(stss *StssBox, sdtp *SdtpBox, sampleN
 		isSync := stss.IsSyncSample(uint32(sampleNr))
 		sampleFlags.SampleIsNonSync = !isSync
 		if isSync {
-			sampleFlags.SampleDependsOn = 2 //2 = does not depend on others (I-picture). May be overridden by sdtp entry
+			sampleFlags.SampleDependsOn = 2 // 2 = does not depend on others (I-picture). May be overridden by sdtp entry
 		}
 	}
 	if sdtp != nil {

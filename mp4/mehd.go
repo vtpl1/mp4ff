@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MehdBox - Movie Extends Header Box
@@ -77,7 +77,6 @@ func (b *MehdBox) EncodeSW(sw bits.SliceWriter) error {
 	sw.WriteUint32(versionAndFlags)
 	if b.Version == 0 {
 		sw.WriteUint32(uint32(b.FragmentDuration))
-
 	} else {
 		sw.WriteUint64(uint64(b.FragmentDuration))
 	}
@@ -87,6 +86,6 @@ func (b *MehdBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *MehdBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - fragmentDuration: %d", b.FragmentDuration)
+	bd.writef(" - fragmentDuration: %d", b.FragmentDuration)
 	return bd.err
 }

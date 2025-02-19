@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 func makeSingleTrackSegments(segmenter *Segmenter, parsedMp4 *mp4.File, rs io.ReadSeeker, outFilePath string) error {
@@ -213,7 +213,7 @@ func getSegmentStartsFromVideo(parsedMp4 *mp4.File, segDurMS uint32) (timeScale 
 	stss := refTrak.Mdia.Minf.Stbl.Stss
 	ctts := refTrak.Mdia.Minf.Stbl.Ctts
 	syncPoints = make([]syncPoint, 0, stss.EntryCount())
-	var segmentStep uint32 = uint32(uint64(segDurMS) * uint64(timeScale) / 1000)
+	segmentStep := uint32(uint64(segDurMS) * uint64(timeScale) / 1000)
 	var nextSegmentStart uint32 = 0
 	for _, sampleNr := range stss.SampleNumber {
 		decodeTime, _ := stts.GetDecodeTime(sampleNr)

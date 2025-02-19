@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 /*
@@ -74,7 +74,8 @@ func (l LevaLevel) Size() uint64 {
 
 // NewLevaLevel - create new level for LevaBox.
 func NewLevaLevel(trackID uint32, paddingFlag bool, assignmentType byte,
-	groupingType, groupingTypeParameter, subTrackID uint32) (LevaLevel, error) {
+	groupingType, groupingTypeParameter, subTrackID uint32,
+) (LevaLevel, error) {
 	ll := LevaLevel{
 		TrackID: trackID,
 	}
@@ -196,22 +197,22 @@ func (b *LevaBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - more info for level 1
 func (b *LevaBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - levelCount: %d", len(b.Levels))
+	bd.writef(" - levelCount: %d", len(b.Levels))
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i, lvl := range b.Levels {
 			switch lvl.AssignmentType() {
 			case 0:
-				bd.write(" - level[%d]: trackID=%d paddingFlag=%t assignmentType=%d groupingType=%d",
+				bd.writef(" - level[%d]: trackID=%d paddingFlag=%t assignmentType=%d groupingType=%d",
 					i+1, lvl.TrackID, lvl.PaddingFlag(), lvl.AssignmentType(), lvl.GroupingType)
 			case 1:
-				bd.write(" - level[%d]: trackID=%d paddingFlag=%t assignmentType=%d groupingType=%d groupingTypeParameter=%d",
+				bd.writef(" - level[%d]: trackID=%d paddingFlag=%t assignmentType=%d groupingType=%d groupingTypeParameter=%d",
 					i+1, lvl.TrackID, lvl.PaddingFlag(), lvl.AssignmentType(), lvl.GroupingType, lvl.GroupingTypeParameter)
 			case 4:
-				bd.write(" - level[%d]: trackID=%d paddingFlag=%t assignmentType=%d subTrackID=%d",
+				bd.writef(" - level[%d]: trackID=%d paddingFlag=%t assignmentType=%d subTrackID=%d",
 					i+1, lvl.TrackID, lvl.PaddingFlag(), lvl.AssignmentType(), lvl.SubTrackID)
 			default:
-				bd.write(" - level[%d]: trackID=%d paddingFlag=%t assignmentType=%d",
+				bd.writef(" - level[%d]: trackID=%d paddingFlag=%t assignmentType=%d",
 					i+1, lvl.TrackID, lvl.PaddingFlag(), lvl.AssignmentType())
 			}
 		}

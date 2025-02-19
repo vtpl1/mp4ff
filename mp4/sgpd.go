@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SgpdBox - Sample Group Description Box, ISO/IEC 14496-12 6'th edition 2020 Section 8.9.3
@@ -48,7 +48,7 @@ func DecodeSgpdSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 	}
 	entryCount := sr.ReadUint32()
 	for i := uint32(0); i < entryCount; i++ {
-		var descriptionLength uint32 = b.DefaultLength
+		descriptionLength := b.DefaultLength
 		if b.Version >= 1 && b.DefaultLength == 0 {
 			descriptionLength = sr.ReadUint32()
 			b.DescriptionLengths = append(b.DescriptionLengths, descriptionLength)
@@ -141,15 +141,15 @@ func (b *SgpdBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box info to w
 func (b *SgpdBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write("   groupingType: %s", b.GroupingType)
+	bd.writef("   groupingType: %s", b.GroupingType)
 	if b.Version >= 1 {
-		bd.write(" - defaultLength: %d", b.DefaultLength)
+		bd.writef(" - defaultLength: %d", b.DefaultLength)
 	}
 	if b.Version >= 2 {
-		bd.write(" - defaultGroupDescriptionIndex: %d", b.DefaultGroupDescriptionIndex)
+		bd.writef(" - defaultGroupDescriptionIndex: %d", b.DefaultGroupDescriptionIndex)
 	}
 	sampleCount := len(b.SampleGroupEntries)
-	bd.write(" - entryCount: %d", sampleCount)
+	bd.writef(" - entryCount: %d", sampleCount)
 	for _, sampleGroupEntry := range b.SampleGroupEntries {
 		err = sampleGroupEntry.Info(w, specificBoxLevels, indent+" - ", indentStep)
 		if err != nil {

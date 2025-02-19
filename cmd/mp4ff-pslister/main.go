@@ -10,10 +10,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Eyevinn/mp4ff/avc"
-	"github.com/Eyevinn/mp4ff/hevc"
-	"github.com/Eyevinn/mp4ff/internal"
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/hevc"
+	"github.com/vtpl1/mp4ff/internal"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 const (
@@ -67,7 +67,6 @@ func main() {
 func run(args []string, stdout io.Writer) error {
 	fs := flag.NewFlagSet(appName, flag.ContinueOnError)
 	o, err := parseOptions(fs, args)
-
 	if err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil
@@ -267,7 +266,7 @@ func parseMp4Init(w io.Writer, parsedMp4 *mp4.File, verbose bool) (trackID uint3
 	for _, trak := range parsedMp4.Moov.Traks {
 		if trak.Mdia.Hdlr.HandlerType == "vide" {
 			stsd := trak.Mdia.Minf.Stbl.Stsd
-			if stsd.AvcX != nil {
+			if stsd.AvcX != nil { //nolint:gocritic
 				codec = "avc"
 			} else if stsd.HvcX != nil {
 				codec = "hevc"

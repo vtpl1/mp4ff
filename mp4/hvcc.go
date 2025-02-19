@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
-	"github.com/Eyevinn/mp4ff/hevc"
+	"github.com/vtpl1/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/hevc"
 )
 
 // HvcCBox - HEVCConfigurationBox (ISO/IEC 14496-15 8.4.1.1.2)
@@ -78,25 +78,25 @@ func (b *HvcCBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *HvcCBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
 	hdcr := b.DecConfRec
-	bd.write(" - GeneralProfileSpace: %d", hdcr.GeneralProfileSpace)
-	bd.write(" - GeneralTierFlag: %t", hdcr.GeneralTierFlag)
-	bd.write(" - GeneralProfileIDC: %d", hdcr.GeneralProfileIDC)
-	bd.write(" - GeneralProfileCompatibilityFlags: %08x", hdcr.GeneralProfileCompatibilityFlags)
-	bd.write(" - GeneralConstraintIndicatorFlags: %012x", hdcr.GeneralConstraintIndicatorFlags)
-	bd.write(" - GeneralLevelIDC: %d", hdcr.GeneralLevelIDC)
-	bd.write(" - MinSpatialSegmentationIDC: %d", hdcr.MinSpatialSegmentationIDC)
-	bd.write(" - ParallellismType: %d", hdcr.ParallellismType)
-	bd.write(" - ChromaFormatIDC: %d", hdcr.ChromaFormatIDC)
-	bd.write(" - BitDepthLuma: %d", hdcr.BitDepthLumaMinus8+8)
-	bd.write(" - BitDepthChroma: %d", hdcr.BitDepthChromaMinus8+8)
-	bd.write(" - AvgFrameRate/256: %d", hdcr.AvgFrameRate)
-	bd.write(" - ConstantFrameRate: %d", hdcr.ConstantFrameRate)
-	bd.write(" - NumTemporalLayers: %d", hdcr.NumTemporalLayers)
-	bd.write(" - temporalIDNested: %d", hdcr.TemporalIDNested)
+	bd.writef(" - GeneralProfileSpace: %d", hdcr.GeneralProfileSpace)
+	bd.writef(" - GeneralTierFlag: %t", hdcr.GeneralTierFlag)
+	bd.writef(" - GeneralProfileIDC: %d", hdcr.GeneralProfileIDC)
+	bd.writef(" - GeneralProfileCompatibilityFlags: %08x", hdcr.GeneralProfileCompatibilityFlags)
+	bd.writef(" - GeneralConstraintIndicatorFlags: %012x", hdcr.GeneralConstraintIndicatorFlags)
+	bd.writef(" - GeneralLevelIDC: %d", hdcr.GeneralLevelIDC)
+	bd.writef(" - MinSpatialSegmentationIDC: %d", hdcr.MinSpatialSegmentationIDC)
+	bd.writef(" - ParallellismType: %d", hdcr.ParallellismType)
+	bd.writef(" - ChromaFormatIDC: %d", hdcr.ChromaFormatIDC)
+	bd.writef(" - BitDepthLuma: %d", hdcr.BitDepthLumaMinus8+8)
+	bd.writef(" - BitDepthChroma: %d", hdcr.BitDepthChromaMinus8+8)
+	bd.writef(" - AvgFrameRate/256: %d", hdcr.AvgFrameRate)
+	bd.writef(" - ConstantFrameRate: %d", hdcr.ConstantFrameRate)
+	bd.writef(" - NumTemporalLayers: %d", hdcr.NumTemporalLayers)
+	bd.writef(" - temporalIDNested: %d", hdcr.TemporalIDNested)
 	for _, array := range hdcr.NaluArrays {
-		bd.write("   - %s complete: %d", array.NaluType(), array.Complete())
+		bd.writef("   - %s complete: %d", array.NaluType(), array.Complete())
 		for _, nalu := range array.Nalus {
-			bd.write("    %s", hex.EncodeToString(nalu))
+			bd.writef("    %s", hex.EncodeToString(nalu))
 		}
 	}
 	return bd.err

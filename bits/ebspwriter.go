@@ -15,7 +15,6 @@ type EBSPWriter struct {
 	n   int  // current number of bits
 	v   uint // current accumulated value
 	nr0 int  // Number preceding zero bytes
-
 }
 
 // NewEBSPWriter - returns a new Writer
@@ -66,15 +65,15 @@ func (w *EBSPWriter) WriteExpGolomb(nr uint) {
 	offset := uint(0)
 	prefixLen := uint(0)
 	delta := uint(0)
-	max := uint(0)
+	maxNr := uint(0)
 	for {
-		if nr <= max {
+		if nr <= maxNr {
 			delta = nr - offset
 			break
 		}
 		offset += 1 << prefixLen
 		prefixLen++
-		max = offset + (1 << prefixLen) - 1
+		maxNr = offset + (1 << prefixLen) - 1
 	}
 	w.Write(1, int(prefixLen+1))
 	if prefixLen > 0 {

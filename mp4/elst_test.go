@@ -5,7 +5,6 @@ import (
 )
 
 func TestElst(t *testing.T) {
-
 	boxes := []Box{
 		&ElstBox{
 			Version: 0,

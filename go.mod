@@ -1,5 +1,5 @@
-module github.com/Eyevinn/mp4ff
+module github.com/vtpl1/mp4ff
 
-go 1.16
+go 1.23.6
 
 require github.com/go-test/deep v1.1.0

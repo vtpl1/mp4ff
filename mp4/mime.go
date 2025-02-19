@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MimeBox - MIME Box as defined in ISO/IEC 14496-12 2020 Section 12.3.3.2
@@ -85,6 +85,6 @@ func (b *MimeBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write specific box information
 func (b *MimeBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - contentType: %s", b.ContentType)
+	bd.writef(" - contentType: %s", b.ContentType)
 	return bd.err
 }

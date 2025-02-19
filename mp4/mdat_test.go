@@ -8,7 +8,6 @@ import (
 )
 
 func TestEncodeAndDecodeMdat(t *testing.T) {
-
 	mdat := &MdatBox{
 		StartPos: 4000,
 	}
@@ -44,7 +43,6 @@ func TestEncodeAndDecodeMdat(t *testing.T) {
 }
 
 func TestEncodeAndDecodeMdatLargeSize(t *testing.T) {
-
 	mdat := &MdatBox{
 		StartPos: 4000,
 	}
@@ -81,7 +79,6 @@ func TestEncodeAndDecodeMdatLargeSize(t *testing.T) {
 }
 
 func TestReadData_NormalMode(t *testing.T) {
-
 	mdat := &MdatBox{
 		StartPos: 0,
 		Data:     []byte{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06},
@@ -97,11 +94,9 @@ func TestReadData_NormalMode(t *testing.T) {
 	if !bytes.Equal(data, expected) {
 		t.Errorf("expected %v, got %v", expected, data)
 	}
-
 }
 
 func TestReadData_LazyMdatMode(t *testing.T) {
-
 	// prepare encoded mdat box before testing read
 	mdat := &MdatBox{
 		StartPos: 4000,
@@ -131,11 +126,9 @@ func TestReadData_LazyMdatMode(t *testing.T) {
 	if !bytes.Equal(data, expected) {
 		t.Errorf("expected %v, got %v", expected, data)
 	}
-
 }
 
 func TestCopyData_NormalMode(t *testing.T) {
-
 	mdat := &MdatBox{
 		StartPos: 0,
 		Data:     []byte{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06},
@@ -158,7 +151,6 @@ func TestCopyData_NormalMode(t *testing.T) {
 }
 
 func TestCopyData_LazyMdatMode(t *testing.T) {
-
 	// prepare encoded mdat box before testing read
 	mdat := &MdatBox{
 		StartPos: 4000,

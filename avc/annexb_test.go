@@ -126,11 +126,13 @@ func TestGetParameterSetsFromByteStream(t *testing.T) {
 		},
 		{
 			"AUD, SPS, PPS, IDRx2",
-			[]byte{0, 0, 0, 1, 9, 2,
+			[]byte{
+				0, 0, 0, 1, 9, 2,
 				0, 0, 0, 1, 7, 5, 4,
 				0, 0, 0, 1, 8, 1, 2,
 				0, 0, 0, 1, 5, 0,
-				0, 0, 0, 1, 5, 0},
+				0, 0, 0, 1, 5, 0,
+			},
 			[][]byte{{7, 5, 4}},
 			[][]byte{{8, 1, 2}},
 		},
@@ -178,12 +180,14 @@ func TestExtractNalusOfTypeFromByteStream(t *testing.T) {
 		},
 		{
 			"AUD, SPS, PPS, IDRx2",
-			[]byte{0, 0, 0, 1, 9, 2,
+			[]byte{
+				0, 0, 0, 1, 9, 2,
 				0, 0, 0, 1, 7, 5, 4,
 				0, 0, 0, 1, 8, 1, 2,
 				0, 0, 0, 1, 5, 0,
 				0, 0, 0, 1, 5, 0,
-				1, 1, 1, 1, 1, 1},
+				1, 1, 1, 1, 1, 1,
+			},
 			NALU_PPS,
 			false,
 			1,
@@ -216,12 +220,14 @@ func TestGetFirstAVCVideoNALUFromByteStream(t *testing.T) {
 		},
 		{
 			"AUD, SPS, PPS, IDRx2",
-			[]byte{0, 0, 0, 1, 9, 2,
+			[]byte{
+				0, 0, 0, 1, 9, 2,
 				0, 0, 0, 1, 7, 5, 4,
 				0, 0, 0, 1, 8, 1, 2,
 				0, 0, 0, 1, 5, 2,
 				0, 0, 0, 1, 5, 3,
-				1, 1, 1, 1, 1, 1},
+				1, 1, 1, 1, 1, 1,
+			},
 			[]byte{5, 2},
 		},
 	}

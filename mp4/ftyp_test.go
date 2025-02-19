@@ -5,7 +5,6 @@ import (
 )
 
 func TestFtyp(t *testing.T) {
-
 	ftyp := CreateFtyp()
 	boxDiffAfterEncodeAndDecode(t, ftyp)
 }

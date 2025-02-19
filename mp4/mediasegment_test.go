@@ -10,7 +10,6 @@ import (
 )
 
 func TestMediaSegmentFragmentation(t *testing.T) {
-
 	trex := &TrexBox{
 		TrackID: 2,
 	}
@@ -52,7 +51,6 @@ func TestMediaSegmentFragmentation(t *testing.T) {
 	}
 
 	err = compareOrUpdateInfo(t, f, inFileGoldenDumpPath)
-
 	if err != nil {
 		t.Error(err)
 	}
@@ -121,7 +119,6 @@ func TestDoubleDecodeEncodeOptimize(t *testing.T) {
 }
 
 func TestDecodeEncodeNoOptimize(t *testing.T) {
-
 	inFile := "testdata/1.m4s"
 
 	data, err := os.ReadFile(inFile)
@@ -152,7 +149,6 @@ func decodeEncode(t *testing.T, r io.Reader, optimize EncOptimize) []byte {
 }
 
 func TestMoofEncrypted(t *testing.T) {
-
 	inFile := "testdata/moof_enc.m4s"
 	inFileGoldenDumpPath := "testdata/golden_moof_enc_m4s_dump.txt"
 	fd, err := os.Open(inFile)

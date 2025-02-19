@@ -5,7 +5,6 @@ import (
 )
 
 func TestNmhd(t *testing.T) {
-
 	encBox := &NmhdBox{}
 	boxDiffAfterEncodeAndDecode(t, encBox)
 }

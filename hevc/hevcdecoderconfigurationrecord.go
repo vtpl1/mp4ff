@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // HEVC errors
@@ -67,7 +67,8 @@ func (n *NaluArray) Complete() byte {
 
 // CreateHEVCDecConfRec - extract information from sps and insert vps, sps, pps if includePS set
 func CreateHEVCDecConfRec(vpsNalus, spsNalus, ppsNalus [][]byte,
-	vpsComplete, spsComplete, ppsComplete, includePS bool) (DecConfRec, error) {
+	vpsComplete, spsComplete, ppsComplete, includePS bool,
+) (DecConfRec, error) {
 	if len(spsNalus) == 0 {
 		return DecConfRec{}, fmt.Errorf("no SPS NALU supported. Needed to extract fundamental information")
 	}

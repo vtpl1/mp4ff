@@ -3,7 +3,7 @@ package mp4
 import (
 	"fmt"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 var decodersSR map[string]BoxDecoderSR
@@ -129,7 +129,7 @@ func init() {
 		"trex":    DecodeTrexSR,
 		"trun":    DecodeTrunSR,
 		"udta":    DecodeUdtaSR,
-		"url ":    DecodeURLBoxSR,
+		"url ":    DecodeURLBoxSR, //nolint:gocritic
 		"uuid":    DecodeUUIDBoxSR,
 		"vdep":    DecodeTrefTypeSR,
 		"vlab":    DecodeVlabSR,

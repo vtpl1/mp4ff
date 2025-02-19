@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // PPS - Picture Parameter Set
@@ -162,7 +162,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 		return nil, reader.AccError()
 	}
 	_ = reader.Read(1)
-	if reader.AccError() != io.EOF {
+	if !errors.Is(reader.AccError(), io.EOF) {
 		return nil, fmt.Errorf("Not at end after reading rbsp_trailing_bits")
 	}
 	return pps, nil

@@ -6,8 +6,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/Eyevinn/mp4ff/bits"
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 func main() {
@@ -120,7 +120,7 @@ func combineMediaSegments(files []string, newTrackIDs []uint32) (*mp4.MediaSegme
 			return nil, fmt.Errorf("failed to get full samples: %w", err)
 		}
 		for _, fs := range fss {
-			outFrag.AddFullSampleToTrack(fs, newTrackIDs[i])
+			_ = outFrag.AddFullSampleToTrack(fs, newTrackIDs[i])
 		}
 	}
 	return combinedSeg, nil

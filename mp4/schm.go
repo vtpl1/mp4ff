@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SchmBox - Scheme Type Box
@@ -86,10 +86,10 @@ func (b *SchmBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box info to w
 func (b *SchmBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - schemeType: %s", b.SchemeType)
-	bd.write(" - schemeVersion: %d  (%d.%d)", b.SchemeVersion, b.SchemeVersion>>16, b.SchemeVersion&0xffff)
+	bd.writef(" - schemeType: %s", b.SchemeType)
+	bd.writef(" - schemeVersion: %d  (%d.%d)", b.SchemeVersion, b.SchemeVersion>>16, b.SchemeVersion&0xffff)
 	if b.Flags&0x01 != 0 {
-		bd.write(" - schemeURI: %q", b.SchemeURI)
+		bd.writef(" - schemeURI: %q", b.SchemeURI)
 	}
 	return bd.err
 }

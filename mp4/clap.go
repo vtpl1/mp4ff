@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // ClapBox - Clean Aperture Box, ISO/IEC 14496-12 2020 Sec. 12.1.4
@@ -83,9 +83,9 @@ func (b *ClapBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *ClapBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - cleanAperturWidth: %d/%d", b.CleanApertureWidthN, b.CleanApertureWidthD)
-	bd.write(" - cleanApertureHeight: %d/%d", b.CleanApertureHeightN, b.CleanApertureHeightD)
-	bd.write(" - horizOff: %d/%d", b.HorizOffN, b.HorizOffD)
-	bd.write(" - vertOff: %d/%d", b.VertOffN, b.VertOffD)
+	bd.writef(" - cleanAperturWidth: %d/%d", b.CleanApertureWidthN, b.CleanApertureWidthD)
+	bd.writef(" - cleanApertureHeight: %d/%d", b.CleanApertureHeightN, b.CleanApertureHeightD)
+	bd.writef(" - horizOff: %d/%d", b.HorizOffN, b.HorizOffD)
+	bd.writef(" - vertOff: %d/%d", b.VertOffN, b.VertOffD)
 	return bd.err
 }

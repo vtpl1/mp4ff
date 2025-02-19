@@ -8,8 +8,10 @@ import (
 	"github.com/go-test/deep"
 )
 
-const av1DecoderConfigRecord = "81094c000a0b0000004aabbfc377ffe701"
-const configOBUs = "0a0b0000004aabbfc377ffe701"
+const (
+	av1DecoderConfigRecord = "81094c000a0b0000004aabbfc377ffe701"
+	configOBUs             = "0a0b0000004aabbfc377ffe701"
+)
 
 func TestDecodeAV1DecConfRec(t *testing.T) {
 	byteData, _ := hex.DecodeString(av1DecoderConfigRecord)

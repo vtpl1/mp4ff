@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MdiaBox - Media Box (mdia)
@@ -79,12 +79,12 @@ func (m *MdiaBox) GetChildren() []Box {
 	return m.Children
 }
 
-// EncodeSW - write mdia container to w
+// Encode - write mdia container to w
 func (m *MdiaBox) Encode(w io.Writer) error {
 	return EncodeContainer(m, w)
 }
 
-// Encode - write mdia container via sw
+// EncodeSW - write mdia container via sw
 func (m *MdiaBox) EncodeSW(sw bits.SliceWriter) error {
 	return EncodeContainerSW(m, sw)
 }

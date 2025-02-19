@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SmDmBox - Sample Mastering Display Metadata Box (smdm)
@@ -29,7 +29,8 @@ type SmDmBox struct {
 
 // CreateSmDmBox - Create a new SmDmBox with specified values
 func CreateSmDmBox(primaryRX, primaryRY, primaryGX, primaryGY, primaryBX, primaryBY, whitePointX, whitePointY uint16,
-	luminanceMax, luminanceMin uint32) *SmDmBox {
+	luminanceMax, luminanceMin uint32,
+) *SmDmBox {
 	return &SmDmBox{
 		Version:                 0,
 		Flags:                   0,
@@ -129,11 +130,11 @@ func (b *SmDmBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *SmDmBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - primaryR: (%d,%d)", b.PrimaryRChromaticityX, b.PrimaryRChromaticityY)
-	bd.write(" - primaryG: (%d,%d)", b.PrimaryGChromaticityX, b.PrimaryGChromaticityY)
-	bd.write(" - primaryB: (%d,%d)", b.PrimaryBChromaticityX, b.PrimaryBChromaticityY)
-	bd.write(" - whitePoint: (%d,%d)", b.WhitePointChromaticityX, b.WhitePointChromaticityY)
-	bd.write(" - luminanceMax: %d", b.LuminanceMax)
-	bd.write(" - luminanceMin: %d", b.LuminanceMin)
+	bd.writef(" - primaryR: (%d,%d)", b.PrimaryRChromaticityX, b.PrimaryRChromaticityY)
+	bd.writef(" - primaryG: (%d,%d)", b.PrimaryGChromaticityX, b.PrimaryGChromaticityY)
+	bd.writef(" - primaryB: (%d,%d)", b.PrimaryBChromaticityX, b.PrimaryBChromaticityY)
+	bd.writef(" - whitePoint: (%d,%d)", b.WhitePointChromaticityX, b.WhitePointChromaticityY)
+	bd.writef(" - luminanceMax: %d", b.LuminanceMax)
+	bd.writef(" - luminanceMin: %d", b.LuminanceMin)
 	return bd.err
 }

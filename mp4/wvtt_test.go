@@ -5,7 +5,6 @@ import (
 )
 
 func TestVttc(t *testing.T) {
-
 	vttc := &VttcBox{}
 	vttc.AddChild(&VsidBox{SourceID: 42})
 	vttc.AddChild(&CtimBox{CueCurrentTime: "00:00:00.120"})
@@ -17,7 +16,6 @@ func TestVttc(t *testing.T) {
 }
 
 func TestWvtt(t *testing.T) {
-
 	wvtt := NewWvttBox()
 	vttC := &VttCBox{Config: "WEBVTT"}
 	wvtt.AddChild(vttC)

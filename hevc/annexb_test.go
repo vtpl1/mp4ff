@@ -21,11 +21,13 @@ func TestGetParameterSetsFromByteStream(t *testing.T) {
 		},
 		{
 			"AUD, VPS, SPS, PPS, IDR",
-			[]byte{0, 0, 0, 1, byte(NALU_AUD) << 1, 2, 0,
+			[]byte{
+				0, 0, 0, 1, byte(NALU_AUD) << 1, 2, 0,
 				0, 0, 0, 1, byte(NALU_VPS) << 1, 5, 4,
 				0, 0, 0, 1, byte(NALU_SPS) << 1, 7, 8,
 				0, 0, 0, 1, byte(NALU_PPS) << 1, 1, 2,
-				0, 0, 0, 1, byte(NALU_IDR_W_RADL) << 1, 0},
+				0, 0, 0, 1, byte(NALU_IDR_W_RADL) << 1, 0,
+			},
 			[][]byte{{byte(NALU_VPS) << 1, 5, 4}},
 			[][]byte{{byte(NALU_SPS) << 1, 7, 8}},
 			[][]byte{{byte(NALU_PPS) << 1, 1, 2}},
@@ -77,12 +79,14 @@ func TestExtractNalusOfTypeFromByteStream(t *testing.T) {
 		},
 		{
 			"AUD, SPS, PPS, IDR",
-			[]byte{0, 0, 0, 1, byte(NALU_AUD) << 1, 2, 0,
+			[]byte{
+				0, 0, 0, 1, byte(NALU_AUD) << 1, 2, 0,
 				0, 0, 0, 1, byte(NALU_VPS) << 1, 5, 4,
 				0, 0, 0, 1, byte(NALU_SPS) << 1, 1, 2,
 				0, 0, 0, 1, byte(NALU_PPS) << 1, 5, 0,
 				0, 0, 0, 1, byte(NALU_IDR_W_RADL) << 1, 0,
-				1, 1, 1, 1, 1, 1},
+				1, 1, 1, 1, 1, 1,
+			},
 			NALU_PPS,
 			false,
 			1,

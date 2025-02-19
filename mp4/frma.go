@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // FrmaBox - Original Format Box
@@ -64,6 +64,6 @@ func (b *FrmaBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box info to w
 func (b *FrmaBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - dataFormat: %s", b.DataFormat)
+	bd.writef(" - dataFormat: %s", b.DataFormat)
 	return bd.err
 }

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MetaBox is MPEG-4 Meta box or QuickTime meta Atom (without version and flags)
@@ -39,12 +39,12 @@ func CreateMetaBox(version byte, hdlr *HdlrBox) *MetaBox {
 }
 
 // AddChild adds a child box
-func (b *MetaBox) AddChild(child Box) {
-	switch box := child.(type) {
+func (m *MetaBox) AddChild(child Box) {
+	switch box := child.(type) { //nolint:gocritic
 	case *HdlrBox:
-		b.Hdlr = box
+		m.Hdlr = box
 	}
-	b.Children = append(b.Children, child)
+	m.Children = append(m.Children, child)
 }
 
 // DecodeMeta decodes a MetaBox in either MPEG or QuickTime version
@@ -69,7 +69,7 @@ func DecodeMetaSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 	if bytes.Equal(lookAheadData, []byte("hdlr")) {
 		b.isQuickTime = true
 	} else {
-		//Note larger offset below since not simple container
+		// Note larger offset below since not simple container
 		offset += 4
 		versionAndFlags := sr.ReadUint32()
 		b.Version = byte(versionAndFlags >> 24)
@@ -88,38 +88,38 @@ func DecodeMetaSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 }
 
 // Type returns box type
-func (b *MetaBox) Type() string {
+func (m *MetaBox) Type() string {
 	return "meta"
 }
 
 // Size calculates size of box
-func (b *MetaBox) Size() uint64 {
-	size := 4 + containerSize(b.Children)
-	if b.IsQuickTime() {
+func (m *MetaBox) Size() uint64 {
+	size := 4 + containerSize(m.Children)
+	if m.IsQuickTime() {
 		size -= 4
 	}
 	return size
 }
 
 // GetChildren lists child boxes
-func (b *MetaBox) GetChildren() []Box {
-	return b.Children
+func (m *MetaBox) GetChildren() []Box {
+	return m.Children
 }
 
 // Encode writes minf container to w
-func (b *MetaBox) Encode(w io.Writer) error {
-	err := EncodeHeader(b, w)
+func (m *MetaBox) Encode(w io.Writer) error {
+	err := EncodeHeader(m, w)
 	if err != nil {
 		return err
 	}
-	if !b.isQuickTime {
-		versionAndFlags := (uint32(b.Version) << 24) + b.Flags
+	if !m.isQuickTime {
+		versionAndFlags := (uint32(m.Version) << 24) + m.Flags
 		err = binary.Write(w, binary.BigEndian, versionAndFlags)
 		if err != nil {
 			return err
 		}
 	}
-	for _, b := range b.Children {
+	for _, b := range m.Children {
 		err = b.Encode(w)
 		if err != nil {
 			return err
@@ -129,14 +129,14 @@ func (b *MetaBox) Encode(w io.Writer) error {
 }
 
 // Encode writes minf container to sw
-func (b *MetaBox) EncodeSW(sw bits.SliceWriter) error {
-	err := EncodeHeaderSW(b, sw)
+func (m *MetaBox) EncodeSW(sw bits.SliceWriter) error {
+	err := EncodeHeaderSW(m, sw)
 	if err != nil {
 		return err
 	}
-	versionAndFlags := (uint32(b.Version) << 24) + b.Flags
+	versionAndFlags := (uint32(m.Version) << 24) + m.Flags
 	sw.WriteUint32(versionAndFlags)
-	for _, c := range b.Children {
+	for _, c := range m.Children {
 		err = c.EncodeSW(sw)
 		if err != nil {
 			return err
@@ -146,16 +146,16 @@ func (b *MetaBox) EncodeSW(sw bits.SliceWriter) error {
 }
 
 // Info writes box-specific info
-func (b *MetaBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
+func (m *MetaBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
+	bd := newInfoDumper(w, indent, m, int(m.Version), m.Flags)
 	if bd.err != nil {
 		return bd.err
 	}
-	if b.isQuickTime {
-		bd.write(" - is QuickTime meta atom")
+	if m.isQuickTime {
+		bd.writef(" - is QuickTime meta atom")
 	}
 	var err error
-	for _, c := range b.Children {
+	for _, c := range m.Children {
 		err = c.Info(w, specificBoxLevels, indent+indentStep, indentStep)
 		if err != nil {
 			return err

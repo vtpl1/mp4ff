@@ -1,6 +1,6 @@
-linters:
-  enable:
-    - lll
+run:
+  timeout: 5m
+  tests: false
 
 linters-settings:
   lll:
@@ -9,3 +9,64 @@ linters-settings:
     line-length: 140
     # tab width in spaces. Default to 1.
     tab-width: 4
+
+linters:
+  enable-all: true
+  disable:
+    - cyclop
+    - depguard
+    - dupl
+    - dupword
+    - err113
+    - exhaustive
+    - exhaustruct
+    - forcetypeassert
+    - funlen
+    - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - goconst
+    # - gocritic
+    - gocyclo
+    - godot
+    - godox
+    - gosec
+    - interfacebloat  
+    - intrange
+    - ireturn
+    - maintidx
+    - misspell
+    - mnd
+    - nakedret
+    - nestif
+    - nilerr
+    - nlreturn
+    - nonamedreturns  
+    - perfsprint
+    - prealloc
+    - revive
+    - tagliatelle
+    - tenv
+    - unconvert
+    - unparam
+    - varnamelen
+    - wastedassign
+    - wrapcheck
+    - wsl
+
+issues:
+  exclude-use-default: true
+  exclude-dirs-use-default: false
+  exclude-rules:
+    - linters:
+        - stylecheck
+      text: "ST1003|ST1005"
+    # Allow complex tests and examples, better to be self contained
+    - path: (cmd/)
+      linters:
+        - forbidigo
+        - errchkjson
+    - path: (examples/)
+      linters:
+        - forbidigo
+        - errchkjson

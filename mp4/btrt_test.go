@@ -5,7 +5,6 @@ import (
 )
 
 func TestBtrt(t *testing.T) {
-
 	boxes := []Box{
 		&BtrtBox{
 			BufferSizeDB: 123456,

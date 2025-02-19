@@ -5,7 +5,6 @@ import (
 )
 
 func TestSgpd(t *testing.T) {
-
 	rollEntry := &RollSampleGroupEntry{RollDistance: -1}
 	rapEntry := &RapSampleGroupEntry{NumLeadingSamplesKnown: 1, NumLeadingSamples: 12}
 	alstEntry := &AlstSampleGroupEntry{RollCount: 2, FirstOutputSample: 1, SampleOffset: []uint32{7000, 1234}}
@@ -22,5 +21,4 @@ func TestSgpd(t *testing.T) {
 	for _, sgpd := range sgpds {
 		boxDiffAfterEncodeAndDecode(t, sgpd)
 	}
-
 }

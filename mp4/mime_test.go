@@ -18,5 +18,4 @@ func TestMimeBox(t *testing.T) {
 		LacksZeroTermination: true,
 	}
 	boxDiffAfterEncodeAndDecode(t, &mimeWithoutZeroTermination)
-
 }

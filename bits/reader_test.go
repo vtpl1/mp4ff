@@ -5,7 +5,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestAccErrReader(t *testing.T) {

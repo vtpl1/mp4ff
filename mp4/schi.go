@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SchiBox -  Schema Information Box
@@ -14,7 +14,7 @@ type SchiBox struct {
 
 // AddChild - Add a child box
 func (b *SchiBox) AddChild(child Box) {
-	switch box := child.(type) {
+	switch box := child.(type) { //nolint:gocritic
 	case *TencBox:
 		b.Tenc = box
 	}

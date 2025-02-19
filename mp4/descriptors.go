@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 /* Elementary Stream Descriptors are defined in ISO/IEC 14496-1.
@@ -292,11 +292,11 @@ func (e *ESDescriptor) Info(w io.Writer, specificLevels, indent, indentStep stri
 	bd := newInfoDumper(w, indent, e, infoVersionDescriptor, 0)
 	level := getInfoLevel(e, specificLevels)
 	if level > 0 {
-		bd.write(" - EsID: %d", e.EsID)
-		bd.write(" - DependsOnEsID: %d", e.DependsOnEsID)
-		bd.write(" - OCResID: %d", e.OCResID)
-		bd.write(" - FlagsAndPriority: %d", e.FlagsAndPriority)
-		bd.write(" - URLString: %s", e.URLString)
+		bd.writef(" - EsID: %d", e.EsID)
+		bd.writef(" - DependsOnEsID: %d", e.DependsOnEsID)
+		bd.writef(" - OCResID: %d", e.OCResID)
+		bd.writef(" - FlagsAndPriority: %d", e.FlagsAndPriority)
+		bd.writef(" - URLString: %s", e.URLString)
 	}
 	if e.DecConfigDescriptor != nil {
 		err := e.DecConfigDescriptor.Info(w, specificLevels, indent+indentStep, indentStep)
@@ -304,7 +304,7 @@ func (e *ESDescriptor) Info(w io.Writer, specificLevels, indent, indentStep stri
 			return err
 		}
 	} else {
-		bd.write(" - Missing DecoderConfigDescriptor")
+		bd.writef(" - Missing DecoderConfigDescriptor")
 	}
 	if e.SLConfigDescriptor != nil {
 		err := e.SLConfigDescriptor.Info(w, specificLevels, indent+indentStep, indentStep)
@@ -312,7 +312,7 @@ func (e *ESDescriptor) Info(w io.Writer, specificLevels, indent, indentStep stri
 			return err
 		}
 	} else {
-		bd.write(" - Missing SLConfigDescriptor")
+		bd.writef(" - Missing SLConfigDescriptor")
 	}
 	for _, od := range e.OtherDescriptors {
 		err := od.Info(w, specificLevels, indent+indentStep, indentStep)
@@ -321,7 +321,7 @@ func (e *ESDescriptor) Info(w io.Writer, specificLevels, indent, indentStep stri
 		}
 	}
 	if len(e.UnknownData) > 0 {
-		bd.write(" - UnknownData (%dB): %s", len(e.UnknownData), hex.EncodeToString(e.UnknownData))
+		bd.writef(" - UnknownData (%dB): %s", len(e.UnknownData), hex.EncodeToString(e.UnknownData))
 	}
 	return bd.err
 }
@@ -465,12 +465,12 @@ func (d *DecoderConfigDescriptor) Info(w io.Writer, specificLevels, indent, inde
 	bd := newInfoDumper(w, indent, d, infoVersionDescriptor, 0)
 	level := getInfoLevel(d, specificLevels)
 	if level > 0 {
-		bd.write(" - ObjectType: %d", d.ObjectType)
-		bd.write(" - StreamType: %d", d.StreamType)
+		bd.writef(" - ObjectType: %d", d.ObjectType)
+		bd.writef(" - StreamType: %d", d.StreamType)
 	}
-	bd.write(" - BufferSizeDB: %d", d.BufferSizeDB)
-	bd.write(" - MaxBitrate: %d", d.MaxBitrate)
-	bd.write(" - AvgBitrate: %d", d.AvgBitrate)
+	bd.writef(" - BufferSizeDB: %d", d.BufferSizeDB)
+	bd.writef(" - MaxBitrate: %d", d.MaxBitrate)
+	bd.writef(" - AvgBitrate: %d", d.AvgBitrate)
 	if d.DecSpecificInfo != nil {
 		err := d.DecSpecificInfo.Info(w, specificLevels, indent+indentStep, indentStep)
 		if err != nil {
@@ -484,7 +484,7 @@ func (d *DecoderConfigDescriptor) Info(w io.Writer, specificLevels, indent, inde
 		}
 	}
 	if len(d.UnknownData) > 0 {
-		bd.write(" - UnknownData (%dB): %s", len(d.UnknownData), hex.EncodeToString(d.UnknownData))
+		bd.writef(" - UnknownData (%dB): %s", len(d.UnknownData), hex.EncodeToString(d.UnknownData))
 	}
 	return bd.err
 }
@@ -547,7 +547,7 @@ func (d *DecSpecificInfoDescriptor) EncodeSW(sw bits.SliceWriter) error {
 
 func (d *DecSpecificInfoDescriptor) Info(w io.Writer, specificLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, d, infoVersionDescriptor, 0)
-	bd.write(" - DecConfig (%dB): %s", len(d.DecConfig), hex.EncodeToString(d.DecConfig))
+	bd.writef(" - DecConfig (%dB): %s", len(d.DecConfig), hex.EncodeToString(d.DecConfig))
 	return bd.err
 }
 
@@ -608,9 +608,9 @@ func (d *SLConfigDescriptor) Info(w io.Writer, specificLevels, indent, indentSte
 	bd := newInfoDumper(w, indent, d, infoVersionDescriptor, 0)
 	level := getInfoLevel(d, specificLevels)
 	if level > 0 {
-		bd.write(" - ConfigValue: %d", d.ConfigValue)
+		bd.writef(" - ConfigValue: %d", d.ConfigValue)
 		if len(d.MoreData) > 0 {
-			bd.write(" - MoreData: (%dB) %s", len(d.MoreData), hex.EncodeToString(d.MoreData))
+			bd.writef(" - MoreData: (%dB) %s", len(d.MoreData), hex.EncodeToString(d.MoreData))
 		}
 	}
 	return bd.err
@@ -643,37 +643,38 @@ func CreateRawDescriptor(tag, sizeFieldSizeMinus1 byte, data []byte) (RawDescrip
 	return RawDescriptor{
 		tag:                 tag,
 		sizeFieldSizeMinus1: sizeFieldSizeMinus1,
-		data:                data}, nil
+		data:                data,
+	}, nil
 }
 
-func (s *RawDescriptor) Tag() byte {
-	return s.tag
+func (r *RawDescriptor) Tag() byte {
+	return r.tag
 }
 
-func (d *RawDescriptor) Type() string {
-	return TagType(d.Tag())
+func (r *RawDescriptor) Type() string {
+	return TagType(r.Tag())
 }
 
-func (d *RawDescriptor) Size() uint64 {
-	return uint64(len(d.data))
+func (r *RawDescriptor) Size() uint64 {
+	return uint64(len(r.data))
 }
 
-func (d *RawDescriptor) SizeSize() uint64 {
-	return 1 + uint64(d.sizeFieldSizeMinus1) + 1 + d.Size()
+func (r *RawDescriptor) SizeSize() uint64 {
+	return 1 + uint64(r.sizeFieldSizeMinus1) + 1 + r.Size()
 }
 
-func (d *RawDescriptor) EncodeSW(sw bits.SliceWriter) error {
-	sw.WriteBits(uint(d.tag), 8)
-	writeDescriptorSize(sw, d.Size(), d.sizeFieldSizeMinus1)
-	sw.WriteBytes(d.data)
+func (r *RawDescriptor) EncodeSW(sw bits.SliceWriter) error {
+	sw.WriteBits(uint(r.tag), 8)
+	writeDescriptorSize(sw, r.Size(), r.sizeFieldSizeMinus1)
+	sw.WriteBytes(r.data)
 	return sw.AccError()
 }
 
-func (d *RawDescriptor) Info(w io.Writer, specificLevels, indent, indentStep string) error {
-	bd := newInfoDumper(w, indent, d, infoVersionDescriptor, 0)
-	level := getInfoLevel(d, specificLevels)
+func (r *RawDescriptor) Info(w io.Writer, specificLevels, indent, indentStep string) error {
+	bd := newInfoDumper(w, indent, r, infoVersionDescriptor, 0)
+	level := getInfoLevel(r, specificLevels)
 	if level > 0 {
-		bd.write(" - data (%dB): %s", len(d.data), hex.EncodeToString(d.data))
+		bd.writef(" - data (%dB): %s", len(r.data), hex.EncodeToString(r.data))
 	}
 	return bd.err
 }

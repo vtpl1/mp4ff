@@ -9,7 +9,6 @@ import (
 )
 
 func TestEncodeDecodeEdts(t *testing.T) {
-
 	elst := &ElstBox{
 		Version: 0,
 		Flags:   0,

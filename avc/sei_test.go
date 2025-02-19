@@ -4,8 +4,8 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/avc"
-	"github.com/Eyevinn/mp4ff/sei"
+	"github.com/vtpl1/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/sei"
 )
 
 func TestSEIParsing(t *testing.T) {

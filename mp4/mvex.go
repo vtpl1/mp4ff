@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MvexBox - MovieExtendsBox (mevx)
@@ -50,7 +50,7 @@ func DecodeMvex(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 	return m, nil
 }
 
-// DecodeMvex - box-specific decode
+// DecodeMvexSR - box-specific decode
 func DecodeMvexSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, error) {
 	children, err := DecodeContainerChildrenSR(hdr, startPos+8, startPos+hdr.Size, sr)
 	if err != nil {

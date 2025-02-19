@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // StssBox - Sync Sample Box (stss - optional)
@@ -117,12 +117,12 @@ func (b *StssBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *StssBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	if len(b.SampleNumber) > 0 {
-		bd.write(" - syncSampleCount: %d", len(b.SampleNumber))
+		bd.writef(" - syncSampleCount: %d", len(b.SampleNumber))
 	}
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i := range b.SampleNumber {
-			bd.write(" - syncSample[%d]: sampleNumber=%d", i+1, b.SampleNumber[i])
+			bd.writef(" - syncSample[%d]: sampleNumber=%d", i+1, b.SampleNumber[i])
 		}
 	}
 	return bd.err

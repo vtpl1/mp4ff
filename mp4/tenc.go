@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TencBox - Track Encryption Box
@@ -111,14 +111,14 @@ func (b *TencBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *TencBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	if b.Version > 0 {
-		bd.write(" - defaultCryptByteBlock: %d", b.DefaultCryptByteBlock)
-		bd.write(" - defaultSkipByteBlock: %d", b.DefaultSkipByteBlock)
+		bd.writef(" - defaultCryptByteBlock: %d", b.DefaultCryptByteBlock)
+		bd.writef(" - defaultSkipByteBlock: %d", b.DefaultSkipByteBlock)
 	}
-	bd.write(" - defaultIsProtected: %d", b.DefaultIsProtected)
-	bd.write(" - defaultPerSampleIVSize: %d", b.DefaultPerSampleIVSize)
-	bd.write(" - defaultKID: %s", b.DefaultKID)
+	bd.writef(" - defaultIsProtected: %d", b.DefaultIsProtected)
+	bd.writef(" - defaultPerSampleIVSize: %d", b.DefaultPerSampleIVSize)
+	bd.writef(" - defaultKID: %s", b.DefaultKID)
 	if b.DefaultIsProtected == 1 && b.DefaultPerSampleIVSize == 0 {
-		bd.write(" - defaultConstantIV: %s", hex.EncodeToString(b.DefaultConstantIV))
+		bd.writef(" - defaultConstantIV: %s", hex.EncodeToString(b.DefaultConstantIV))
 	}
 	return bd.err
 }

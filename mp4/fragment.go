@@ -5,7 +5,7 @@ import (
 	"io"
 	"sort"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // Fragment - MP4 Fragment ([prft] + moof + mdat)
@@ -111,7 +111,7 @@ func (f *Fragment) Size() uint64 {
 func (f *Fragment) GetFullSamples(trex *TrexBox) ([]FullSample, error) {
 	moof := f.Moof
 	mdat := f.Mdat
-	//seqNr := moof.Mfhd.SequenceNumber
+	// seqNr := moof.Mfhd.SequenceNumber
 	var traf *TrafBox
 	foundTrak := false
 	if trex != nil {

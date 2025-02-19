@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TestBadBoxAndRemoveBoxDecoder checks that we can avoid decoder error by removing a BoxDecode.

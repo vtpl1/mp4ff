@@ -8,8 +8,8 @@ import (
 	"os"
 	"sort"
 
-	"github.com/Eyevinn/mp4ff/internal"
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/internal"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 const (
@@ -54,7 +54,6 @@ func main() {
 func run(args []string, stdout io.Writer) error {
 	fs := flag.NewFlagSet(appName, flag.ContinueOnError)
 	o, err := parseOptions(fs, args)
-
 	if err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil
@@ -122,7 +121,6 @@ func cropMP4(inMP4 *mp4.File, durationMS int, w io.Writer, ifh io.ReadSeeker) er
 	}
 	fmt.Printf("wrote output with endTime=%dms\n", (endTime*1000)/endTimescale)
 	return nil
-
 }
 
 // findEndTime - find closest video sync frame, or audio frame if no video
@@ -147,8 +145,8 @@ func findEndTime(moov *mp4.MoovBox, durationMS int) (endTime, endTimescale uint6
 		return 0, 0, fmt.Errorf("did not find any video or audio track")
 	}
 
-	//trakDur := float64(trak.Tkhd.Duration) / float64(moov.Mvhd.Timescale)
-	//fmt.Printf("video trak %d duration = %.3fs\n", trak.Tkhd.TrackID, trakDur)
+	// trakDur := float64(trak.Tkhd.Duration) / float64(moov.Mvhd.Timescale)
+	// fmt.Printf("video trak %d duration = %.3fs\n", trak.Tkhd.TrackID, trakDur)
 	endTimescale = uint64(syncTrak.Mdia.Mdhd.Timescale)
 	endTime = uint64(durationMS) * endTimescale / 1000
 
@@ -285,7 +283,7 @@ func fillTrakOutsAndByteRanges(traks []*mp4.TrakBox, tos map[uint32]*trakOut, by
 			}
 		}
 		if trakIDMin == 0 {
-			break //Done
+			break // Done
 		}
 		if firstOffset == 0 {
 			firstOffset = minChunkOffset

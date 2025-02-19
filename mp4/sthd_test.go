@@ -8,7 +8,6 @@ import (
 )
 
 func TestSthd(t *testing.T) {
-
 	encBox := &SthdBox{}
 
 	buf := bytes.Buffer{}

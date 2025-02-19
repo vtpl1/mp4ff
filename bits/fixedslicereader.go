@@ -16,7 +16,7 @@ type FixedSliceReader struct {
 	len   int
 }
 
-// bits.NewFixedSliceReader creates a new slice reader reading from data
+// NewFixedSliceReader creates a new slice reader reading from data
 func NewFixedSliceReader(data []byte) *FixedSliceReader {
 	return &FixedSliceReader{
 		slice: data,

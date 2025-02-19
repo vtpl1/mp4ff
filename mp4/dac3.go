@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // AC3SampleRates - Sample rates as defined in  ETSI TS 102 366 V1.4.1 (2017) section 4.4.1.3
@@ -16,7 +16,7 @@ var AC3SampleRates = []int{48000, 44100, 32000}
 // AX3acmodChanneTable - channel configurations from ETSI TS 102 366 V1.4.1 (2017) section 4.4.2.3A
 // Signaled in acmod - audio coding mode - 3 bits
 var AC3acmodChannelTable = []string{
-	"L/R", //Ch1 Ch2 dual mono but name them L R
+	"L/R", // Ch1 Ch2 dual mono but name them L R
 	"C",
 	"L/R",
 	"L/C/R",
@@ -158,18 +158,18 @@ func (b *Dac3Box) ChannelInfo() (nrChannels int, chanmap uint16) {
 
 func (b *Dac3Box) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - sampleRateCode=%d => sampleRate=%d", b.FSCod, AC3SampleRates[b.FSCod])
-	bd.write(" - bitStreamInformation=%d", b.BSID)
-	bd.write(" - audioCodingMode=%d => channelConfiguration=%q", b.ACMod, AC3acmodChannelTable[b.ACMod])
-	bd.write(" - lowFrequencyEffectsChannelOn=%d", b.LFEOn)
-	bd.write(" - bitRateCode=%d => bitrate=%dkbps", b.BitRateCode, AC3BitrateCodesKbps[b.BitRateCode])
+	bd.writef(" - sampleRateCode=%d => sampleRate=%d", b.FSCod, AC3SampleRates[b.FSCod])
+	bd.writef(" - bitStreamInformation=%d", b.BSID)
+	bd.writef(" - audioCodingMode=%d => channelConfiguration=%q", b.ACMod, AC3acmodChannelTable[b.ACMod])
+	bd.writef(" - lowFrequencyEffectsChannelOn=%d", b.LFEOn)
+	bd.writef(" - bitRateCode=%d => bitrate=%dkbps", b.BitRateCode, AC3BitrateCodesKbps[b.BitRateCode])
 	nrChannels, chanmap := b.ChannelInfo()
-	bd.write(" - nrChannels=%d, chanmap=%04x", nrChannels, chanmap)
+	bd.writef(" - nrChannels=%d, chanmap=%04x", nrChannels, chanmap)
 	if b.Reserved != 0 {
-		bd.write(" - reserved=%d", b.Reserved)
+		bd.writef(" - reserved=%d", b.Reserved)
 	}
 	if b.InitialZeroes > 0 {
-		bd.write(" - weird initial zero bytes=%d", b.InitialZeroes)
+		bd.writef(" - weird initial zero bytes=%d", b.InitialZeroes)
 	}
 	return bd.err
 }

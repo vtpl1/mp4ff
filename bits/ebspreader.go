@@ -195,7 +195,7 @@ func (r *EBSPReader) MoreRbspData() (bool, error) {
 	more := false
 	for {
 		b := r.Read(1)
-		if r.err == io.EOF {
+		if errors.Is(r.err, io.EOF) {
 			r.err = nil // Reset
 			break
 		}
@@ -243,7 +243,7 @@ func (r *EBSPReader) ReadRbspTrailingBits() error {
 	}
 	for {
 		b := r.Read(1)
-		if r.err == io.EOF {
+		if errors.Is(r.err, io.EOF) {
 			r.err = nil // Reset
 			return nil
 		}

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 const charOffset = 0x60 // According to Section 8.4.2.3 of 14496-12
@@ -35,7 +35,7 @@ func DecodeMdhd(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 	return DecodeMdhdSR(hdr, startPos, sr)
 }
 
-// DecodeMdhd - Decode box
+// DecodeMdhdSR - Decode box
 func DecodeMdhdSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, error) {
 	versionAndFlags := sr.ReadUint32()
 	version := byte(versionAndFlags >> 24)
@@ -43,7 +43,7 @@ func DecodeMdhdSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 		Version: version,
 		Flags:   versionAndFlags & flagsMask,
 	}
-	if version == 1 {
+	if version == 1 { //nolint:gocritic
 		b.CreationTime = sr.ReadUint64()
 		b.ModificationTime = sr.ReadUint64()
 		b.Timescale = sr.ReadUint32()
@@ -129,29 +129,29 @@ func (m *MdhdBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (m *MdhdBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, m, int(m.Version), m.Flags)
-	bd.write(" - timeScale: %d", m.Timescale)
-	bd.write(" - creation time: %s", timeStr(m.CreationTime))
-	bd.write(" - modification time: %s", timeStr(m.ModificationTime))
-	bd.write(" - language: %s", m.GetLanguage())
+	bd.writef(" - timeScale: %d", m.Timescale)
+	bd.writef(" - creation time: %s", timeStr(m.CreationTime))
+	bd.writef(" - modification time: %s", timeStr(m.ModificationTime))
+	bd.writef(" - language: %s", m.GetLanguage())
 	return bd.err
 }
 
 // CreationTimeS returns the creation time in seconds since Jan 1, 1970
-func (b *MdhdBox) CreationTimeS() int64 {
-	return int64(b.CreationTime) - EpochDiffS
+func (m *MdhdBox) CreationTimeS() int64 {
+	return int64(m.CreationTime) - EpochDiffS
 }
 
 // ModificationTimeS returns the modification time in seconds since Jan 1, 1970
-func (b *MdhdBox) ModificationTimeS() int64 {
-	return int64(b.ModificationTime) - EpochDiffS
+func (m *MdhdBox) ModificationTimeS() int64 {
+	return int64(m.ModificationTime) - EpochDiffS
 }
 
 // SetCreationTimeS sets the creation time from seconds since Jan 1, 1970
-func (b *MdhdBox) SetCreationTimeS(unixTimeS int64) {
-	b.CreationTime = uint64(unixTimeS + EpochDiffS)
+func (m *MdhdBox) SetCreationTimeS(unixTimeS int64) {
+	m.CreationTime = uint64(unixTimeS + EpochDiffS)
 }
 
 // SetModificationTimeS sets the modification time from seconds since Jan 1, 1970
-func (b *MdhdBox) SetModificationTimeS(unixTimeS int64) {
-	b.ModificationTime = uint64(unixTimeS + EpochDiffS)
+func (m *MdhdBox) SetModificationTimeS(unixTimeS int64) {
+	m.ModificationTime = uint64(unixTimeS + EpochDiffS)
 }

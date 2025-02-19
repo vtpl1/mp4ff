@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TfdtBox - Track Fragment Decode Time (tfdt)
@@ -126,6 +126,6 @@ func (t *TfdtBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box info to w
 func (t *TfdtBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, t, int(t.Version), t.Flags)
-	bd.write(" - baseMediaDecodeTime: %d", t.BaseMediaDecodeTime())
+	bd.writef(" - baseMediaDecodeTime: %d", t.BaseMediaDecodeTime())
 	return bd.err
 }

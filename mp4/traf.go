@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TrafBox - Track Fragment Box (traf)
@@ -88,10 +88,9 @@ func (t *TrafBox) ParseReadSenc(defaultIVSize byte, moofStartPos uint64) error {
 		// saio should be present, but we try without it, if it doesn't exist
 		posFromSaio := t.Saio.Offset[0] + int64(moofStartPos)
 		if uint64(posFromSaio) != senc.StartPos+16 {
-			//TODO. Reenable
+			// TODO. Reenable
 			return fmt.Errorf("offset from saio (%d) relative moof start differs from senc data start %d", posFromSaio, senc.StartPos+16)
-			//fmt.Printf("offset from saio (%d) and moof differs from senc data start %d\n", posFromSaio, senc.StartPos+16)
-
+			// fmt.Printf("offset from saio (%d) and moof differs from senc data start %d\n", posFromSaio, senc.StartPos+16)
 		}
 	}
 	perSampleIVSize := defaultIVSize
@@ -169,8 +168,8 @@ func (t *TrafBox) Encode(w io.Writer) error {
 }
 
 // Encode - write minf container to sw
-func (b *TrafBox) EncodeSW(sw bits.SliceWriter) error {
-	return EncodeContainerSW(b, sw)
+func (t *TrafBox) EncodeSW(sw bits.SliceWriter) error {
+	return EncodeContainerSW(t, sw)
 }
 
 // Info - write box-specific information
@@ -202,9 +201,9 @@ func (t *TrafBox) OptimizeTfhdTrun() error {
 		}
 		if hasCommonDur {
 			// Set defaultSampleDuration in tfhd and remove from trun
-			tfhd.Flags = tfhd.Flags | defaultSampleDurationPresent
+			tfhd.Flags |= defaultSampleDurationPresent
 			tfhd.DefaultSampleDuration = commonDur
-			trun.Flags = trun.Flags & ^TrunSampleDurationPresentFlag
+			trun.Flags &= ^TrunSampleDurationPresentFlag
 		}
 	}
 
@@ -219,9 +218,9 @@ func (t *TrafBox) OptimizeTfhdTrun() error {
 		}
 		if hasCommonSize {
 			// Set defaultSampleSize in tfhd and remove from trun
-			tfhd.Flags = tfhd.Flags | defaultSampleSizePresent
+			tfhd.Flags |= defaultSampleSizePresent
 			tfhd.DefaultSampleSize = commonSize
-			trun.Flags = trun.Flags & ^TrunSampleSizePresentFlag
+			trun.Flags &= ^TrunSampleSizePresentFlag
 		}
 	}
 
@@ -241,9 +240,9 @@ func (t *TrafBox) OptimizeTfhdTrun() error {
 			if firstSampleFlags != commonSampleFlags {
 				trun.SetFirstSampleFlags(firstSampleFlags)
 			}
-			tfhd.Flags = tfhd.Flags | defaultSampleFlagsPresent
+			tfhd.Flags |= defaultSampleFlagsPresent
 			tfhd.DefaultSampleFlags = commonSampleFlags
-			trun.Flags = trun.Flags & ^TrunSampleFlagsPresentFlag
+			trun.Flags &= ^TrunSampleFlagsPresentFlag
 		}
 	}
 
@@ -256,7 +255,7 @@ func (t *TrafBox) OptimizeTfhdTrun() error {
 			}
 		}
 		if allZeroCTO {
-			trun.Flags = trun.Flags & ^TrunSampleCompositionTimeOffsetPresentFlag
+			trun.Flags &= ^TrunSampleCompositionTimeOffsetPresentFlag
 		}
 	}
 	return nil

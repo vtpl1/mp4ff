@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 /*
@@ -167,14 +167,14 @@ func (b *SidxBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - more info for level 1
 func (b *SidxBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - referenceID: %d", b.ReferenceID)
-	bd.write(" - timeScale: %d", b.Timescale)
-	bd.write(" - earliestPresentationTime: %d", b.EarliestPresentationTime)
-	bd.write(" - firstOffset: %d", b.FirstOffset)
+	bd.writef(" - referenceID: %d", b.ReferenceID)
+	bd.writef(" - timeScale: %d", b.Timescale)
+	bd.writef(" - earliestPresentationTime: %d", b.EarliestPresentationTime)
+	bd.writef(" - firstOffset: %d", b.FirstOffset)
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i, ref := range b.SidxRefs {
-			bd.write(" - reference[%d]: type=%d size=%d subSegmentDuration=%d startsWithSAP=%d SAPType=%d SAPDeltaTime=%d",
+			bd.writef(" - reference[%d]: type=%d size=%d subSegmentDuration=%d startsWithSAP=%d SAPType=%d SAPDeltaTime=%d",
 				i+1, ref.ReferenceType, ref.ReferencedSize, ref.SubSegmentDuration, ref.StartsWithSAP, ref.SAPType, ref.SAPDeltaTime)
 		}
 	}

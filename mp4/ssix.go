@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 /*
@@ -143,12 +143,12 @@ func (b *SsixBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - more info for level 1
 func (b *SsixBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - subSegmentCount: %d", len(b.SubSegments))
+	bd.writef(" - subSegmentCount: %d", len(b.SubSegments))
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i, ss := range b.SubSegments {
 			for j, rng := range ss.Ranges {
-				bd.write(" - subSegment[%d] range[%d]: level=%d rangeSize=%d", i+1, j+1, rng.Level(), rng.RangeSize())
+				bd.writef(" - subSegment[%d] range[%d]: level=%d rangeSize=%d", i+1, j+1, rng.Level(), rng.RangeSize())
 			}
 		}
 	}

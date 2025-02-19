@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // CttsBox - Composition Time to Sample Box (ctts - optional)
@@ -107,10 +107,9 @@ func (b *CttsBox) NrSampleCount() int {
 // SampleCount - return sample count i (zero-based)
 func (b *CttsBox) SampleCount(i int) uint32 {
 	return b.EndSampleNr[i+1] - b.EndSampleNr[i]
-
 }
 
-// AddSampleCountsAndOffsets - populate this box with data. Need the same number of entries in both
+// AddSampleCountsAndOffset - populate this box with data. Need the same number of entries in both
 func (b *CttsBox) AddSampleCountsAndOffset(counts []uint32, offsets []int32) error {
 	if len(counts) != len(offsets) {
 		return fmt.Errorf("not same number of sampleCounts %d and sampleOffsets %d", len(counts), len(offsets))
@@ -150,10 +149,10 @@ func (b *CttsBox) GetCompositionTimeOffset(sampleNr uint32) int32 {
 // Info - get all info with specificBoxLevels ctts:1 or higher
 func (b *CttsBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - sampleCount: %d", b.NrSampleCount())
+	bd.writef(" - sampleCount: %d", b.NrSampleCount())
 	if getInfoLevel(b, specificBoxLevels) > 0 {
 		for i := 0; i < b.NrSampleCount(); i++ {
-			bd.write(" - entry[%d]: sampleCount=%d sampleOffset=%d", i+1, b.SampleCount(i), b.SampleOffset[i])
+			bd.writef(" - entry[%d]: sampleCount=%d sampleOffset=%d", i+1, b.SampleCount(i), b.SampleOffset[i])
 		}
 	}
 	return bd.err

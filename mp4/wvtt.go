@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // Boxes needed for wvtt according to ISO/IEC 14496-30
@@ -211,7 +211,7 @@ func (b *VttCBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *VttCBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - config: %q", b.Config)
+	bd.writef(" - config: %q", b.Config)
 	return bd.err
 }
 
@@ -271,7 +271,7 @@ func (b *VlabBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *VlabBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - sourceLabel: %s", b.SourceLabel)
+	bd.writef(" - sourceLabel: %s", b.SourceLabel)
 	return bd.err
 }
 
@@ -281,8 +281,7 @@ func (b *VlabBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 ////////////////////////////// vtte //////////////////////////////
 
 // VtteBox - VTTEmptyBox (vtte)
-type VtteBox struct {
-}
+type VtteBox struct{}
 
 // Type - box-specific type
 func (b *VtteBox) Type() string {
@@ -334,7 +333,6 @@ type VttcBox struct {
 
 // AddChild - Add a child box
 func (b *VttcBox) AddChild(child Box) {
-
 	switch box := child.(type) {
 	case *VsidBox:
 		b.Vsid = box
@@ -464,7 +462,7 @@ func (b *VsidBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *VsidBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - sourceID: %d", b.SourceID)
+	bd.writef(" - sourceID: %d", b.SourceID)
 	return bd.err
 }
 
@@ -525,7 +523,7 @@ func (b *CtimBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *CtimBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - cueCurrentTime: %s", b.CueCurrentTime)
+	bd.writef(" - cueCurrentTime: %s", b.CueCurrentTime)
 	return bd.err
 }
 
@@ -585,7 +583,7 @@ func (b *IdenBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *IdenBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - cueID: %s", b.CueID)
+	bd.writef(" - cueID: %s", b.CueID)
 	return bd.err
 }
 
@@ -645,7 +643,7 @@ func (b *SttgBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *SttgBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - settings: %s", b.Settings)
+	bd.writef(" - settings: %s", b.Settings)
 	return bd.err
 }
 
@@ -705,7 +703,7 @@ func (b *PaylBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *PaylBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - cueText: %q", b.CueText)
+	bd.writef(" - cueText: %q", b.CueText)
 	return bd.err
 }
 
@@ -765,6 +763,6 @@ func (b *VttaBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *VttaBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - cueAdditionalText: %q", b.CueAdditionalText)
+	bd.writef(" - cueAdditionalText: %q", b.CueAdditionalText)
 	return bd.err
 }

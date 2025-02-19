@@ -120,11 +120,12 @@ var wantedStppSamples = `Sample 1, pts=0, dur=540000
 </tt>
 `
 
-var wantedStppCombined = wantedStppCombinedStart + wantedStppSamples
-var wantedStppProgressive = wantedStppProgStart + wantedStppSamples
+var (
+	wantedStppCombined    = wantedStppCombinedStart + wantedStppSamples
+	wantedStppProgressive = wantedStppProgStart + wantedStppSamples
+)
 
 func TestSubsLister(t *testing.T) {
-
 	testCases := []struct {
 		desc        string
 		args        []string

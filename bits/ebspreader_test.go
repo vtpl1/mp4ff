@@ -7,8 +7,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
 	"github.com/go-test/deep"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestEBSPReader(t *testing.T) {
@@ -166,7 +166,6 @@ func TestEBSPReader(t *testing.T) {
 		}
 	})
 	t.Run("remove escape bytes", func(t *testing.T) {
-
 		cases := []struct{ name, start, want string }{
 			{
 				"read last byte",
@@ -241,7 +240,6 @@ func TestEBSPReader(t *testing.T) {
 		}
 	})
 	t.Run("more rbsp data", func(t *testing.T) {
-
 		testCases := []struct {
 			name         string
 			inBytes      []byte
@@ -395,7 +393,5 @@ func TestEBSPReader(t *testing.T) {
 		if err == nil {
 			t.Error("Expected error when reading trailing bits")
 		}
-
 	})
-
 }

@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // PaspBox - Pixel Aspect Ratio Box, ISO/IEC 14496-12 2020 Sec. 12.1.4
@@ -65,6 +65,6 @@ func (b *PaspBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *PaspBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - hSpacing:vSpacing: %d:%d", b.HSpacing, b.VSpacing)
+	bd.writef(" - hSpacing:vSpacing: %d:%d", b.HSpacing, b.VSpacing)
 	return bd.err
 }

@@ -5,11 +5,10 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestUrl(t *testing.T) {
-
 	urlBox := &URLBox{
 		Version:  0,
 		Flags:    0,

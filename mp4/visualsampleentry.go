@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
-	"github.com/Eyevinn/mp4ff/hevc"
+	"github.com/vtpl1/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/hevc"
 )
 
 // VisualSampleEntryBox Video Sample Description box (avc1/avc3/hvc1/hev1...)
@@ -176,12 +176,12 @@ func (b *VisualSampleEntryBox) Encode(w io.Writer) error {
 	sw.WriteUint16(b.DataReferenceIndex)
 	sw.WriteZeroBytes(16) // pre_defined and reserved
 	sw.WriteUint16(b.Width)
-	sw.WriteUint16(b.Height) //36 bytes
+	sw.WriteUint16(b.Height) // 36 bytes
 
 	sw.WriteUint32(b.Horizresolution)
 	sw.WriteUint32(b.Vertresolution)
 	sw.WriteZeroBytes(4)
-	sw.WriteUint16(b.FrameCount) //50 bytes
+	sw.WriteUint16(b.FrameCount) // 50 bytes
 
 	compressorNameLength := byte(len(b.CompressorName))
 	sw.WriteUint8(compressorNameLength)
@@ -215,12 +215,12 @@ func (b *VisualSampleEntryBox) EncodeSW(sw bits.SliceWriter) error {
 	sw.WriteUint16(b.DataReferenceIndex)
 	sw.WriteZeroBytes(16) // pre_defined and reserved
 	sw.WriteUint16(b.Width)
-	sw.WriteUint16(b.Height) //36 bytes
+	sw.WriteUint16(b.Height) // 36 bytes
 
 	sw.WriteUint32(b.Horizresolution)
 	sw.WriteUint32(b.Vertresolution)
 	sw.WriteZeroBytes(4)
-	sw.WriteUint16(b.FrameCount) //50 bytes
+	sw.WriteUint16(b.FrameCount) // 50 bytes
 
 	compressorNameLength := byte(len(b.CompressorName))
 	sw.WriteUint8(compressorNameLength)
@@ -242,9 +242,9 @@ func (b *VisualSampleEntryBox) EncodeSW(sw bits.SliceWriter) error {
 // Info writes box-specific information
 func (b *VisualSampleEntryBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - width: %d", b.Width)
-	bd.write(" - height: %d", b.Height)
-	bd.write(" - compressorName: %q", b.CompressorName)
+	bd.writef(" - width: %d", b.Width)
+	bd.writef(" - height: %d", b.Height)
+	bd.writef(" - compressorName: %q", b.CompressorName)
 	if bd.err != nil {
 		return bd.err
 	}

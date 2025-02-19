@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 func TestNTP64(t *testing.T) {

@@ -5,7 +5,6 @@ import (
 )
 
 func TestSidx(t *testing.T) {
-
 	sidx := &SidxBox{}
 
 	sidx.ReferenceID = 1

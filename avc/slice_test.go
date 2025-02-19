@@ -40,7 +40,6 @@ func TestSliceTypeStrings(t *testing.T) {
 			t.Errorf("got %s want %s", got, c.want)
 		}
 	}
-
 }
 
 func TestParseSliceHeader_BlackFrame(t *testing.T) {

@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // StblBox - Sample Table Box (stbl - mandatory)
@@ -127,8 +127,8 @@ func (s *StblBox) Encode(w io.Writer) error {
 }
 
 // Encode - write stbl container to sw
-func (b *StblBox) EncodeSW(sw bits.SliceWriter) error {
-	return EncodeContainerSW(b, sw)
+func (s *StblBox) EncodeSW(sw bits.SliceWriter) error {
+	return EncodeContainerSW(s, sw)
 }
 
 // Info - write box-specific information

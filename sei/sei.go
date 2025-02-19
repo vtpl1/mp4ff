@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 var ErrRbspTrailingBitsMissing = errors.New("rbsp_trailing_bits byte 0x80 is missing")
@@ -581,7 +581,7 @@ func ExtractSEIData(r io.ReadSeeker) (seiData []SEIData, err error) {
 		if err != nil {
 			return nil, err
 		}
-		if ar.AccError() == io.EOF {
+		if errors.Is(ar.AccError(), io.EOF) {
 			return seiData, ErrRbspTrailingBitsMissing
 		}
 		if ar.AccError() != nil {

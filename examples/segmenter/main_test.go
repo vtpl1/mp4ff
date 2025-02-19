@@ -20,13 +20,16 @@ func TestCommandLines(t *testing.T) {
 		{desc: "no args", args: []string{appName}, expectedErr: true},
 		{desc: "duration = 0", args: []string{appName, "-d", "0", "dummy.mp4", "dummy.mp4"}, expectedErr: true},
 		{desc: "non-existing infile", args: []string{appName, "-d", "1000", "notExists.mp4", "dummy.mp4"}, expectedErr: true},
-		{desc: "segment 10s to 5s", args: []string{appName, "-d", "5000", testIn, "split"}, expectedErr: false,
+		{
+			desc: "segment 10s to 5s", args: []string{appName, "-d", "5000", testIn, "split"}, expectedErr: false,
 			wantedFiles: []string{"split_a1_1.m4s", "split_a1_2.m4s", "split_a1_init.mp4", "split_v1_1.m4s", "split_v1_2.m4s", "split_v1_init.mp4"},
 		},
-		{desc: "segment 10s to 5s lazy", args: []string{appName, "-d", "5000", "-lazy", testIn, "lazy"}, expectedErr: false,
+		{
+			desc: "segment 10s to 5s lazy", args: []string{appName, "-d", "5000", "-lazy", testIn, "lazy"}, expectedErr: false,
 			wantedFiles: []string{"lazy_a1_1.m4s", "lazy_a1_2.m4s", "lazy_a1_init.mp4", "lazy_v1_1.m4s", "lazy_v1_2.m4s", "lazy_v1_init.mp4"},
 		},
-		{desc: "segment 10s to 5s muxed", args: []string{appName, "-d", "5000", "-m", testIn, "mux"}, expectedErr: false,
+		{
+			desc: "segment 10s to 5s muxed", args: []string{appName, "-d", "5000", "-m", testIn, "mux"}, expectedErr: false,
 			wantedFiles: []string{"mux_init.mp4", "mux_media_1.m4s", "mux_media_2.m4s"},
 		},
 	}

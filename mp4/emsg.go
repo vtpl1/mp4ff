@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // EmsgBox - DASHEventMessageBox as defined in ISO/IEC 23009-1
@@ -42,7 +42,7 @@ func DecodeEmsgSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 		Flags:       versionAndFlags & flagsMask,
 		MessageData: nil,
 	}
-	if version == 1 {
+	if version == 1 { //nolint:gocritic
 		b.TimeScale = sr.ReadUint32()
 		b.PresentationTime = sr.ReadUint64()
 		b.EventDuration = sr.ReadUint32()
@@ -131,25 +131,25 @@ func (b *EmsgBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *EmsgBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - timeScale: %d", b.TimeScale)
+	bd.writef(" - timeScale: %d", b.TimeScale)
 	if b.Version > 0 {
-		bd.write(" - presentationTime: %d", b.PresentationTime)
+		bd.writef(" - presentationTime: %d", b.PresentationTime)
 	}
-	bd.write(" - eventDuration: %d", b.EventDuration)
-	bd.write(" - id: %d", b.ID)
-	bd.write(" - schedIdURI: %s", b.SchemeIDURI)
-	bd.write(" - value: %s", b.Value)
+	bd.writef(" - eventDuration: %d", b.EventDuration)
+	bd.writef(" - id: %d", b.ID)
+	bd.writef(" - schedIdURI: %s", b.SchemeIDURI)
+	bd.writef(" - value: %s", b.Value)
 	if b.Version == 0 {
-		bd.write(" - presentationTimeDelta: %d", b.PresentationTimeDelta)
+		bd.writef(" - presentationTimeDelta: %d", b.PresentationTimeDelta)
 	}
 	level := getInfoLevel(b, specificBoxLevels)
 	msgDataLen := len(b.MessageData)
 
 	if msgDataLen > 0 {
 		if level > 0 {
-			bd.write(" - messageData size=%d: %s", msgDataLen, hex.EncodeToString(b.MessageData))
+			bd.writef(" - messageData size=%d: %s", msgDataLen, hex.EncodeToString(b.MessageData))
 		} else {
-			bd.write(" - messageData size=%d", msgDataLen)
+			bd.writef(" - messageData size=%d", msgDataLen)
 		}
 	}
 

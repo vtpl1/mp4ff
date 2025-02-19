@@ -38,15 +38,15 @@ const (
 	NALU_PPS = NaluType(34)
 	// NALU_AUD - AccessUnitDelimiter NAL Unit
 	NALU_AUD = NaluType(35)
-	//NALU_EOS - End of Sequence NAL Unit
+	// NALU_EOS - End of Sequence NAL Unit
 	NALU_EOS = NaluType(36)
-	//NALU_EOB - End of Bitstream NAL Unit
+	// NALU_EOB - End of Bitstream NAL Unit
 	NALU_EOB = NaluType(37)
-	//NALU_FD - Filler data NAL Unit
+	// NALU_FD - Filler data NAL Unit
 	NALU_FD = NaluType(38)
-	//NALU_SEI_PREFIX - Prefix SEI NAL Unit
+	// NALU_SEI_PREFIX - Prefix SEI NAL Unit
 	NALU_SEI_PREFIX = NaluType(39)
-	//NALU_SEI_SUFFIX - Suffix SEI NAL Unit
+	// NALU_SEI_SUFFIX - Suffix SEI NAL Unit
 	NALU_SEI_SUFFIX = NaluType(40)
 
 	highestVideoNaluType = 31

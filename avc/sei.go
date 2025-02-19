@@ -5,12 +5,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Eyevinn/mp4ff/sei"
+	"github.com/vtpl1/mp4ff/sei"
 )
 
-var (
-	ErrNotSEINalu = errors.New("not an SEI NAL unit")
-)
+var ErrNotSEINalu = errors.New("not an SEI NAL unit")
 
 // ParseSEINalu - parse SEI NAL unit (incl header) and return messages given SPS.
 // Returns sei.ErrRbspTrailingBitsMissing if the NALU is missing the trailing bits.

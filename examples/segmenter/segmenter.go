@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 // Segmenter - segment the progressive inFIle
@@ -81,7 +81,7 @@ func (s *Segmenter) MakeInitSegments() ([]*mp4.InitSegment, error) {
 		outStsd := outTrak.Mdia.Minf.Stbl.Stsd
 		switch tr.trackType {
 		case "audio":
-			if inStsd.Mp4a != nil {
+			if inStsd.Mp4a != nil { //nolint:gocritic
 				outStsd.AddChild(inStsd.Mp4a)
 			} else if inStsd.AC3 != nil {
 				outStsd.AddChild(inStsd.AC3)
@@ -115,7 +115,7 @@ func (s *Segmenter) MakeMuxedInitSegment() (*mp4.InitSegment, error) {
 		outStsd := outTrak.Mdia.Minf.Stbl.Stsd
 		switch tr.trackType {
 		case "audio":
-			if inStsd.Mp4a != nil {
+			if inStsd.Mp4a != nil { //nolint:gocritic
 				outStsd.AddChild(inStsd.Mp4a)
 			} else if inStsd.AC3 != nil {
 				outStsd.AddChild(inStsd.AC3)
@@ -180,9 +180,9 @@ func (s *Segmenter) GetFullSamplesForInterval(mp4f *mp4.File, tr *Track, startSa
 			sampleData = mdat.Data[offsetInMdatData : offsetInMdatData+uint64(size)]
 		}
 
-		//presTime := uint64(int64(decTime) + int64(cto))
-		//One can either segment on presentationTime or DecodeTime
-		//presTimeMs := presTime * 1000 / uint64(tr.timeScale)
+		// presTime := uint64(int64(decTime) + int64(cto))
+		// One can either segment on presentationTime or DecodeTime
+		// presTimeMs := presTime * 1000 / uint64(tr.timeScale)
 		sc := mp4.FullSample{
 			Sample: mp4.Sample{
 				Flags:                 TranslateSampleFlagsForFragment(stbl, sampleNr),
@@ -194,7 +194,7 @@ func (s *Segmenter) GetFullSamplesForInterval(mp4f *mp4.File, tr *Track, startSa
 			Data:       sampleData,
 		}
 
-		//fmt.Printf("Sample %d times %d %d, sync %v, offset %d, size %d\n", sampleNr, decTime, cto, isSync, offset, size)
+		// fmt.Printf("Sample %d times %d %d, sync %v, offset %d, size %d\n", sampleNr, decTime, cto, isSync, offset, size)
 		samples = append(samples, sc)
 	}
 	return samples, nil
@@ -212,9 +212,9 @@ func (s *Segmenter) GetSamplesForInterval(mp4f *mp4.File, trak *mp4.TrakBox, sta
 			cto = stbl.Ctts.GetCompositionTimeOffset(sampleNr)
 		}
 
-		//presTime := uint64(int64(decTime) + int64(cto))
-		//One can either segment on presentationTime or DecodeTime
-		//presTimeMs := presTime * 1000 / uint64(trak.timeScale)
+		// presTime := uint64(int64(decTime) + int64(cto))
+		// One can either segment on presentationTime or DecodeTime
+		// presTimeMs := presTime * 1000 / uint64(trak.timeScale)
 		sc := mp4.Sample{
 			Flags:                 TranslateSampleFlagsForFragment(stbl, sampleNr),
 			Size:                  size,
@@ -222,7 +222,7 @@ func (s *Segmenter) GetSamplesForInterval(mp4f *mp4.File, trak *mp4.TrakBox, sta
 			CompositionTimeOffset: cto,
 		}
 
-		//fmt.Printf("Sample %d times %d %d, sync %v, offset %d, size %d\n", sampleNr, decTime, cto, isSync, offset, size)
+		// fmt.Printf("Sample %d times %d %d, sync %v, offset %d, size %d\n", sampleNr, decTime, cto, isSync, offset, size)
 		samples = append(samples, sc)
 	}
 	return samples, nil
@@ -235,7 +235,7 @@ func TranslateSampleFlagsForFragment(stbl *mp4.StblBox, sampleNr uint32) (flags 
 		isSync := stbl.Stss.IsSyncSample(uint32(sampleNr))
 		sampleFlags.SampleIsNonSync = !isSync
 		if isSync {
-			sampleFlags.SampleDependsOn = 2 //2 == does not depend on others (I-picture). May be overridden by sdtp entry
+			sampleFlags.SampleDependsOn = 2 // 2 == does not depend on others (I-picture). May be overridden by sdtp entry
 		}
 	}
 	if stbl.Sdtp != nil {

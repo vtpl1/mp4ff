@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 const data = `000000326472656600000000000000010000002275726c200000000168747470733a2f2f666c7573736f6e69632e636f6d2f`

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // StppBox - XMLSubtitleSampleEntry Box (stpp)
@@ -54,7 +54,6 @@ func DecodeStpp(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 	}
 	sr := bits.NewFixedSliceReader(data)
 	return DecodeStppSR(hdr, startPos, sr)
-
 }
 
 // DecodeStppSR - Decode XMLSubtitleSampleEntry (stpp)
@@ -159,10 +158,10 @@ func (b *StppBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write specific box info to w
 func (b *StppBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - dataReferenceIndex: %d", b.DataReferenceIndex)
-	bd.write(" - nameSpace: %q", b.Namespace)
-	bd.write(" - schemaLocation: %q", b.SchemaLocation)
-	bd.write(" - auxiliaryMimeTypes: %q", b.AuxiliaryMimeTypes)
+	bd.writef(" - dataReferenceIndex: %d", b.DataReferenceIndex)
+	bd.writef(" - nameSpace: %q", b.Namespace)
+	bd.writef(" - schemaLocation: %q", b.SchemaLocation)
+	bd.writef(" - auxiliaryMimeTypes: %q", b.AuxiliaryMimeTypes)
 	if bd.err != nil {
 		return bd.err
 	}

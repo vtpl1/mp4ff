@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 /*
@@ -165,12 +165,12 @@ func (b *SubsBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 		return bd.err
 	}
 	for _, e := range b.Entries {
-		bd.write(" - sampleDelta: %d", e.SampleDelta)
+		bd.writef(" - sampleDelta: %d", e.SampleDelta)
 		for _, s := range e.SubSamples {
 			msg := fmt.Sprintf("  > subSampleSize=%d", s.SubsampleSize)
 			msg += fmt.Sprintf(" subSamplePriority=%d discardable=%d", s.SubsamplePriority, s.Discardable)
 			msg += fmt.Sprintf(" codecSpecificParameters=%d", s.CodecSpecificParameters)
-			bd.write(msg)
+			bd.writef(msg)
 		}
 	}
 	return bd.err

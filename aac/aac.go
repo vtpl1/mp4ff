@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 const (
@@ -109,8 +109,8 @@ func DecodeAudioSpecificConfig(r io.Reader) (*AudioSpecificConfig, error) {
 	if audioObjectType != AAClc {
 		return nil, fmt.Errorf("base audioObjectType is %d instead of AAC-LC (2)", audioObjectType)
 	}
-	//GASpecificConfig()
-	_ = br.Read(3) //GASpecificConfig
+	// GASpecificConfig()
+	_ = br.Read(3) // GASpecificConfig
 	// Done (there may be trailing bits)
 	return asc, nil
 }

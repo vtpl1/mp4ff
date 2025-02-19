@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // StscBox is Sample To Chunk Box in progressive file.
@@ -72,17 +72,15 @@ func DecodeStscSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 		}
 		if i == 0 {
 			b.singleSampleDescriptionID = sdi
-		} else {
-			if sdi != b.singleSampleDescriptionID {
-				if b.singleSampleDescriptionID != 0 {
-					b.SampleDescriptionID = make([]uint32, entryCount)
-					for j := 0; j < i; j++ {
-						b.SampleDescriptionID[j] = b.singleSampleDescriptionID
-					}
-					b.singleSampleDescriptionID = 0
+		} else if sdi != b.singleSampleDescriptionID {
+			if b.singleSampleDescriptionID != 0 {
+				b.SampleDescriptionID = make([]uint32, entryCount)
+				for j := 0; j < i; j++ {
+					b.SampleDescriptionID[j] = b.singleSampleDescriptionID
 				}
-				b.SampleDescriptionID[i] = sdi
+				b.singleSampleDescriptionID = 0
 			}
+			b.SampleDescriptionID[i] = sdi
 		}
 	}
 	return &b, nil
@@ -138,12 +136,12 @@ func (b *StscBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *StscBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	if len(b.Entries) > 0 {
-		bd.write(" - entryCount: %d", len(b.Entries))
+		bd.writef(" - entryCount: %d", len(b.Entries))
 	}
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i := range b.Entries {
-			bd.write(" - entry[%d]: firstChunk=%d samplesPerChunk=%d sampleDescriptionID=%d",
+			bd.writef(" - entry[%d]: firstChunk=%d samplesPerChunk=%d sampleDescriptionID=%d",
 				i+1, b.Entries[i].FirstChunk, b.Entries[i].SamplesPerChunk, b.GetSampleDescriptionID(i+1))
 		}
 	}

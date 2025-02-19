@@ -9,7 +9,6 @@ import (
 )
 
 func TestAudioSpecificConfigEncodeDecode(t *testing.T) {
-
 	testCases := []AudioSpecificConfig{
 		{
 			ObjectType:           AAClc,
@@ -60,7 +59,6 @@ func TestAudioSpecificConfigEncodeDecode(t *testing.T) {
 }
 
 func TestVariousInputs(t *testing.T) {
-
 	testCases := []struct {
 		desc          string
 		data          []byte

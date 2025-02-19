@@ -9,7 +9,6 @@ import (
 )
 
 func TestADTS(t *testing.T) {
-
 	adtsHdrStart, err := NewADTSHeader(48000, 2, 2, 412)
 	if err != nil {
 		t.Error(err)

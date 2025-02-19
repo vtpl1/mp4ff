@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // UseSubSampleEncryption - flag for subsample encryption
@@ -67,11 +67,10 @@ func (s *SencBox) AddSample(sample SencSample) error {
 	if len(sample.IV) != 0 {
 		if s.SampleCount == 0 {
 			s.perSampleIVSize = byte(len(sample.IV))
-		} else {
-			if len(sample.IV) != int(s.perSampleIVSize) {
-				return fmt.Errorf("mix of IV lengths")
-			}
+		} else if len(sample.IV) != int(s.perSampleIVSize) {
+			return fmt.Errorf("mix of IV lengths")
 		}
+
 		if len(sample.IV) != 0 {
 			s.IVs = append(s.IVs, sample.IV)
 		}
@@ -355,9 +354,9 @@ func (s *SencBox) EncodeSWNoHdr(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (s *SencBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, s, int(s.Version), s.Flags)
-	bd.write(" - sampleCount: %d", s.SampleCount)
+	bd.writef(" - sampleCount: %d", s.SampleCount)
 	if s.readButNotParsed {
-		bd.write(" - NOT YET PARSED, call ParseReadBox to parse it")
+		bd.writef(" - NOT YET PARSED, call ParseReadBox to parse it")
 		return nil
 	}
 	for _, subSamples := range s.SubSamples {
@@ -366,7 +365,7 @@ func (s *SencBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 		}
 	}
 	perSampleIVSize := s.GetPerSampleIVSize()
-	bd.write(" - perSampleIVSize: %d", perSampleIVSize)
+	bd.writef(" - perSampleIVSize: %d", perSampleIVSize)
 	level := getInfoLevel(s, specificBoxLevels)
 	if level > 0 && (perSampleIVSize > 0 || s.Flags&UseSubSampleEncryption != 0) {
 		for i := 0; i < int(s.SampleCount); i++ {
@@ -374,10 +373,10 @@ func (s *SencBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 			if perSampleIVSize > 0 {
 				line += fmt.Sprintf(" iv=%s", hex.EncodeToString(s.IVs[i]))
 			}
-			bd.write(line)
+			bd.writef(line)
 			if s.Flags&UseSubSampleEncryption != 0 {
 				for j, subSample := range s.SubSamples[i] {
-					bd.write("   - subSample[%d]: nrBytesClear=%d nrBytesProtected=%d", j+1,
+					bd.writef("   - subSample[%d]: nrBytesClear=%d nrBytesProtected=%d", j+1,
 						subSample.BytesOfClearData, subSample.BytesOfProtectedData)
 				}
 			}

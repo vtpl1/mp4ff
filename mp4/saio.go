@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SaioBox - Sample Auxiliary Information Offsets Box (saiz) (in stbl or traf box)
@@ -16,7 +16,7 @@ type SaioBox struct {
 	Offset               []int64
 }
 
-// Return a new SaioBox with one offset to be updated later
+// NewSaioBox Return a new SaioBox with one offset to be updated later
 func NewSaioBox() *SaioBox {
 	return &SaioBox{
 		Offset: []int64{-1},
@@ -138,15 +138,15 @@ func (b *SaioBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *SaioBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	if b.Flags&0x01 != 0 {
-		bd.write(" - auxInfoType: %s", b.AuxInfoType)
-		bd.write(" - auxInfoTypeParameter: %d", b.AuxInfoTypeParameter)
+		bd.writef(" - auxInfoType: %s", b.AuxInfoType)
+		bd.writef(" - auxInfoTypeParameter: %d", b.AuxInfoTypeParameter)
 	}
-	bd.write(" - sampleCount: %d", len(b.Offset))
+	bd.writef(" - sampleCount: %d", len(b.Offset))
 	level := getInfoLevel(b, specificBoxLevels)
-	bd.write(" - offset[%d]=%d", 1, b.Offset[0])
+	bd.writef(" - offset[%d]=%d", 1, b.Offset[0])
 	if level > 0 {
 		for i := 1; i < len(b.Offset); i++ {
-			bd.write(" - offset[%d]=%d", i+1, b.Offset[i])
+			bd.writef(" - offset[%d]=%d", i+1, b.Offset[i])
 		}
 	}
 	return bd.err

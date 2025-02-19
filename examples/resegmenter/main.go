@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 const (
@@ -54,7 +54,6 @@ func main() {
 func run(args []string, w io.Writer) error {
 	fs := flag.NewFlagSet(appName, flag.ContinueOnError)
 	o, err := parseOptions(fs, args)
-
 	if err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil

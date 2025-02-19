@@ -11,7 +11,6 @@ import (
 var tfhdRawBox = "0000001c746668640002002a000000010000000100001c2000010000"
 
 func TestTfhd(t *testing.T) {
-
 	inRawBox, _ := hex.DecodeString(tfhdRawBox)
 	inbuf := bytes.NewBuffer(inRawBox)
 	hdr, err := DecodeHeader(inbuf)

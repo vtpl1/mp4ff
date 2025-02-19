@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // This parser based on Rec. ITU-T H.265 v5 (02/2018) and ISO/IEC 23008-2 Ed. 5
@@ -384,7 +384,8 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 }
 
 func parseRefPicListsModification(r *bits.EBSPReader, sliceType SliceType,
-	refIdxL0Minus1, refIdxL1Minus1 uint8, numPicTotalCurr uint8) (*RefPicListsModification, error) {
+	refIdxL0Minus1, refIdxL1Minus1 uint8, numPicTotalCurr uint8,
+) (*RefPicListsModification, error) {
 	rplm := &RefPicListsModification{
 		RefPicListModificationFlagL0: r.ReadFlag(),
 	}
@@ -412,7 +413,8 @@ func parseRefPicListsModification(r *bits.EBSPReader, sliceType SliceType,
 }
 
 func parsePredWeightTable(r *bits.EBSPReader, sliceType SliceType,
-	refIdxL0Minus1, refIdxL1Minus1 uint8, chromaArrayType byte) (*PredWeightTable, error) {
+	refIdxL0Minus1, refIdxL1Minus1 uint8, chromaArrayType byte,
+) (*PredWeightTable, error) {
 	pwt := &PredWeightTable{
 		// value shall be in the range of 0 to 7, inclusive
 		LumaLog2WeightDenom: uint8(r.ReadExpGolomb()),
@@ -427,14 +429,14 @@ func parsePredWeightTable(r *bits.EBSPReader, sliceType SliceType,
 	for i := uint8(0); i <= refIdxL0Minus1; i++ {
 		// Not implemented
 		// if( ( pic_layer_id( RefPicList0[ i ] ) != nuh_layer_id ) | |
-		//( PicOrderCnt( RefPicList0[ i ] ) != PicOrderCnt( CurrPic ) ) )
+		// ( PicOrderCnt( RefPicList0[ i ] ) != PicOrderCnt( CurrPic ) ) )
 		pwt.WeightsL0[i].LumaWeightFlag = r.ReadFlag()
 	}
 	if chromaArrayType != 0 {
 		for i := uint8(0); i <= refIdxL0Minus1; i++ {
 			// Not implemented
 			// if( ( pic_layer_id( RefPicList0[ i ] ) != nuh_layer_id ) | |
-			//( PicOrderCnt( RefPicList0[ i ] ) != PicOrderCnt( CurrPic ) ) )
+			// ( PicOrderCnt( RefPicList0[ i ] ) != PicOrderCnt( CurrPic ) ) )
 			pwt.WeightsL0[i].ChromaWeightFlag = r.ReadFlag()
 		}
 	}
@@ -457,14 +459,14 @@ func parsePredWeightTable(r *bits.EBSPReader, sliceType SliceType,
 		for i := uint8(0); i <= refIdxL1Minus1; i++ {
 			// Not implemented
 			// if( ( pic_layer_id( RefPicList0[ i ] ) != nuh_layer_id ) | |
-			//( PicOrderCnt( RefPicList1[ i ] ) != PicOrderCnt( CurrPic ) ) )
+			// ( PicOrderCnt( RefPicList1[ i ] ) != PicOrderCnt( CurrPic ) ) )
 			pwt.WeightsL1[i].LumaWeightFlag = r.ReadFlag()
 		}
 		if chromaArrayType != 0 {
 			for i := uint8(0); i <= refIdxL1Minus1; i++ {
 				// Not implemented
 				// if( ( pic_layer_id( RefPicList0[ i ] ) != nuh_layer_id ) | |
-				//( PicOrderCnt( RefPicList1[ i ] ) != PicOrderCnt( CurrPic ) ) )
+				// ( PicOrderCnt( RefPicList1[ i ] ) != PicOrderCnt( CurrPic ) ) )
 				pwt.WeightsL1[i].ChromaWeightFlag = r.ReadFlag()
 			}
 		}

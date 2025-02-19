@@ -8,8 +8,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/Eyevinn/mp4ff/internal"
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/internal"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 const (
@@ -56,7 +56,6 @@ func main() {
 func run(args []string, stdout io.Writer) error {
 	fs := flag.NewFlagSet(appName, flag.ContinueOnError)
 	o, err := parseOptions(fs, args)
-
 	if err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil
@@ -300,7 +299,7 @@ func printWvttSample(w io.Writer, sample []byte, nr int, pts uint64, dur uint32)
 	for {
 		box, err := mp4.DecodeBox(uint64(pos), buf)
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			return err

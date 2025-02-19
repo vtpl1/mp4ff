@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TkhdBox - Track Header Box (tkhd - mandatory)
@@ -142,12 +142,12 @@ func (b *TkhdBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *TkhdBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - trackID: %d", b.TrackID)
-	bd.write(" - duration: %d", b.Duration)
-	bd.write(" - creation time: %s", timeStr(b.CreationTime))
-	bd.write(" - modification time: %s", timeStr(b.ModificationTime))
+	bd.writef(" - trackID: %d", b.TrackID)
+	bd.writef(" - duration: %d", b.Duration)
+	bd.writef(" - creation time: %s", timeStr(b.CreationTime))
+	bd.writef(" - modification time: %s", timeStr(b.ModificationTime))
 	if b.Width != 0 && b.Height != 0 { // These are Fixed32 values
-		bd.write(" - Width: %s, Height: %s", b.Width, b.Height)
+		bd.writef(" - Width: %s, Height: %s", b.Width, b.Height)
 	}
 	return bd.err
 }

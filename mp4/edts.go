@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // EdtsBox - Edit Box (edts - optional)
@@ -61,31 +61,31 @@ func (e *EdtsBox) AddChild(child Box) {
 }
 
 // Type - box type
-func (b *EdtsBox) Type() string {
+func (e *EdtsBox) Type() string {
 	return "edts"
 }
 
 // Size - calculated size of box
-func (b *EdtsBox) Size() uint64 {
-	return containerSize(b.Children)
+func (e *EdtsBox) Size() uint64 {
+	return containerSize(e.Children)
 }
 
 // GetChildren - list of child boxes
-func (b *EdtsBox) GetChildren() []Box {
-	return b.Children
+func (e *EdtsBox) GetChildren() []Box {
+	return e.Children
 }
 
 // Encode - write edts container to w
-func (b *EdtsBox) Encode(w io.Writer) error {
-	return EncodeContainer(b, w)
+func (e *EdtsBox) Encode(w io.Writer) error {
+	return EncodeContainer(e, w)
 }
 
 // EncodeSW - write edts container to sw
-func (b *EdtsBox) EncodeSW(sw bits.SliceWriter) error {
-	return EncodeContainerSW(b, sw)
+func (e *EdtsBox) EncodeSW(sw bits.SliceWriter) error {
+	return EncodeContainerSW(e, sw)
 }
 
 // Info - write box-specific information
-func (b *EdtsBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	return ContainerInfo(b, w, specificBoxLevels, indent, indentStep)
+func (e *EdtsBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
+	return ContainerInfo(e, w, specificBoxLevels, indent, indentStep)
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 const (
@@ -115,11 +115,11 @@ func (b *SbgpBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box info to w
 func (b *SbgpBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - groupingType: %s", b.GroupingType)
+	bd.writef(" - groupingType: %s", b.GroupingType)
 	if b.Version == 1 {
-		bd.write(" - groupingTypeParameter: %d", b.GroupingTypeParameter)
+		bd.writef(" - groupingTypeParameter: %d", b.GroupingTypeParameter)
 	}
-	bd.write(" - entryCount: %d", len(b.SampleCounts))
+	bd.writef(" - entryCount: %d", len(b.SampleCounts))
 	level := getInfoLevel(b, specificBoxLevels)
 	if level > 0 {
 		for i := range b.SampleCounts {
@@ -128,7 +128,7 @@ func (b *SbgpBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 				gdi = fmt.Sprintf("%d (index %d inside fragment)",
 					b.GroupDescriptionIndices[i], b.GroupDescriptionIndices[i]-sbgpInsideOffset)
 			}
-			bd.write(" - entry[%d] sampleCount=%d groupDescriptionIndex=%s",
+			bd.writef(" - entry[%d] sampleCount=%d groupDescriptionIndex=%s",
 				i+1, b.SampleCounts[i], gdi)
 		}
 	}

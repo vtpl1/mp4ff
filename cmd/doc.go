@@ -8,8 +8,8 @@ Install like
 or directly from the repo
 as
 
-	go install github.com/Eyevinn/mp4ff/cmd/mp4ff-info
-	go install github.com/Eyevinn/mp4ff/cmd/mp4ff-subslister
+	go install github.com/vtpl1/mp4ff/cmd/mp4ff-info
+	go install github.com/vtpl1/mp4ff/cmd/mp4ff-subslister
 	...
 */
 package cmd

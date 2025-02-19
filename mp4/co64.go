@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // Co64Box - Chunk Large Offset Box
@@ -97,12 +97,12 @@ func (b *Co64Box) EncodeSW(sw bits.SliceWriter) error {
 func (b *Co64Box) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	if len(b.ChunkOffset) > 0 {
-		bd.write(" - entryCount: %d", len(b.ChunkOffset))
+		bd.writef(" - entryCount: %d", len(b.ChunkOffset))
 	}
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i := range b.ChunkOffset {
-			bd.write(" - entry[%d]: chunkOffset=%d", i+1, b.ChunkOffset[i])
+			bd.writef(" - entry[%d]: chunkOffset=%d", i+1, b.ChunkOffset[i])
 		}
 	}
 	return bd.err

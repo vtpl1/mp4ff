@@ -16,5 +16,4 @@ func TestSaio(t *testing.T) {
 		Offset:  []int64{12},
 	}
 	boxDiffAfterEncodeAndDecode(t, saioV1)
-
 }

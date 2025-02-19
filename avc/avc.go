@@ -156,7 +156,7 @@ naluLoop:
 		case naluType == NALU_PPS:
 			pps = append(pps, sample[pos:pos+naluLength])
 		case IsVideoNaluType(naluType):
-			break naluLoop //SPS and PPS must come before video
+			break naluLoop // SPS and PPS must come before video
 		}
 		pos += naluLength
 	}

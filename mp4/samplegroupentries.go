@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SampleGroupEntry - like a box, but size and type are not in a header
@@ -29,7 +29,7 @@ func init() {
 	sgeDecoders = map[string]SampleGroupEntryDecoder{
 		"seig": DecodeSeigSampleGroupEntry,
 		"roll": DecodeRollSampleGroupEntry,
-		"rap ": DecodeRapSampleGroupEntry,
+		"rap ": DecodeRapSampleGroupEntry, //nolint:gocritic
 		"alst": DecodeAlstSampleGroupEntry,
 	}
 }
@@ -115,14 +115,14 @@ func (s *SeigSampleGroupEntry) Encode(sw bits.SliceWriter) {
 // Info - write box info to w
 func (s *SeigSampleGroupEntry) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, s, -2, 0)
-	bd.write(" * cryptByteBlock: %d", s.CryptByteBlock)
-	bd.write(" * skipByteBlock: %d", s.SkipByteBlock)
-	bd.write(" * isProtected: %d", s.IsProtected)
-	bd.write(" * perSampleIVSize: %d", s.PerSampleIVSize)
-	bd.write(" * KID: %s", s.KID)
+	bd.writef(" * cryptByteBlock: %d", s.CryptByteBlock)
+	bd.writef(" * skipByteBlock: %d", s.SkipByteBlock)
+	bd.writef(" * isProtected: %d", s.IsProtected)
+	bd.writef(" * perSampleIVSize: %d", s.PerSampleIVSize)
+	bd.writef(" * KID: %s", s.KID)
 	if s.IsProtected == 1 && s.PerSampleIVSize == 0 {
-		bd.write(" * constantIVSize: %d", s.ConstantIVSize())
-		bd.write(" * constantIV: %s", hex.EncodeToString(s.ConstantIV))
+		bd.writef(" * constantIVSize: %d", s.ConstantIVSize())
+		bd.writef(" * constantIV: %s", hex.EncodeToString(s.ConstantIV))
 	}
 	return bd.err
 }
@@ -160,10 +160,10 @@ func (s *UnknownSampleGroupEntry) Encode(sw bits.SliceWriter) {
 // Info - write box info to w
 func (s *UnknownSampleGroupEntry) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, s, -2, 0)
-	bd.write(" * Unknown data of length: %d", len(s.Data))
+	bd.writef(" * Unknown data of length: %d", len(s.Data))
 	level := getInfoLevel(s, specificBoxLevels)
 	if level > 0 {
-		bd.write(" * data: %s", hex.EncodeToString(s.Data))
+		bd.writef(" * data: %s", hex.EncodeToString(s.Data))
 	}
 	return bd.err
 }
@@ -202,7 +202,7 @@ func (s *RollSampleGroupEntry) Encode(sw bits.SliceWriter) {
 // Info - write box info to w
 func (s *RollSampleGroupEntry) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, s, -2, 0)
-	bd.write(" * rollDistance: %d", s.RollDistance)
+	bd.writef(" * rollDistance: %d", s.RollDistance)
 	return bd.err
 }
 
@@ -244,8 +244,8 @@ func (s *RapSampleGroupEntry) Encode(sw bits.SliceWriter) {
 // Info - write box info to w
 func (s *RapSampleGroupEntry) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, s, -2, 0)
-	bd.write(" * numLeadingSamplesKnown: %d", s.NumLeadingSamplesKnown)
-	bd.write(" * numLeadingSamples: %d", s.NumLeadingSamples)
+	bd.writef(" * numLeadingSamplesKnown: %d", s.NumLeadingSamplesKnown)
+	bd.writef(" * numLeadingSamples: %d", s.NumLeadingSamples)
 	return bd.err
 }
 
@@ -317,16 +317,16 @@ func (s *AlstSampleGroupEntry) Encode(sw bits.SliceWriter) {
 // Info - write box info to w
 func (s *AlstSampleGroupEntry) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, s, -2, 0)
-	bd.write(" * rollDistance: %d", s.RollCount)
-	bd.write(" * firstOutputSample: %d", s.FirstOutputSample)
+	bd.writef(" * rollDistance: %d", s.RollCount)
+	bd.writef(" * firstOutputSample: %d", s.FirstOutputSample)
 	level := getInfoLevel(s, specificBoxLevels)
 	if level > 0 {
 		for i, offset := range s.SampleOffset {
-			bd.write(" * sampleOffset[%d]: %d", i+1, offset)
+			bd.writef(" * sampleOffset[%d]: %d", i+1, offset)
 		}
 		for i := range s.NumOutputSamples {
-			bd.write(" * numOutputSamples[%d]: %d", i+1, s.NumOutputSamples[i])
-			bd.write(" * numTotalSamples[%d]: %d", i+1, s.NumTotalSamples[i])
+			bd.writef(" * numOutputSamples[%d]: %d", i+1, s.NumOutputSamples[i])
+			bd.writef(" * numTotalSamples[%d]: %d", i+1, s.NumTotalSamples[i])
 		}
 	}
 	return bd.err

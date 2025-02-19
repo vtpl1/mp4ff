@@ -2,10 +2,11 @@ package mp4
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // AudioSampleEntryBox according to ISO/IEC 14496-12
@@ -99,7 +100,7 @@ func DecodeAudioSampleEntry(hdr BoxHeader, startPos uint64, r io.Reader) (Box, e
 	pos := startPos + nrAudioSampleBytesBeforeChildren // Size of all previous data
 	for {
 		box, err := DecodeBox(pos, restReader)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		} else if err != nil {
 			return nil, err

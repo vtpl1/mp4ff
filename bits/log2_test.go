@@ -3,7 +3,7 @@ package bits_test
 import (
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestCeilLog2(t *testing.T) {

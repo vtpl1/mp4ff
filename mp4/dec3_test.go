@@ -4,15 +4,18 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestEncDecDec3(t *testing.T) {
-	b := &Dec3Box{DataRate: 448,
+	b := &Dec3Box{
+		DataRate:  448,
 		NumIndSub: 0,
 		EC3Subs: []EC3Sub{
-			{FSCod: 2}},
-		Reserved: []byte{}}
+			{FSCod: 2},
+		},
+		Reserved: []byte{},
+	}
 	boxDiffAfterEncodeAndDecode(t, b)
 }
 

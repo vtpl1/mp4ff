@@ -56,7 +56,6 @@ func TestPPSParser(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(fmt.Sprintf("case %d_%s", i, tc.hexData), func(t *testing.T) {
-
 			byteData, err := hex.DecodeString(tc.hexData)
 			if err != nil {
 				t.Error(err)

@@ -19,8 +19,8 @@ Some useful command line tools are available in [cmd](cmd) directory.
 
 You can install these tools by going to their respective directory and run `go install .` or directly from the repo with
 
-	go install github.com/Eyevinn/mp4ff/cmd/mp4ff-info@latest
-	go install github.com/Eyevinn/mp4ff/cmd/mp4ff-encrypt@latests
+	go install github.com/vtpl1/mp4ff/cmd/mp4ff-info@latest
+	go install github.com/vtpl1/mp4ff/cmd/mp4ff-encrypt@latests
 
 for each individual tool.
 
@@ -62,25 +62,25 @@ The main specification for the MP4 file format is the ISO Base Media File Format
 ISO/IEC 14496-12 7th edition 2021. Some boxes are specified in other standards, as should be commented
 in the code.
 
-[mp4]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/mp4
-[avc]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/avc
-[hevc]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/hevc
-[sei]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/sei
-[av1]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/av1
-[aac]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/aac
-[bits]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/bits
-[initcreator]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/examples/initcreator
-[resegmenter]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/examples/resegmenter
-[segmenter]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/examples/segmenter
-[multitrack]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/examples/multitrack
-[combine-segs]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/examples/combine-segs
-[add-sidx]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/examples/add-sidx
-[mp4ff-info]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/cmd/mp4ff-info
-[mp4ff-pslister]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/cmd/mp4ff-pslister
-[mp4ff-nallister]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/cmd/mp4ff-nallister
-[mp4ff-subslister]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/cmd/mp4ff-subslister
-[mp4ff-crop]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/cmd/mp4ff-crop
-[mp4ff-encrypt]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/cmd/mp4ff-encrypt
-[mp4ff-decrypt]: https://pkg.go.dev/github.com/Eyevinn/mp4ff/cmd/mp4ff-decrypt
+[mp4]: https://pkg.go.dev/github.com/vtpl1/mp4ff/mp4
+[avc]: https://pkg.go.dev/github.com/vtpl1/mp4ff/avc
+[hevc]: https://pkg.go.dev/github.com/vtpl1/mp4ff/hevc
+[sei]: https://pkg.go.dev/github.com/vtpl1/mp4ff/sei
+[av1]: https://pkg.go.dev/github.com/vtpl1/mp4ff/av1
+[aac]: https://pkg.go.dev/github.com/vtpl1/mp4ff/aac
+[bits]: https://pkg.go.dev/github.com/vtpl1/mp4ff/bits
+[initcreator]: https://pkg.go.dev/github.com/vtpl1/mp4ff/examples/initcreator
+[resegmenter]: https://pkg.go.dev/github.com/vtpl1/mp4ff/examples/resegmenter
+[segmenter]: https://pkg.go.dev/github.com/vtpl1/mp4ff/examples/segmenter
+[multitrack]: https://pkg.go.dev/github.com/vtpl1/mp4ff/examples/multitrack
+[combine-segs]: https://pkg.go.dev/github.com/vtpl1/mp4ff/examples/combine-segs
+[add-sidx]: https://pkg.go.dev/github.com/vtpl1/mp4ff/examples/add-sidx
+[mp4ff-info]: https://pkg.go.dev/github.com/vtpl1/mp4ff/cmd/mp4ff-info
+[mp4ff-pslister]: https://pkg.go.dev/github.com/vtpl1/mp4ff/cmd/mp4ff-pslister
+[mp4ff-nallister]: https://pkg.go.dev/github.com/vtpl1/mp4ff/cmd/mp4ff-nallister
+[mp4ff-subslister]: https://pkg.go.dev/github.com/vtpl1/mp4ff/cmd/mp4ff-subslister
+[mp4ff-crop]: https://pkg.go.dev/github.com/vtpl1/mp4ff/cmd/mp4ff-crop
+[mp4ff-encrypt]: https://pkg.go.dev/github.com/vtpl1/mp4ff/cmd/mp4ff-encrypt
+[mp4ff-decrypt]: https://pkg.go.dev/github.com/vtpl1/mp4ff/cmd/mp4ff-decrypt
 */
 package mp4ff

@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // CslgBox - CompositionToDecodeBox -ISO/IEC 14496-12 2015 Sec. 8.6.1.4
@@ -102,11 +102,11 @@ func (b *CslgBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *CslgBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	if getInfoLevel(b, specificBoxLevels) > 0 {
-		bd.write(" - compositionToDTSShift: %d", b.CompositionToDTSShift)
-		bd.write(" - leastDecodeToDisplayDelta: %d", b.LeastDecodeToDisplayDelta)
-		bd.write(" - greatestDecodeToDisplayDelta: %d", b.GreatestDecodeToDisplayDelta)
-		bd.write(" - compositionStartTime: %d", b.CompositionStartTime)
-		bd.write(" - compositionEndTime: %d", b.CompositionEndTime)
+		bd.writef(" - compositionToDTSShift: %d", b.CompositionToDTSShift)
+		bd.writef(" - leastDecodeToDisplayDelta: %d", b.LeastDecodeToDisplayDelta)
+		bd.writef(" - greatestDecodeToDisplayDelta: %d", b.GreatestDecodeToDisplayDelta)
+		bd.writef(" - compositionStartTime: %d", b.CompositionStartTime)
+		bd.writef(" - compositionEndTime: %d", b.CompositionEndTime)
 	}
 	return bd.err
 }

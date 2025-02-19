@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MediaSegment is an MP4 Media Segment with one or more Fragments.
@@ -181,7 +181,7 @@ func (s *MediaSegment) Fragmentify(timescale uint64, trex *TrexBox, duration uin
 				}
 				outFragments = append(outFragments, of)
 			}
-			//of.AddFullSample(s)
+			// of.AddFullSample(s)
 			err = of.AddFullSampleToTrack(s, trackID)
 			if err != nil {
 				return nil, err

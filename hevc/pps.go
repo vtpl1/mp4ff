@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // HEVC PPS errors
@@ -317,7 +317,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 		return nil, r.AccError()
 	}
 	_ = r.Read(1)
-	if r.AccError() != io.EOF {
+	if !errors.Is(r.AccError(), io.EOF) {
 		return nil, fmt.Errorf("not at end after reading rbsp_trailing_bits")
 	}
 	return pps, nil
@@ -424,9 +424,9 @@ func parseColourMappingTable(r *bits.EBSPReader) (*ColourMappingTable, error) {
 		cm.AdaptThresholdVDelta = r.ReadSignedGolomb()
 	}
 
-	//Max( 0, ( 10 + BitDepthCmInputY − BitDepthCmOutputY − cm_res_quant_bits − ( cm_delta_flc_bits_minus1 + 1 ) ) )
-	//BitDepthCmInputY = 8 + luma_bit_depth_cm_input_minus8
-	//BitDepthCmOutputY = 8 + luma_bit_depth_cm_output_minus8
+	// Max( 0, ( 10 + BitDepthCmInputY − BitDepthCmOutputY − cm_res_quant_bits − ( cm_delta_flc_bits_minus1 + 1 ) ) )
+	// BitDepthCmInputY = 8 + luma_bit_depth_cm_input_minus8
+	// BitDepthCmOutputY = 8 + luma_bit_depth_cm_output_minus8
 	resLsBits := 10 + int(cm.LumaBitDepthCmInputMinus8+8) -
 		int(cm.LumaBitDepthCmOutputMinus8+8) - int(cm.ResQuantBits) - int(cm.DeltaFlcBitsMinus1+1)
 	if resLsBits < 0 {
@@ -448,7 +448,8 @@ func parseColourMappingTable(r *bits.EBSPReader) (*ColourMappingTable, error) {
 }
 
 func parseColourMappingOctants(r *bits.EBSPReader, octantDepth uint, partNumY uint, resLsBits int,
-	inpDepth, idxY, idxCb, idxCr, inpLength uint) (map[string][4]Octant, error) {
+	inpDepth, idxY, idxCb, idxCr, inpLength uint,
+) (map[string][4]Octant, error) {
 	var octs map[string][4]Octant
 
 	var splitOctantFlag bool
@@ -526,14 +527,13 @@ func parseSccExtension(r *bits.EBSPReader) (*SccExtension, error) {
 			ext.PalettePredictorInitializer = make([][]uint, numComps)
 			// Fill luma
 			for i := uint(0); i < ext.NumPalettePredictorInitializers; i++ {
-				ext.PalettePredictorInitializer[0] =
-					append(ext.PalettePredictorInitializer[0], r.Read(int(ext.LumaBitDepthEntryMinus8+8)))
+				ext.PalettePredictorInitializer[0] = append(ext.PalettePredictorInitializer[0], r.Read(int(ext.LumaBitDepthEntryMinus8+8)))
 			}
 			// Fill chroma if any
 			for comp := 1; comp < numComps; comp++ {
 				for i := uint(0); i < ext.NumPalettePredictorInitializers; i++ {
-					ext.PalettePredictorInitializer[comp] =
-						append(ext.PalettePredictorInitializer[comp], r.Read(int(ext.ChromaBitDepthEntryMinus8+8)))
+					ext.PalettePredictorInitializer[comp] = append(ext.PalettePredictorInitializer[comp],
+						r.Read(int(ext.ChromaBitDepthEntryMinus8+8)))
 				}
 			}
 		}
@@ -585,25 +585,24 @@ func parse3dExtension(r *bits.EBSPReader) (*D3Extension, error) {
 	return ext, nil
 }
 
-func parseDeltaDlt(r *bits.EBSPReader, BitDepthForDepthLayers int) (*DeltaDlt, error) {
+func parseDeltaDlt(r *bits.EBSPReader, bitDepthForDepthLayers int) (*DeltaDlt, error) {
 	dd := &DeltaDlt{}
-	dd.NumValDeltaDlt = r.Read(BitDepthForDepthLayers)
+	dd.NumValDeltaDlt = r.Read(bitDepthForDepthLayers)
 	if dd.NumValDeltaDlt > 0 {
 		if dd.NumValDeltaDlt > 1 {
-			dd.MaxDiff = r.Read(BitDepthForDepthLayers)
+			dd.MaxDiff = r.Read(bitDepthForDepthLayers)
 		}
 		if dd.NumValDeltaDlt > 2 && dd.MaxDiff > 0 {
 			dd.MinDiffMinus1 = r.Read(bits.CeilLog2(dd.MaxDiff + 1))
 		} else {
 			dd.MinDiffMinus1 = dd.MaxDiff - 1
 		}
-		dd.DeltaDltVal0 = r.Read(BitDepthForDepthLayers)
+		dd.DeltaDltVal0 = r.Read(bitDepthForDepthLayers)
 		if dd.MaxDiff > (dd.MinDiffMinus1 + 1) {
 			for k := uint(1); k < dd.NumValDeltaDlt; k++ {
 				// variable minDiff is set equal to ( min_diff_minus1 + 1 )
 				// length of delta_val_diff_minus_min[ k ] syntax element is Ceil( Log2( max_diff − minDiff + 1 ) ) bits
-				dd.DeltaValDiffMinusMin =
-					append(dd.DeltaValDiffMinusMin, r.Read(bits.CeilLog2(dd.MaxDiff-(dd.MinDiffMinus1+1)+1)))
+				dd.DeltaValDiffMinusMin = append(dd.DeltaValDiffMinusMin, r.Read(bits.CeilLog2(dd.MaxDiff-(dd.MinDiffMinus1+1)+1)))
 			}
 		}
 	}

@@ -14,9 +14,7 @@ import (
 // Helpers to tests. By including t.Helper(), the right failing line in the test
 // itself is reported.
 
-var (
-	update = flag.Bool("update", false, "update the golden files of this test")
-)
+var update = flag.Bool("update", false, "update the golden files of this test")
 
 // writeGolden - write golden file that to be used for later tests
 func writeGolden(t *testing.T, goldenAssetPath string, data []byte) error {

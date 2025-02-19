@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // HdlrBox - Handler Reference Box (hdlr - mandatory)
@@ -134,7 +134,7 @@ func (b *HdlrBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *HdlrBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - handlerType: %s", b.HandlerType)
-	bd.write(" - handlerName: %q", b.Name)
+	bd.writef(" - handlerType: %s", b.HandlerType)
+	bd.writef(" - handlerName: %q", b.Name)
 	return bd.err
 }

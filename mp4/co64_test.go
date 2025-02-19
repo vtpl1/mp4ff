@@ -5,7 +5,6 @@ import (
 )
 
 func TestEncDecCo64(t *testing.T) {
-
 	b := &Co64Box{
 		Version:     0,
 		Flags:       2, // Just in test

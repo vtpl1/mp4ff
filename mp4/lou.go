@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TlouBox - Track loudness info Box
@@ -152,29 +152,29 @@ func (b *loudnessBaseBox) encodeSW(sw bits.SliceWriter) error {
 
 func (b *loudnessBaseBox) info(realBox Box, w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, realBox, int(b.Version), 0)
-	bd.write(" - LoudnessBaseCount: %d", len(b.LoudnessBases))
+	bd.writef(" - LoudnessBaseCount: %d", len(b.LoudnessBases))
 	level := getInfoLevel(realBox, specificBoxLevels)
 	if level >= 1 {
 		loudnessIndent := "     "
 		for a, l := range b.LoudnessBases {
-			bd.write(" - loudnessBase[%d]:", a+1)
+			bd.writef(" - loudnessBase[%d]:", a+1)
 			if b.Version == 1 {
-				bd.write(loudnessIndent+"EQSetID=%d", l.EQSetID)
+				bd.writef(loudnessIndent+"EQSetID=%d", l.EQSetID)
 			}
-			bd.write(loudnessIndent+"DownmixID=%d", l.DownmixID)
-			bd.write(loudnessIndent+"DRCSetID=%d", l.DRCSetID)
-			bd.write(loudnessIndent+"BsSamplePeakLevel=%d", l.BsSamplePeakLevel)
-			bd.write(loudnessIndent+"BsTruePeakLevel=%d", l.BsTruePeakLevel)
-			bd.write(loudnessIndent+"MeasurementSystemForTP=%d", l.MeasurementSystemForTP)
-			bd.write(loudnessIndent+"ReliabilityForTP=%d", l.ReliabilityForTP)
-			bd.write(loudnessIndent+"MeasurementCount=%d", len(l.Measurements))
+			bd.writef(loudnessIndent+"DownmixID=%d", l.DownmixID)
+			bd.writef(loudnessIndent+"DRCSetID=%d", l.DRCSetID)
+			bd.writef(loudnessIndent+"BsSamplePeakLevel=%d", l.BsSamplePeakLevel)
+			bd.writef(loudnessIndent+"BsTruePeakLevel=%d", l.BsTruePeakLevel)
+			bd.writef(loudnessIndent+"MeasurementSystemForTP=%d", l.MeasurementSystemForTP)
+			bd.writef(loudnessIndent+"ReliabilityForTP=%d", l.ReliabilityForTP)
+			bd.writef(loudnessIndent+"MeasurementCount=%d", len(l.Measurements))
 			for i := 0; i < len(l.Measurements); i++ {
 				msg := fmt.Sprintf(loudnessIndent+" - measurement[%d]: ", i+1)
 				msg += fmt.Sprintf("MethodDefinition=%d ", l.Measurements[i].MethodDefinition)
 				msg += fmt.Sprintf("MethodValue=%d ", l.Measurements[i].MethodValue)
 				msg += fmt.Sprintf("MeasurementSystem=%d ", l.Measurements[i].MeasurementSystem)
 				msg += fmt.Sprintf("Reliability=%d ", l.Measurements[i].Reliability)
-				bd.write(msg)
+				bd.writef(msg)
 			}
 		}
 	}
@@ -243,7 +243,7 @@ func DecodeAlou(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 	return DecodeAlouBoxSR(hdr, startPos, sr)
 }
 
-// DecodeAlouSR - box-specific decode
+// DecodeAlouBoxSR - box-specific decode
 func DecodeAlouBoxSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, error) {
 	loudnessBaseBox, err := decodeLoudnessBaseBoxSR(hdr, startPos+hdr.Size, sr)
 	if err != nil {

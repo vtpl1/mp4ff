@@ -6,12 +6,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/aac"
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/aac"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestDecodeFileWithLazyMdatOption(t *testing.T) {
-
 	// load a segment
 	file, err := os.Open("./testdata/1.m4s")
 	if err != nil {
@@ -33,11 +32,9 @@ func TestDecodeFileWithLazyMdatOption(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func TestDecodeFileWithNoLazyMdatOption(t *testing.T) {
-
 	// load a segment
 	file, err := os.Open("./testdata/1.m4s")
 	if err != nil {
@@ -332,8 +329,10 @@ func TestEmptyMdat(t *testing.T) {
 		mdatSizes     []uint64
 		expectedError string
 	}{
-		{desc: "2 non-empty", mdatSizes: []uint64{24, 16},
-			expectedError: "only one non-empty mdat box supported (payload sizes 16 and 8)"},
+		{
+			desc: "2 non-empty", mdatSizes: []uint64{24, 16},
+			expectedError: "only one non-empty mdat box supported (payload sizes 16 and 8)",
+		},
 		{desc: "empty + normal", mdatSizes: []uint64{8, 16}, expectedError: ""},
 		{desc: "normal+empty", mdatSizes: []uint64{16, 8}, expectedError: ""},
 		{desc: "empty+normal+empty", mdatSizes: []uint64{8, 16, 8}, expectedError: ""},

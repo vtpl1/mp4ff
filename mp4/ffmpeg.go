@@ -4,7 +4,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // CTooBox - ©too box defines the ffmpeg encoding tool information
@@ -70,6 +70,6 @@ func (b *DataBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - box-specific Info
 func (b *DataBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - data: %s", string(b.Data))
+	bd.writef(" - data: %s", string(b.Data))
 	return bd.err
 }

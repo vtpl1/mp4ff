@@ -5,7 +5,6 @@ import (
 )
 
 func TestEncDecClap(t *testing.T) {
-
 	b := &ClapBox{
 		CleanApertureWidthN: 1, CleanApertureWidthD: 2,
 		CleanApertureHeightN: 3, CleanApertureHeightD: 4,

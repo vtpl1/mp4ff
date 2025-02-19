@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // ElstBox - Edit List Box (elst - optional)
@@ -49,7 +49,7 @@ func DecodeElstSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 
 	b.Entries = make([]ElstEntry, entryCount)
 
-	if version == 1 {
+	if version == 1 { //nolint:gocritic
 		for i := 0; i < int(entryCount); i++ {
 			b.Entries[i].SegmentDuration = sr.ReadUint64()
 			b.Entries[i].MediaTime = sr.ReadInt64()
@@ -129,7 +129,7 @@ func (b *ElstBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *ElstBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	for i := 0; i < len(b.Entries); i++ {
-		bd.write("- entry[%d]: segmentDuration=%d mediaTime=%d, mediaRateInteger=%d "+
+		bd.writef("- entry[%d]: segmentDuration=%d mediaTime=%d, mediaRateInteger=%d "+
 			"mediaRateFraction=%d", i+1, b.Entries[i].SegmentDuration, b.Entries[i].MediaTime,
 			b.Entries[i].MediaRateInteger, b.Entries[i].MediaRateFraction)
 	}

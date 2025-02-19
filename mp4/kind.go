@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // KindBox - Track Kind Box
@@ -81,7 +81,7 @@ func (b *KindBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *KindBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - schemeURI: %s", b.SchemeURI)
-	bd.write(" - value: %s", b.Value)
+	bd.writef(" - schemeURI: %s", b.SchemeURI)
+	bd.writef(" - value: %s", b.Value)
 	return bd.err
 }

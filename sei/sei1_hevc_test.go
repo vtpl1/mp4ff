@@ -9,7 +9,6 @@ import (
 )
 
 func TestHEVCSETI1PicTiming(t *testing.T) {
-
 	cases := []struct {
 		name           string
 		naluPayloadHex string

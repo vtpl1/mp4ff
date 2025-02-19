@@ -6,8 +6,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/Eyevinn/mp4ff/avc"
-	"github.com/Eyevinn/mp4ff/hevc"
+	"github.com/vtpl1/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/hevc"
 )
 
 type cryptoDir int
@@ -24,7 +24,8 @@ const (
 // For scheme cenc, protection ranges must be a multiple of 16 bytes leaving header and some more in the clear
 // For scheme cbcs, protection range must start after the slice header.
 func GetAVCProtectRanges(spsMap map[uint32]*avc.SPS, ppsMap map[uint32]*avc.PPS, sample []byte,
-	scheme string) ([]SubSamplePattern, error) {
+	scheme string,
+) ([]SubSamplePattern, error) {
 	var ssps []SubSamplePattern
 	length := len(sample)
 	if length < 4 {
@@ -80,7 +81,8 @@ func GetAVCProtectRanges(spsMap map[uint32]*avc.SPS, ppsMap map[uint32]*avc.PPS,
 }
 
 func GetHEVCProtectRanges(spsMap map[uint32]*hevc.SPS, ppsMap map[uint32]*hevc.PPS,
-	sample []byte, scheme string) ([]SubSamplePattern, error) {
+	sample []byte, scheme string,
+) ([]SubSamplePattern, error) {
 	var ssps []SubSamplePattern
 	length := len(sample)
 	if length < 4 {
@@ -180,13 +182,13 @@ func CryptSampleCenc(sample []byte, key []byte, iv []byte, subSamplePatterns []S
 	return nil
 }
 
-// DecryptSampleCenc does in-place decryption of cbcs-schema encrypted sample.
+// DecryptSampleCbcs does in-place decryption of cbcs-schema encrypted sample.
 // Each protected byte range is striped with with pattern defined by pattern in tenc.
 func DecryptSampleCbcs(sample []byte, key []byte, iv []byte, subSamplePatterns []SubSamplePattern, tenc *TencBox) error {
 	return cryptSampleCbcs(dirDec, sample, key, iv, subSamplePatterns, tenc)
 }
 
-// EncryptSampleCenc does in-place encryption using cbcs schema.
+// EncryptSampleCbcs does in-place encryption using cbcs schema.
 // Each protected byte range is striped with with pattern defined by pattern in tenc.
 func EncryptSampleCbcs(sample []byte, key []byte, iv []byte, subSamplePatterns []SubSamplePattern, tenc *TencBox) error {
 	return cryptSampleCbcs(dirEnc, sample, key, iv, subSamplePatterns, tenc)
@@ -287,13 +289,15 @@ func incrementIVInPlace(iv []byte, nrSteps int) {
 	}
 }
 
-type ProtectionRangeFunc func(sample []byte, scheme string) ([]SubSamplePattern, error)
-type InitProtectData struct {
-	Tenc     *TencBox
-	ProtFunc ProtectionRangeFunc
-	Trex     *TrexBox
-	Scheme   string
-}
+type (
+	ProtectionRangeFunc func(sample []byte, scheme string) ([]SubSamplePattern, error)
+	InitProtectData     struct {
+		Tenc     *TencBox
+		ProtFunc ProtectionRangeFunc
+		Trex     *TrexBox
+		Scheme   string
+	}
+)
 
 // InitProtect modifies the init segment to add protection information and return what is needed to encrypt fragments.
 func InitProtect(init *InitSegment, key, iv []byte, scheme string, kid UUID, psshBoxes []*PsshBox) (*InitProtectData, error) {
@@ -358,13 +362,17 @@ func InitProtect(init *InitSegment, key, iv []byte, scheme string, kid UUID, pss
 	case "cbcs":
 		switch mediaType {
 		case "video":
-			ipd.Tenc = &TencBox{Version: 1, DefaultCryptByteBlock: 1, DefaultSkipByteBlock: 9,
+			ipd.Tenc = &TencBox{
+				Version: 1, DefaultCryptByteBlock: 1, DefaultSkipByteBlock: 9,
 				DefaultIsProtected: 1, DefaultPerSampleIVSize: 0, DefaultKID: kid,
-				DefaultConstantIV: iv}
+				DefaultConstantIV: iv,
+			}
 		case "audio":
-			ipd.Tenc = &TencBox{Version: 1, DefaultCryptByteBlock: 0, DefaultSkipByteBlock: 0,
+			ipd.Tenc = &TencBox{
+				Version: 1, DefaultCryptByteBlock: 0, DefaultSkipByteBlock: 0,
 				DefaultIsProtected: 1, DefaultPerSampleIVSize: 0, DefaultKID: kid,
-				DefaultConstantIV: iv}
+				DefaultConstantIV: iv,
+			}
 		}
 		sinf.AddChild(&SchmBox{SchemeType: "cbcs", SchemeVersion: 65536})
 	default:
@@ -413,7 +421,7 @@ func getHEVCPSMaps(arrays []hevc.NaluArray) (map[uint32]*hevc.SPS, map[uint32]*h
 	spsMap := make(map[uint32]*hevc.SPS, 1)
 	for _, naluArray := range arrays {
 		naluType := naluArray.NaluType()
-		switch naluType {
+		switch naluType { //nolint:gocritic
 		case hevc.NALU_SPS:
 			for _, nalu := range naluArray.Nalus {
 				sps, err := hevc.ParseSPSNALUnit(nalu)
@@ -428,7 +436,7 @@ func getHEVCPSMaps(arrays []hevc.NaluArray) (map[uint32]*hevc.SPS, map[uint32]*h
 	ppsMap := make(map[uint32]*hevc.PPS, 1)
 	for _, naluArray := range arrays {
 		naluType := naluArray.NaluType()
-		switch naluType {
+		switch naluType { //nolint:gocritic
 		case hevc.NALU_PPS:
 			for _, nalu := range naluArray.Nalus {
 				pps, err := hevc.ParsePPSNALUnit(nalu, spsMap)
@@ -450,7 +458,6 @@ func getHEVCProtFunc(hvcC *HvcCBox) (ProtectionRangeFunc, error) {
 		}
 		return GetHEVCProtectRanges(spsMap, ppsMap, sample, scheme)
 	}, nil
-
 }
 
 func EncryptFragment(f *Fragment, key, iv []byte, ipd *InitProtectData) error {
@@ -700,7 +707,6 @@ func DecryptFragment(frag *Fragment, di DecryptInfo, key []byte) error {
 
 // decryptSample - decrypt samples inplace
 func decryptSamplesInPlace(schemeType string, samples []FullSample, key []byte, tenc *TencBox, senc *SencBox) error {
-
 	// TODO. Interpret saio and saiz to get to the right place
 	// Saio tells where the IV starts relative to moof start
 	// It typically ends up inside senc (16 bytes after start)

@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // URLBox - DataEntryUrlBox ('url ')
@@ -111,9 +111,9 @@ func (b *URLBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string)
 	if b.NoLocation {
 		return bd.err
 	}
-	bd.write(" - location: %q", b.Location)
+	bd.writef(" - location: %q", b.Location)
 	if b.NoZeroTermination {
-		bd.write(" - Warning: no zero termination")
+		bd.writef(" - Warning: no zero termination")
 	}
 	return bd.err
 }

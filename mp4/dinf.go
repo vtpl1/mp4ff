@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // DinfBox - Data Information Box (dinf - mandatory)
@@ -16,8 +16,7 @@ type DinfBox struct {
 
 // AddChild - Add a child box
 func (d *DinfBox) AddChild(box Box) {
-
-	switch box.Type() {
+	switch box.Type() { //nolint:gocritic
 	case "dref":
 		d.Dref = box.(*DrefBox)
 	}

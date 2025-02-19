@@ -5,7 +5,6 @@ import (
 )
 
 func TestStss(t *testing.T) {
-
 	// The following stss box has two sync samples
 	stss := &StssBox{
 		SampleNumber: []uint32{1, 26},

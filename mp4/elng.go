@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // ElngBox - Extended Language Box
@@ -30,7 +30,8 @@ func CreateElng(language string) *ElngBox {
 	return &ElngBox{
 		Version:  0,
 		Flags:    0,
-		Language: language}
+		Language: language,
+	}
 }
 
 // DecodeElng - box-specific decode
@@ -109,6 +110,6 @@ func (b *ElngBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *ElngBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - language: %s", b.Language)
+	bd.writef(" - language: %s", b.Language)
 	return bd.err
 }

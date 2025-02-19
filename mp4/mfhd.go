@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MfhdBox - Media Fragment Header Box (mfhd)
@@ -91,6 +91,6 @@ func (m *MfhdBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (m *MfhdBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, m, int(m.Version), m.Flags)
-	bd.write(" - sequenceNumber: %d", m.SequenceNumber)
+	bd.writef(" - sequenceNumber: %d", m.SequenceNumber)
 	return bd.err
 }

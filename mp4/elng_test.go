@@ -6,7 +6,6 @@ import (
 )
 
 func TestDecodeElng(t *testing.T) {
-
 	elng := &ElngBox{Language: "en-US"}
 	boxDiffAfterEncodeAndDecode(t, elng)
 }

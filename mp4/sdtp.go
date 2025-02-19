@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SdtpBox - Sample Dependency Box (sdtp - optional)
@@ -148,7 +148,7 @@ func (b *SdtpBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i, entry := range b.Entries {
-			bd.write(" - entry[%d]: isLeading=%d dependsOn=%d isDependedOn=%d hasRedundancy=%d",
+			bd.writef(" - entry[%d]: isLeading=%d dependsOn=%d isDependedOn=%d hasRedundancy=%d",
 				i+1, entry.IsLeading(), entry.SampleDependsOn(), entry.SampleIsDependedOn(), entry.SampleHasRedundancy())
 		}
 	}

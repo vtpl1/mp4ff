@@ -5,7 +5,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // dec3
@@ -41,7 +41,7 @@ var EC3ChannelLocationBits = []string{
 	"Lw/Rw",
 	"Lvh/Rvh",
 	"Cvh",
-	"LFE2", //MSB
+	"LFE2", // MSB
 }
 
 // Dec3Box - AC3SpecificBox from ETSI TS 102 366 V1.4.1 F.4 (2017)
@@ -174,21 +174,20 @@ func (b *Dec3Box) EncodeSW(sw bits.SliceWriter) error {
 
 func (b *Dec3Box) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - bitrate=%dkbps", b.DataRate)
+	bd.writef(" - bitrate=%dkbps", b.DataRate)
 	fscod := b.EC3Subs[0].FSCod
-	bd.write(" - sampleRateCode=%d => sampleRate=%d", fscod, AC3SampleRates[fscod])
+	bd.writef(" - sampleRateCode=%d => sampleRate=%d", fscod, AC3SampleRates[fscod])
 	nrChannels, chanmap := b.ChannelInfo()
-	bd.write(" - nrChannels=%d, chanmap=%04x", nrChannels, chanmap)
-	bd.write(" - nrSubstreams=%d", len(b.EC3Subs))
+	bd.writef(" - nrChannels=%d, chanmap=%04x", nrChannels, chanmap)
+	bd.writef(" - nrSubstreams=%d", len(b.EC3Subs))
 	for i, es := range b.EC3Subs {
-		bd.write("   - %d fscod=%d bsid=%d asvc=%d bsmod=%d acmod=%d lfeon=%d num_dep_sub=%d chan_loc=%x",
+		bd.writef("   - %d fscod=%d bsid=%d asvc=%d bsmod=%d acmod=%d lfeon=%d num_dep_sub=%d chan_loc=%x",
 			i+1, es.FSCod, es.BSID, es.ASVC, es.BSMod, es.ACMod, es.LFEOn, es.NumDepSub, es.ChanLoc)
 	}
 	return bd.err
 }
 
 func (b *Dec3Box) ChannelInfo() (nrChannels int, chanmap uint16) {
-
 	// All Enhanced AC-3 bit streams shall contain an independent substream
 	// assigned substream ID 0 (E.1.3.1.2)
 	substream := b.EC3Subs[0]

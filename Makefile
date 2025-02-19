@@ -9,7 +9,7 @@ prepare:
 	go mod vendor
 
 mp4ff-crop mp4ff-decrypt mp4ff-encrypt mp4ff-info mp4ff-nallister mp4ff-pslister mp4ff-subslister:
-	go build -ldflags "-X github.com/Eyevinn/mp4ff/mp4.commitVersion=$$(git describe --tags HEAD) -X github.com/Eyevinn/mp4ff/mp4.commitDate=$$(git log -1 --format=%ct)" -o out/$@ ./cmd/$@/main.go
+	go build -ldflags "-X github.com/vtpl1/mp4ff/mp4.commitVersion=$$(git describe --tags --always) -X github.com/vtpl1/mp4ff/mp4.commitDate=$$(git log -1 --format=%ct)" -o out/$@ ./cmd/$@/main.go
 
 .PHONY: examples
 examples: add-sidx combine-segs initcreator multitrack resegmenter segmenter
@@ -19,7 +19,7 @@ add-sidx combine-segs initcreator multitrack resegmenter segmenter:
 
 .PHONY: test
 test: prepare
-	go test ./...
+	go test -cover ./...
 
 .PHONY: testsum
 testsum: prepare
@@ -29,7 +29,7 @@ testsum: prepare
 open-docs:
 	echo "If needed: go install golang.org/x/pkgsite/cmd/pkgsite@latest"
 	pkgsite -http localhost:9999
-	# open http://localhost:9999/pkg/github.com/Eyevinn/mp4ff/
+	# open http://localhost:9999/pkg/github.com/vtpl1/mp4ff/
 
 .PHONY: coverage
 coverage:
@@ -52,3 +52,6 @@ clean:
 install: all
 	cp out/* $(GOPATH)/bin/
 
+.PHONY: fmt
+fmt:
+	@gofumpt -l -w .

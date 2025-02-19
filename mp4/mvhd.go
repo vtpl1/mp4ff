@@ -4,7 +4,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MvhdBox - Movie Header Box (mvhd - mandatory)
@@ -136,10 +136,10 @@ func (b *MvhdBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *MvhdBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - timeScale: %d", b.Timescale)
-	bd.write(" - duration: %d", b.Duration)
-	bd.write(" - creation time: %s", timeStr(b.CreationTime))
-	bd.write(" - modification time: %s", timeStr(b.ModificationTime))
+	bd.writef(" - timeScale: %d", b.Timescale)
+	bd.writef(" - duration: %d", b.Duration)
+	bd.writef(" - creation time: %s", timeStr(b.CreationTime))
+	bd.writef(" - modification time: %s", timeStr(b.ModificationTime))
 	return bd.err
 }
 

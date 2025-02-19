@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TrexBox - Track Extends Box
@@ -93,10 +93,10 @@ func (b *TrexBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *TrexBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - trackID: %d", b.TrackID)
-	bd.write(" - defaultSampleDescriptionIndex: %d", b.DefaultSampleDescriptionIndex)
-	bd.write(" - defaultSampleDuration: %d", b.DefaultSampleDuration)
-	bd.write(" - defaultSampleSize: %d", b.DefaultSampleSize)
-	bd.write(" - defaultSampleFlags: %08x (%s)", b.DefaultSampleFlags, DecodeSampleFlags(b.DefaultSampleFlags))
+	bd.writef(" - trackID: %d", b.TrackID)
+	bd.writef(" - defaultSampleDescriptionIndex: %d", b.DefaultSampleDescriptionIndex)
+	bd.writef(" - defaultSampleDuration: %d", b.DefaultSampleDuration)
+	bd.writef(" - defaultSampleSize: %d", b.DefaultSampleSize)
+	bd.writef(" - defaultSampleFlags: %08x (%s)", b.DefaultSampleFlags, DecodeSampleFlags(b.DefaultSampleFlags))
 	return bd.err
 }

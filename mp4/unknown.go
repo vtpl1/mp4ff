@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // UnknownBox - box that we don't know how to parse
@@ -63,10 +63,10 @@ func (b *UnknownBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *UnknownBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - not implemented or unknown box")
+	bd.writef(" - not implemented or unknown box")
 	level := getInfoLevel(b, specificBoxLevels)
 	if level > 0 {
-		bd.write(" - %s", hex.EncodeToString(b.notDecoded))
+		bd.writef(" - %s", hex.EncodeToString(b.notDecoded))
 	}
 
 	return bd.err

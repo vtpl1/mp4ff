@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // StszBox - Sample Size Box (stsz - mandatory)
@@ -113,15 +113,15 @@ func (b *StszBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 		return bd.err
 	}
 	if len(b.SampleSize) == 0 {
-		bd.write(" - sampleSize: %d", b.SampleUniformSize)
-		bd.write(" - sampleCount: %d", b.SampleNumber)
+		bd.writef(" - sampleSize: %d", b.SampleUniformSize)
+		bd.writef(" - sampleCount: %d", b.SampleNumber)
 	} else {
-		bd.write(" - sampleCount: %d", b.SampleNumber)
+		bd.writef(" - sampleCount: %d", b.SampleNumber)
 	}
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i := range b.SampleSize {
-			bd.write(" - sample[%d] size=%d", i+1, b.SampleSize[i])
+			bd.writef(" - sample[%d] size=%d", i+1, b.SampleSize[i])
 		}
 	}
 	return bd.err

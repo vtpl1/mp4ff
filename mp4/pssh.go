@@ -7,7 +7,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // UUIDs for different DRM systems
@@ -131,20 +131,20 @@ func (b *PsshBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box info to w
 func (b *PsshBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - systemID: %s (%s)", b.SystemID, ProtectionSystemName(b.SystemID))
+	bd.writef(" - systemID: %s (%s)", b.SystemID, ProtectionSystemName(b.SystemID))
 	if b.Version > 0 {
 		for i, kid := range b.KIDs {
-			bd.write(" - KID[%d]=%s", i+1, kid)
+			bd.writef(" - KID[%d]=%s", i+1, kid)
 		}
 	}
 	level := getInfoLevel(b, specificBoxLevels)
 	if level > 0 {
-		bd.write(" - data: %s", hex.EncodeToString(b.Data))
+		bd.writef(" - data: %s", hex.EncodeToString(b.Data))
 	}
 	return bd.err
 }
 
-// PsshBoxesFromDBytesextracts pssh boxes from slice of bytes
+// PsshBoxesFromBytes pssh boxes from slice of bytes
 func PsshBoxesFromBytes(psshData []byte) ([]*PsshBox, error) {
 	psshBoxes := make([]*PsshBox, 0, 1)
 	sr := bits.NewFixedSliceReader(psshData)

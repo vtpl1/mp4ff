@@ -3,7 +3,7 @@ package mp4
 import (
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/av1"
+	"github.com/vtpl1/mp4ff/av1"
 )
 
 func TestEncodeDecodeAvc1(t *testing.T) {
@@ -14,5 +14,4 @@ func TestEncodeDecodeAvc1(t *testing.T) {
 	}
 
 	boxDiffAfterEncodeAndDecode(t, &adc)
-
 }

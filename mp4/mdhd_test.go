@@ -5,7 +5,6 @@ import (
 )
 
 func TestMdhd(t *testing.T) {
-
 	boxes := []*MdhdBox{
 		{
 			Version:          0,

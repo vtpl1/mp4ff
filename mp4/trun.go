@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TrunBox - Track Fragment Run Box (trun)
@@ -19,12 +19,14 @@ type TrunBox struct {
 	writeOrderNr     uint32 // Used for multi trun offsets
 }
 
-const TrunDataOffsetPresentFlag uint32 = 0x01
-const TrunFirstSampleFlagsPresentFlag uint32 = 0x04
-const TrunSampleDurationPresentFlag uint32 = 0x100
-const TrunSampleSizePresentFlag uint32 = 0x200
-const TrunSampleFlagsPresentFlag uint32 = 0x400
-const TrunSampleCompositionTimeOffsetPresentFlag uint32 = 0x800
+const (
+	TrunDataOffsetPresentFlag                  uint32 = 0x01
+	TrunFirstSampleFlagsPresentFlag            uint32 = 0x04
+	TrunSampleDurationPresentFlag              uint32 = 0x100
+	TrunSampleSizePresentFlag                  uint32 = 0x200
+	TrunSampleFlagsPresentFlag                 uint32 = 0x400
+	TrunSampleCompositionTimeOffsetPresentFlag uint32 = 0x800
+)
 
 // DecodeTrun - box-specific decode
 func DecodeTrun(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
@@ -151,7 +153,6 @@ func CreateTrun(writeOrderNr uint32) *TrunBox {
 // AddSampleDefaultValues - add values from tfhd and trex boxes if needed
 // Return total duration
 func (t *TrunBox) AddSampleDefaultValues(tfhd *TfhdBox, trex *TrexBox) (totalDur uint64) {
-
 	var defaultSampleDuration uint32
 	var defaultSampleSize uint32
 	var defaultSampleFlags uint32
@@ -321,7 +322,6 @@ func (t *TrunBox) EncodeSW(sw bits.SliceWriter) error {
 		if t.HasSampleCompositionTimeOffset() {
 			sw.WriteInt32(t.Samples[i].CompositionTimeOffset)
 		}
-
 	}
 	return sw.AccError()
 }
@@ -329,14 +329,14 @@ func (t *TrunBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - specificBoxLevels trun:1 gives details
 func (t *TrunBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, t, int(t.Version), t.Flags)
-	bd.write(" - sampleCount: %d", t.SampleCount())
+	bd.writef(" - sampleCount: %d", t.SampleCount())
 	level := getInfoLevel(t, specificBoxLevels)
 	if level > 0 {
 		if t.HasDataOffset() {
-			bd.write(" - DataOffset: %d", t.DataOffset)
+			bd.writef(" - DataOffset: %d", t.DataOffset)
 		}
 		if t.HasFirstSampleFlags() {
-			bd.write(" - firstSampleFlags: %08x (%s)", t.firstSampleFlags, DecodeSampleFlags(t.firstSampleFlags))
+			bd.writef(" - firstSampleFlags: %08x (%s)", t.firstSampleFlags, DecodeSampleFlags(t.firstSampleFlags))
 		}
 		for i := 0; i < int(t.SampleCount()); i++ {
 			msg := fmt.Sprintf(" - sample[%d]:", i+1)
@@ -353,7 +353,7 @@ func (t *TrunBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 			if t.HasSampleCompositionTimeOffset() {
 				msg += fmt.Sprintf(" compositionTimeOffset=%d", t.Samples[i].CompositionTimeOffset)
 			}
-			bd.write(msg)
+			bd.writef(msg)
 		}
 	}
 	return bd.err
@@ -398,7 +398,8 @@ func (t *TrunBox) GetSampleRange(startSampleNr, endSampleNr uint32) []Sample {
 // baseDecodeTime is decodeTime in tfdt in track timescale (timescale from mfhd).
 // To fill missing individual values from tfhd and trex defaults, call AddSampleDefaultValues() before this call.
 func (t *TrunBox) GetSampleInterval(startSampleNr, endSampleNr uint32, baseDecodeTime uint64,
-	mdat *MdatBox, offsetInMdat uint32) (SampleInterval, error) {
+	mdat *MdatBox, offsetInMdat uint32,
+) (SampleInterval, error) {
 	si := SampleInterval{}
 	if startSampleNr < 1 {
 		return si, fmt.Errorf("startSegNr < 1")

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TrefBox -  // TrackReferenceBox - ISO/IEC 14496-12 Ed. 9 Sec. 8.3
@@ -105,13 +105,13 @@ func DecodeTrefTypeSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box,
 }
 
 // Type - box type
-func (b *TrefTypeBox) Type() string {
-	return b.Name
+func (t *TrefTypeBox) Type() string {
+	return t.Name
 }
 
 // Size - calculated size of box
-func (b *TrefTypeBox) Size() uint64 {
-	return uint64(boxHeaderSize + len(b.TrackIDs)*4)
+func (t *TrefTypeBox) Size() uint64 {
+	return uint64(boxHeaderSize + len(t.TrackIDs)*4)
 }
 
 // Encode - write box to w
@@ -126,24 +126,24 @@ func (t *TrefTypeBox) Encode(w io.Writer) error {
 }
 
 // Encode - write box to sw
-func (b *TrefTypeBox) EncodeSW(sw bits.SliceWriter) error {
-	err := EncodeHeaderSW(b, sw)
+func (t *TrefTypeBox) EncodeSW(sw bits.SliceWriter) error {
+	err := EncodeHeaderSW(t, sw)
 	if err != nil {
 		return err
 	}
-	for _, trackID := range b.TrackIDs {
+	for _, trackID := range t.TrackIDs {
 		sw.WriteUint32(trackID)
 	}
 	return sw.AccError()
 }
 
 // Info - write box-specific information
-func (b *TrefTypeBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	bd := newInfoDumper(w, indent, b, -1, 0)
+func (t *TrefTypeBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
+	bd := newInfoDumper(w, indent, t, -1, 0)
 	msg := " - trackIDs: "
-	for _, trackID := range b.TrackIDs {
+	for _, trackID := range t.TrackIDs {
 		msg += fmt.Sprintf(" %d", trackID)
 	}
-	bd.write(msg)
+	bd.writef(msg)
 	return bd.err
 }

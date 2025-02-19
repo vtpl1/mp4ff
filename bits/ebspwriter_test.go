@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
 	"github.com/go-test/deep"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func TestEBSPWriter(t *testing.T) {
@@ -132,7 +132,6 @@ func TestEBSPWriter(t *testing.T) {
 		expectedBits := "111111110010110110000000"
 		if gotBits != expectedBits {
 			t.Errorf("wanted %s but got %s", expectedBits, gotBits)
-
 		}
 	})
 }
@@ -148,7 +147,6 @@ func getBitsWritten(w *bits.EBSPWriter, b *bytes.Buffer) string {
 		bits += fullByte[8-nrBitsInWriter:]
 	}
 	return bits
-
 }
 
 type limitedWriter struct {

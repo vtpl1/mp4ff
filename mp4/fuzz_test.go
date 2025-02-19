@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 func monitorMemory(ctx context.Context, t *testing.T, memoryLimit int) {

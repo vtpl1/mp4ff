@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // VppCBox - VP Codec Configuration Box (vpcC)
@@ -129,14 +129,14 @@ func (b *VppCBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box info to w
 func (b *VppCBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - profile: %d", b.Profile)
-	bd.write(" - level: %d", b.Level)
-	bd.write(" - bitDepth: %d", b.BitDepth)
-	bd.write(" - chromaSubsampling: %d", b.ChromaSubsampling)
-	bd.write(" - videoFullRangeFlag: %d", b.VideoFullRangeFlag)
-	bd.write(" - colourPrimaries: %d", b.ColourPrimaries)
-	bd.write(" - transferCharacteristics: %d", b.TransferCharacteristics)
-	bd.write(" - matrixCoefficients: %d", b.MatrixCoefficients)
-	bd.write(" - codecInitSize: %d", len(b.CodecInitData))
+	bd.writef(" - profile: %d", b.Profile)
+	bd.writef(" - level: %d", b.Level)
+	bd.writef(" - bitDepth: %d", b.BitDepth)
+	bd.writef(" - chromaSubsampling: %d", b.ChromaSubsampling)
+	bd.writef(" - videoFullRangeFlag: %d", b.VideoFullRangeFlag)
+	bd.writef(" - colourPrimaries: %d", b.ColourPrimaries)
+	bd.writef(" - transferCharacteristics: %d", b.TransferCharacteristics)
+	bd.writef(" - matrixCoefficients: %d", b.MatrixCoefficients)
+	bd.writef(" - codecInitSize: %d", len(b.CodecInitData))
 	return bd.err
 }

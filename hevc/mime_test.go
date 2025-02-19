@@ -34,7 +34,6 @@ func TestCodecString(t *testing.T) {
 			t.Errorf("Got %q wanted %q", got, tc.codecString)
 		}
 	}
-
 }
 
 func TestReverseUint32bits(t *testing.T) {

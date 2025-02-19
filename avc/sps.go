@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // ExtendedSAR - Extended Sample Aspect Ratio Code
@@ -113,7 +113,6 @@ type CpbEntry struct {
 
 // ParseSPSNALUnit - Parse AVC SPS NAL unit starting with NAL header
 func ParseSPSNALUnit(data []byte, parseVUIBeyondAspectRatio bool) (*SPS, error) {
-
 	sps := &SPS{}
 
 	rd := bytes.NewReader(data)
@@ -216,7 +215,7 @@ func ParseSPSNALUnit(data []byte, parseVUIBeyondAspectRatio bool) (*SPS, error) 
 			cropUnitX, cropUnitY = 2, 2*(2-frameMbsOnly)
 		case 2:
 			cropUnitX, cropUnitY = 2, 1*(2-frameMbsOnly)
-		case 3: //This lacks one extra check?
+		case 3: // This lacks one extra check?
 			cropUnitX, cropUnitY = 1, 1*(2-frameMbsOnly)
 		default:
 			return nil, fmt.Errorf("Non-vaild chroma_format_idc value: %d", sps.ChromaFormatIDC)
@@ -244,7 +243,7 @@ func ParseSPSNALUnit(data []byte, parseVUIBeyondAspectRatio bool) (*SPS, error) 
 	return sps, reader.AccError()
 }
 
-// CpbDbpDelaysPresent signals if Cpb and Dbp can be found in Picture Timing SEI
+// CpbDpbDelaysPresent signals if Cpb and Dbp can be found in Picture Timing SEI
 func (s *SPS) CpbDpbDelaysPresent() bool {
 	if s.VUI == nil {
 		return false
@@ -363,8 +362,8 @@ func parseHrdParameters(r *bits.EBSPReader) *HrdParameters {
 }
 
 // ConstraintFlags - return the four ConstraintFlag bits
-func (a *SPS) ConstraintFlags() byte {
-	return byte(a.ProfileCompatibility >> 4)
+func (s *SPS) ConstraintFlags() byte {
+	return byte(s.ProfileCompatibility >> 4)
 }
 
 // GetSARfromIDC - get Sample Aspect Ratio from IDC index
@@ -373,10 +372,23 @@ func GetSARfromIDC(index uint) (uint, uint, error) {
 		return 0, 0, fmt.Errorf("SAR bad index %d", index)
 	}
 	aspectRatioTable := [][]uint{
-		{1, 1}, {12, 11}, {10, 11}, {16, 11},
-		{40, 33}, {24, 11}, {20, 11}, {32, 11},
-		{80, 33}, {18, 11}, {15, 11}, {64, 33},
-		{160, 99}, {4, 3}, {3, 2}, {2, 1}}
+		{1, 1},
+		{12, 11},
+		{10, 11},
+		{16, 11},
+		{40, 33},
+		{24, 11},
+		{20, 11},
+		{32, 11},
+		{80, 33},
+		{18, 11},
+		{15, 11},
+		{64, 33},
+		{160, 99},
+		{4, 3},
+		{3, 2},
+		{2, 1},
+	}
 	return aspectRatioTable[index-1][0], aspectRatioTable[index-1][1], nil
 }
 

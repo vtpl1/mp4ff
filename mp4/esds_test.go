@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 const (
@@ -42,6 +42,7 @@ func TestEsdsEncodeAndDecode(t *testing.T) {
 
 	boxDiffAfterEncodeAndDecode(t, esdsIn)
 }
+
 func TestDecodeEncodeEsds(t *testing.T) {
 	inputs := []string{esdsShort, esdsProgIn, esdsMp4Box, esdsEncAudio, esdsLongEnd}
 	for i, inp := range inputs {

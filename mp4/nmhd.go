@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // NmhdBox - Null Media Header Box (nmhd - often used instead of sthd for subtitle tracks)
@@ -24,7 +24,6 @@ func DecodeNmhd(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 
 // DecodeNmhdSR - box-specific decode
 func DecodeNmhdSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, error) {
-
 	versionAndFlags := sr.ReadUint32()
 	sb := &NmhdBox{
 		Version: byte(versionAndFlags >> 24),

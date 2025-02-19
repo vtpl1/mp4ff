@@ -7,16 +7,14 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
 	"github.com/go-test/deep"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // Helpers to tests. By including t.Helper(), the right failing line in the test
 // itself is reported.
 
-var (
-	update = flag.Bool("update", false, "update the golden files of this test")
-)
+var update = flag.Bool("update", false, "update the golden files of this test")
 
 // cmpAfterDecodeEncodeBox compares bytes after a box has been decoded and encoded.
 func cmpAfterDecodeEncodeBox(t *testing.T, data []byte) {

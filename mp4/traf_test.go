@@ -21,7 +21,6 @@ type testSamples struct {
 }
 
 func TestTrafTrunWithoutOptimization(t *testing.T) {
-
 	tests := []testSamples{
 		{
 			"audioSamples",

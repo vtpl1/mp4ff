@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 const (
@@ -138,7 +138,7 @@ func init() {
 		"trex":    DecodeTrex,
 		"trun":    DecodeTrun,
 		"udta":    DecodeUdta,
-		"url ":    DecodeURLBox,
+		"url ":    DecodeURLBox, //nolint:gocritic
 		"uuid":    DecodeUUIDBox,
 		"vdep":    DecodeTrefType,
 		"vlab":    DecodeVlab,

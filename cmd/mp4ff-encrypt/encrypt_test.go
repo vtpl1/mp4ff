@@ -14,5 +14,4 @@ func TestEncrypt(t *testing.T) {
 	// Should be same as media segment as above
 
 	// Should maybe also try decrypt and get back the same content
-
 }

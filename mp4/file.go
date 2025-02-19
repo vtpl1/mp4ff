@@ -1,12 +1,13 @@
 package mp4
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // File - an MPEG-4 file asset
@@ -183,7 +184,7 @@ LoopBoxes:
 		default:
 			return nil, fmt.Errorf("unknown DecFileMode=%d", f.fileDecMode)
 		}
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break LoopBoxes
 		}
 		if err != nil {
@@ -580,7 +581,8 @@ func WithDecodeFlags(flags DecFileFlags) Option {
 // CopySampleData copies sample data from a track in a progressive mp4 file to w.
 // Use rs for lazy read and workSpace as an intermediate storage to avoid memory allocations.
 func (f *File) CopySampleData(w io.Writer, rs io.ReadSeeker, trak *TrakBox,
-	startSampleNr, endSampleNr uint32, workSpace []byte) error {
+	startSampleNr, endSampleNr uint32, workSpace []byte,
+) error {
 	if f.isFragmented {
 		return fmt.Errorf("only available for progressive files")
 	}
@@ -694,7 +696,6 @@ func (f *File) CopySampleData(w io.Writer, rs io.ReadSeeker, trak *TrakBox,
 }
 
 func (f *File) UpdateSidx(addIfNotExists, nonZeroEPT bool) error {
-
 	if !f.IsFragmented() {
 		return fmt.Errorf("input file is not fragmented")
 	}
@@ -831,7 +832,7 @@ func insertSidx(inFile *File, segDatas []segData, sidx *SidxBox) error {
 	if err != nil {
 		return fmt.Errorf("could not find position to insert sidx box: %w", err)
 	}
-	var mediaStartIdx = 0
+	mediaStartIdx := 0
 	for i, ch := range inFile.Children {
 		if ch == firstMediaBox {
 			mediaStartIdx = i
@@ -845,11 +846,4 @@ func insertSidx(inFile *File, segDatas []segData, sidx *SidxBox) error {
 	inFile.Sidx = sidx
 	inFile.Sidxs = []*SidxBox{sidx}
 	return nil
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }

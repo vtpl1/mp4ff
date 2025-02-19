@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SaizBox - Sample Auxiliary Information Sizes Box (saiz)  (in stbl or traf box)
@@ -144,16 +144,16 @@ func (b *SaizBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *SaizBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	if b.Flags&0x01 != 0 {
-		bd.write(" - auxInfoType: %s", b.AuxInfoType)
-		bd.write(" - auxInfoTypeParameter: %d", b.AuxInfoTypeParameter)
+		bd.writef(" - auxInfoType: %s", b.AuxInfoType)
+		bd.writef(" - auxInfoTypeParameter: %d", b.AuxInfoTypeParameter)
 	}
-	bd.write(" - defaultSampleInfoSize: %d", b.DefaultSampleInfoSize)
-	bd.write(" - sampleCount: %d", b.SampleCount)
+	bd.writef(" - defaultSampleInfoSize: %d", b.DefaultSampleInfoSize)
+	bd.writef(" - sampleCount: %d", b.SampleCount)
 	level := getInfoLevel(b, specificBoxLevels)
 	if level > 0 {
 		if b.DefaultSampleInfoSize == 0 {
 			for i := uint32(0); i < b.SampleCount; i++ {
-				bd.write(" - sampleInfo[%d]=%d", i+1, b.SampleInfo[i])
+				bd.writef(" - sampleInfo[%d]=%d", i+1, b.SampleInfo[i])
 			}
 		}
 	}

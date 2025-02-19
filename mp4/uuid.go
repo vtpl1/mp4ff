@@ -8,7 +8,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // UUID - 16-byte KeyID or SystemID
@@ -87,14 +87,14 @@ type UUIDBox struct {
 }
 
 // UUID - Return UUID as formatted string
-func (u *UUIDBox) UUID() string {
-	return u.uuid.String()
+func (b *UUIDBox) UUID() string {
+	return b.uuid.String()
 }
 
 // UUID - Set UUID from string corresponding to 16 bytes.
 // The input should be a UUID-formatted hex string, plain hex or baset64 encoded.
-func (u *UUIDBox) SetUUID(uuid string) (err error) {
-	u.uuid, err = createUUID(uuid)
+func (b *UUIDBox) SetUUID(uuid string) (err error) {
+	b.uuid, err = createUUID(uuid)
 	return err
 }
 
@@ -322,16 +322,16 @@ func (t *TfrfData) encode(sw bits.SliceWriter) error {
 // Info - box-specific info
 func (b *UUIDBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - uuid: %s", b.uuid)
-	bd.write(" - subType: %s", b.SubType())
+	bd.writef(" - uuid: %s", b.uuid)
+	bd.writef(" - subType: %s", b.SubType())
 	level := getInfoLevel(b, specificBoxLevels)
 	if level > 0 {
 		switch b.SubType() {
 		case "tfxd":
-			bd.write(" - absTime=%d absDur=%d", b.Tfxd.FragmentAbsoluteTime, b.Tfxd.FragmentAbsoluteDuration)
+			bd.writef(" - absTime=%d absDur=%d", b.Tfxd.FragmentAbsoluteTime, b.Tfxd.FragmentAbsoluteDuration)
 		case "tfrf":
 			for i := 0; i < int(b.Tfrf.FragmentCount); i++ {
-				bd.write(" - [%d]: absTime=%d absDur=%d", i+1, b.Tfrf.FragmentAbsoluteTimes[i], b.Tfrf.FragmentAbsoluteDurations[i])
+				bd.writef(" - [%d]: absTime=%d absDur=%d", i+1, b.Tfrf.FragmentAbsoluteTimes[i], b.Tfrf.FragmentAbsoluteDurations[i])
 			}
 		case "senc":
 			err := b.Senc.Info(w, specificBoxLevels, indent+"    ", indentStep)
@@ -339,7 +339,7 @@ func (b *UUIDBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 				return fmt.Errorf("piff senc: %w", err)
 			}
 		default:
-			bd.write(" - payload: %s", hex.EncodeToString(b.UnknownPayload))
+			bd.writef(" - payload: %s", hex.EncodeToString(b.UnknownPayload))
 		}
 	}
 	return bd.err

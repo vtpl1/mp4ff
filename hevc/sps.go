@@ -2,11 +2,12 @@ package hevc
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/avc"
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SPS - HEVC SPS parameters
@@ -306,7 +307,6 @@ type SPSSccExtension struct {
 
 // ParseSPSNALUnit parses SPS NAL unit starting with NAL unit header
 func ParseSPSNALUnit(data []byte) (*SPS, error) {
-
 	sps := &SPS{}
 
 	rd := bytes.NewReader(data)
@@ -473,7 +473,7 @@ func ParseSPSNALUnit(data []byte) (*SPS, error) {
 		return nil, r.AccError()
 	}
 	_ = r.Read(1)
-	if r.AccError() != io.EOF {
+	if !errors.Is(r.AccError(), io.EOF) {
 		return nil, fmt.Errorf("not at end after reading rbsp_trailing_bits")
 	}
 
@@ -497,7 +497,7 @@ func (s *SPS) ImageSize() (width, height uint32) {
 
 // parseVUI - parse VUI (Visual Usability Information)
 // if parseVUIBeyondAspectRatio is false, stop after AspectRatio has been parsed
-func parseVUI(r *bits.EBSPReader, MaxSubLayersMinus1 byte) *VUIParameters {
+func parseVUI(r *bits.EBSPReader, maxSubLayersMinus1 byte) *VUIParameters {
 	vui := &VUIParameters{}
 	aspectRatioInfoPresentFlag := r.ReadFlag()
 	if aspectRatioInfoPresentFlag {
@@ -553,7 +553,7 @@ func parseVUI(r *bits.EBSPReader, MaxSubLayersMinus1 byte) *VUIParameters {
 		}
 		vui.HrdParametersPresentFlag = r.ReadFlag()
 		if vui.HrdParametersPresentFlag {
-			vui.HrdParameters = parseHrdParameters(r, true, MaxSubLayersMinus1)
+			vui.HrdParameters = parseHrdParameters(r, true, maxSubLayersMinus1)
 		}
 	}
 	vui.BitstreamRestrictionFlag = r.ReadFlag()
@@ -565,7 +565,8 @@ func parseVUI(r *bits.EBSPReader, MaxSubLayersMinus1 byte) *VUIParameters {
 }
 
 func parseHrdParameters(r *bits.EBSPReader,
-	commonInfPresentFlag bool, maxNumSubLayersMinus1 byte) *HrdParameters {
+	commonInfPresentFlag bool, maxNumSubLayersMinus1 byte,
+) *HrdParameters {
 	hp := &HrdParameters{}
 	if commonInfPresentFlag {
 		hp.NalHrdParametersPresentFlag = r.ReadFlag()
@@ -623,7 +624,8 @@ func parseHrdParameters(r *bits.EBSPReader,
 }
 
 func parseSubLayerHrdParameters(r *bits.EBSPReader,
-	cpbCntMinus1 uint8, subPicHrdParamsPresentFlag bool) []SubLayerHrdParameters {
+	cpbCntMinus1 uint8, subPicHrdParamsPresentFlag bool,
+) []SubLayerHrdParameters {
 	slhp := make([]SubLayerHrdParameters, cpbCntMinus1+1)
 	for i := uint8(0); i <= cpbCntMinus1; i++ {
 		// values shall be in the range of 0 to 2^32 − 2, inclusive
@@ -701,7 +703,7 @@ func parseShortTermRPS(r *bits.EBSPReader, idx, numSTRefPicSets byte, sps *SPS) 
 		}
 		/* deltaRpsSign */ _ = r.Read(1)
 		/* absDeltaRpsMinus1*/ _ = r.ReadExpGolomb()
-		//deltaRps := (1 - (deltaRpsSign << 1)) * (absDeltaRpsMinus1 + 1)
+		// deltaRps := (1 - (deltaRpsSign << 1)) * (absDeltaRpsMinus1 + 1)
 		refIdx := idx - deltaIdx
 		numDeltaPocs := sps.ShortTermRefPicSets[refIdx].NumDeltaPocs
 		for j := byte(0); j <= numDeltaPocs; j++ {
@@ -793,8 +795,9 @@ func parseSPS3dExtension(r *bits.EBSPReader) *SPS3dExtension {
 	return ext
 }
 
-func parseSPSSccExtension(r *bits.EBSPReader, ChromaFormatIDC,
-	BitDepthLumaMinus8, BitDepthChromaMinus8 byte) *SPSSccExtension {
+func parseSPSSccExtension(r *bits.EBSPReader, chromaFormatIDC,
+	bitDepthLumaMinus8, bitDepthChromaMinus8 byte,
+) *SPSSccExtension {
 	ext := &SPSSccExtension{}
 	ext.CurrPicRefEnabledFlag = r.ReadFlag()
 	ext.PaletteModeEnabledFlag = r.ReadFlag()
@@ -805,20 +808,19 @@ func parseSPSSccExtension(r *bits.EBSPReader, ChromaFormatIDC,
 		if ext.PalettePredictorInitializersPresentFlag {
 			ext.NumPalettePredictorInitializersMinus1 = r.ReadExpGolomb()
 			numComps := 3
-			if ChromaFormatIDC == 0 {
+			if chromaFormatIDC == 0 {
 				numComps = 1
 			}
 			ext.PalettePredictorInitializer = make([][]uint, numComps)
 			// Fill luma
 			for i := uint(0); i <= ext.NumPalettePredictorInitializersMinus1; i++ {
-				ext.PalettePredictorInitializer[0] =
-					append(ext.PalettePredictorInitializer[0], r.Read(int(BitDepthLumaMinus8+8)))
+				ext.PalettePredictorInitializer[0] = append(ext.PalettePredictorInitializer[0], r.Read(int(bitDepthLumaMinus8+8)))
 			}
 			// Fill chroma if any
 			for comp := 1; comp < numComps; comp++ {
 				for i := uint(0); i <= ext.NumPalettePredictorInitializersMinus1; i++ {
-					ext.PalettePredictorInitializer[comp] =
-						append(ext.PalettePredictorInitializer[comp], r.Read(int(BitDepthChromaMinus8+8)))
+					ext.PalettePredictorInitializer[comp] = append(ext.PalettePredictorInitializer[comp],
+						r.Read(int(bitDepthChromaMinus8+8)))
 				}
 			}
 		}

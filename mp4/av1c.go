@@ -4,8 +4,8 @@ import (
 	"encoding/hex"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/av1"
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/av1"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 type Av1CBox struct {
@@ -62,18 +62,18 @@ func (b *Av1CBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - box-specific Info
 func (b *Av1CBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - SeqProfile: %d", b.SeqProfile)
-	bd.write(" - SeqLevelIdx0: %d", b.SeqLevelIdx0)
-	bd.write(" - SeqTier0: %d", b.SeqTier0)
-	bd.write(" - HighBitdepth: %d", b.HighBitdepth)
-	bd.write(" - TwelveBit: %d", b.TwelveBit)
-	bd.write(" - MonoChrome: %d", b.MonoChrome)
-	bd.write(" - ChromaSubsamplingX: %d", b.ChromaSubsamplingX)
-	bd.write(" - ChromaSubsamplingY: %d", b.ChromaSubsamplingY)
-	bd.write(" - ChromaSamplePosition: %d", b.ChromaSamplePosition)
+	bd.writef(" - SeqProfile: %d", b.SeqProfile)
+	bd.writef(" - SeqLevelIdx0: %d", b.SeqLevelIdx0)
+	bd.writef(" - SeqTier0: %d", b.SeqTier0)
+	bd.writef(" - HighBitdepth: %d", b.HighBitdepth)
+	bd.writef(" - TwelveBit: %d", b.TwelveBit)
+	bd.writef(" - MonoChrome: %d", b.MonoChrome)
+	bd.writef(" - ChromaSubsamplingX: %d", b.ChromaSubsamplingX)
+	bd.writef(" - ChromaSubsamplingY: %d", b.ChromaSubsamplingY)
+	bd.writef(" - ChromaSamplePosition: %d", b.ChromaSamplePosition)
 	if b.InitialPresentationDelayPresent == 1 {
-		bd.write(" - InitialPresentationDelayMinusOne: %d", b.InitialPresentationDelayMinusOne)
+		bd.writef(" - InitialPresentationDelayMinusOne: %d", b.InitialPresentationDelayMinusOne)
 	}
-	bd.write("   - ConfigOBUs: %s", hex.EncodeToString(b.ConfigOBUs))
+	bd.writef("   - ConfigOBUs: %s", hex.EncodeToString(b.ConfigOBUs))
 	return bd.err
 }

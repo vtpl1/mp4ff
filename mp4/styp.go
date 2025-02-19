@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // StypBox - Segment Type Box (styp)
@@ -110,10 +110,10 @@ func (b *StypBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write specific box info to w
 func (b *StypBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - majorBrand: %s", b.MajorBrand())
-	bd.write(" - minorVersion: %d", b.MinorVersion())
+	bd.writef(" - majorBrand: %s", b.MajorBrand())
+	bd.writef(" - minorVersion: %d", b.MinorVersion())
 	for _, cb := range b.CompatibleBrands() {
-		bd.write(" - compatibleBrand: %s", cb)
+		bd.writef(" - compatibleBrand: %s", cb)
 	}
 	return bd.err
 }

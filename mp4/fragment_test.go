@@ -5,7 +5,6 @@ import (
 )
 
 func TestCreateMultiTrackFragment(t *testing.T) {
-
 	trackIDs := []uint32{1, 2, 3}
 	mFrag, err := CreateMultiTrackFragment(1, trackIDs)
 	if err != nil {

@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 const (
@@ -128,18 +128,18 @@ func (c *ColrBox) EncodeSW(sw bits.SliceWriter) error {
 // Info writes box information
 func (c *ColrBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
 	bd := newInfoDumper(w, indent, c, -1, 0)
-	bd.write(" - colorType: %s", c.ColorType)
+	bd.writef(" - colorType: %s", c.ColorType)
 	switch c.ColorType {
 	case onScreenColors:
-		bd.write(" - ColorPrimaries: %d, TransferCharacteristics: %d, MatrixCoefficients: %d, FullRange: %t",
+		bd.writef(" - ColorPrimaries: %d, TransferCharacteristics: %d, MatrixCoefficients: %d, FullRange: %t",
 			c.ColorPrimaries, c.TransferCharacteristics, c.MatrixCoefficients, c.FullRangeFlag)
 	case restrictedICCType, unrestrictedICCType:
-		bd.write(" - ICCProfile: %s", hex.EncodeToString(c.ICCProfile))
+		bd.writef(" - ICCProfile: %s", hex.EncodeToString(c.ICCProfile))
 	case quickTimeColorParameters:
-		bd.write(" - ColorPrimaries: %d, TransferCharacteristics: %d, MatrixCoefficients: %d",
+		bd.writef(" - ColorPrimaries: %d, TransferCharacteristics: %d, MatrixCoefficients: %d",
 			c.ColorPrimaries, c.TransferCharacteristics, c.MatrixCoefficients)
 	default:
-		bd.write(" - Payload: %s", hex.EncodeToString(c.UnknownPayload))
+		bd.writef(" - Payload: %s", hex.EncodeToString(c.UnknownPayload))
 	}
 	return bd.err
 }

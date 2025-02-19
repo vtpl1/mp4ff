@@ -7,7 +7,6 @@ import (
 )
 
 func TestHdlr(t *testing.T) {
-
 	cases := []struct {
 		mediaType     string
 		handlerType   string

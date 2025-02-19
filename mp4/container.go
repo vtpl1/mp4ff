@@ -1,10 +1,11 @@
 package mp4
 
 import (
+	"errors"
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // ContainerBox is interface for ContainerBoxes
@@ -100,7 +101,7 @@ func DecodeContainerChildren(hdr BoxHeader, startPos, endPos uint64, r io.Reader
 	pos := startPos
 	for {
 		child, err := DecodeBox(pos, r)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			return children, nil
 		}
 		if err != nil {

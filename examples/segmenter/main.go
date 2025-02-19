@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 const (
@@ -47,7 +47,8 @@ func parseOptions(fs *flag.FlagSet, args []string) (*options, error) {
 
 	opts := options{}
 
-	fs.Uint64Var(&opts.chunkDurMS, "d", 0, "Required: segment duration (milliseconds). The segments will start at syncSamples with decoded time >= n*segDur")
+	fs.Uint64Var(&opts.chunkDurMS, "d", 0,
+		"Required: segment duration (milliseconds). The segments will start at syncSamples with decoded time >= n*segDur")
 	fs.BoolVar(&opts.multipex, "m", false, "Output multiplexed segments")
 	fs.BoolVar(&opts.lazy, "lazy", false, "Read/write mdat lazily")
 	fs.BoolVar(&opts.verbose, "v", false, "Verbose output")
@@ -66,7 +67,6 @@ func main() {
 func run(args []string, outDir string) error {
 	fs := flag.NewFlagSet(appName, flag.ContinueOnError)
 	o, err := parseOptions(fs, args)
-
 	if err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil

@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // SttsBox -  Decoding Time to Sample Box (stts - mandatory)
@@ -167,12 +167,12 @@ func (b *SttsBox) EncodeSW(sw bits.SliceWriter) error {
 func (b *SttsBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
 	if len(b.SampleCount) > 0 {
-		bd.write(" - sampleCount: %d", len(b.SampleCount))
+		bd.writef(" - sampleCount: %d", len(b.SampleCount))
 	}
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i := range b.SampleCount {
-			bd.write(" - entry[%d]: sampleCount=%d sampleDelta=%d",
+			bd.writef(" - entry[%d]: sampleCount=%d sampleDelta=%d",
 				i+1, b.SampleCount[i], b.SampleTimeDelta[i])
 		}
 	}

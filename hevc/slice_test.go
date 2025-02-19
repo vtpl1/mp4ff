@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/avc"
 
 	"github.com/go-test/deep"
 )
@@ -22,7 +22,8 @@ func TestParseSliceHeader(t *testing.T) {
 			OffsetLenMinus1:                   3,
 			CollocatedFromL0Flag:              true,
 			EntryPointOffsetMinus1:            []uint32{12},
-			Size:                              6},
+			Size:                              6,
+		},
 		NALU_TRAIL_N: {
 			SliceType:                  SLICE_B,
 			FirstSliceSegmentInPicFlag: true,

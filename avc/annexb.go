@@ -1,6 +1,6 @@
 package avc
 
-//Functions to handle AnnexB Byte stream format"
+// Functions to handle AnnexB Byte stream format"
 
 import (
 	"encoding/binary"
@@ -60,7 +60,6 @@ func ConvertByteStreamToNaluSample(stream []byte) []byte {
 	if minStartCodeLength == 4 {
 		// In-place replacement of startcodes for length fields
 		for i, s := range scNalus {
-
 			if i+1 < len(scNalus) {
 				naluLength = scNalus[i+1].startPos - s.startPos - 4
 			} else {

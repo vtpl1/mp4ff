@@ -48,21 +48,21 @@ func newInfoDumper(w io.Writer, indent string, b boxLike, version int, flags uin
 	utf8BoxType := fixStartingCopyrightChar(b.Type())
 	switch {
 	case version >= 0:
-		bd.write("[%s] size=%d version=%d flags=%06x", utf8BoxType, b.Size(), version, flags)
+		bd.writef("[%s] size=%d version=%d flags=%06x", utf8BoxType, b.Size(), version, flags)
 	case version == infoVersionNone:
-		bd.write("[%s] size=%d", utf8BoxType, b.Size())
+		bd.writef("[%s] size=%d", utf8BoxType, b.Size())
 	case version == infoVersionGroupingType:
-		bd.write("GroupingType %q size=%d", utf8BoxType, b.Size())
+		bd.writef("GroupingType %q size=%d", utf8BoxType, b.Size())
 	case version == infoVersionDescriptor:
-		bd.write("Descriptor %q size=2+%d", b.Type(), b.Size())
+		bd.writef("Descriptor %q size=2+%d", b.Type(), b.Size())
 	default:
-		bd.write("Unknown version %d", version)
+		bd.writef("Unknown version %d", version)
 	}
 	return &bd
 }
 
-// write - write formated objecds if level <= bd.level
-func (b *infoDumper) write(format string, p ...interface{}) {
+// writef - writef formated objecds if level <= bd.level
+func (b *infoDumper) writef(format string, p ...interface{}) {
 	if b.err != nil {
 		return
 	}

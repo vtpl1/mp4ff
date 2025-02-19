@@ -9,8 +9,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/Eyevinn/mp4ff/avc"
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 const (
@@ -38,19 +38,22 @@ func main() {
 
 	tracks, err := getTracksAndSamplesFromMultiTrackFragmentedFile(ifd)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 
 	err = writeTrackInfo(os.Stdout, tracks)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 
 	for _, track := range tracks {
 		if track.hdlrType == "clcp" {
 			err = writeScenaristFile(os.Stdout, track)
 			if err != nil {
-				log.Fatalln(err)
+				log.Println(err)
+				return
 			}
 		}
 	}
@@ -59,7 +62,8 @@ func main() {
 func getTracksAndSamplesFromMultiTrackFragmentedFile(ifd io.Reader) (tracks []*Track, err error) {
 	parsedMp4, err := mp4.DecodeFile(ifd)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+		return
 	}
 	traks := parsedMp4.Moov.Traks
 

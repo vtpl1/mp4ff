@@ -9,11 +9,11 @@ import (
 	"io"
 	"os"
 
-	"github.com/Eyevinn/mp4ff/avc"
-	"github.com/Eyevinn/mp4ff/hevc"
-	"github.com/Eyevinn/mp4ff/internal"
-	"github.com/Eyevinn/mp4ff/mp4"
-	"github.com/Eyevinn/mp4ff/sei"
+	"github.com/vtpl1/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/hevc"
+	"github.com/vtpl1/mp4ff/internal"
+	"github.com/vtpl1/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/sei"
 )
 
 const (
@@ -72,7 +72,6 @@ func main() {
 func run(args []string, stdout io.Writer) error {
 	fs := flag.NewFlagSet(appName, flag.ContinueOnError)
 	o, err := parseOptions(fs, args)
-
 	if err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil
@@ -170,7 +169,7 @@ func parseProgressiveMp4(w io.Writer, f *mp4.File, maxNrSamples int, codec strin
 		if stbl.Stsd.AvcX.AvcC != nil {
 			avcSPS, err = avc.ParseSPSNALUnit(stbl.Stsd.AvcX.AvcC.SPSnalus[0], true)
 			if err != nil {
-				return fmt.Errorf("error parsing SPS: %s", err)
+				return fmt.Errorf("error parsing SPS: %w", err)
 			}
 		}
 	} else if stbl.Stsd.HvcX != nil {
@@ -212,7 +211,7 @@ func parseProgressiveMp4(w io.Writer, f *mp4.File, maxNrSamples int, codec strin
 					if avc.GetNaluType(nalu[0]) == avc.NALU_SPS {
 						avcSPS, err = avc.ParseSPSNALUnit(nalu, true)
 						if err != nil {
-							return fmt.Errorf("error parsing SPS: %s", err)
+							return fmt.Errorf("error parsing SPS: %w", err)
 						}
 					}
 				}
@@ -270,7 +269,7 @@ func parseFragmentedMp4(w io.Writer, f *mp4.File, maxNrSamples int, codec string
 			if stbl.Stsd.AvcX.AvcC != nil {
 				avcSPS, err = avc.ParseSPSNALUnit(stbl.Stsd.AvcX.AvcC.SPSnalus[0], true)
 				if err != nil {
-					return fmt.Errorf("error parsing SPS: %s", err)
+					return fmt.Errorf("error parsing SPS: %w", err)
 				}
 			}
 		} else if stbl.Stsd.HvcX != nil {
@@ -328,7 +327,7 @@ func printAVCNalus(w io.Writer, avcSPS *avc.SPS, nalus [][]byte, nr int, pts uin
 		case avc.NALU_SPS:
 			avcSPS, err = avc.ParseSPSNALUnit(nalu, true)
 			if err != nil {
-				return fmt.Errorf("error parsing SPS: %s", err)
+				return fmt.Errorf("error parsing SPS: %w", err)
 			}
 		case avc.NALU_NON_IDR, avc.NALU_IDR:
 			sliceType, err := avc.GetSliceTypeFromNALU(nalu)
@@ -426,7 +425,7 @@ func printSEINALus(w io.Writer, seiNALUs [][]byte, codec string, seiLevel int, a
 			seiDatas, err := sei.ExtractSEIData(buf)
 			if err != nil {
 				fmt.Fprintf(w, "  SEI: Got error %q\n", err)
-				if err != sei.ErrRbspTrailingBitsMissing {
+				if !errors.Is(err, sei.ErrRbspTrailingBitsMissing) {
 					continue
 				}
 			}

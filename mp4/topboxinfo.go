@@ -1,6 +1,7 @@
 package mp4
 
 import (
+	"errors"
 	"fmt"
 	"io"
 )
@@ -22,7 +23,7 @@ func GetTopBoxInfoList(rs io.ReadSeeker, stopBoxType string) ([]TopBoxInfo, erro
 
 	for {
 		h, err := DecodeHeader(rs)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {

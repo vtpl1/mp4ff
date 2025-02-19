@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // CdatBox - Closed Captioning Sample Data according to QuickTime spec:
@@ -67,6 +67,6 @@ func (b *CdatBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write specific box information
 func (b *CdatBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - data: %s", hex.EncodeToString(b.Data))
+	bd.writef(" - data: %s", hex.EncodeToString(b.Data))
 	return bd.err
 }

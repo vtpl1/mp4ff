@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/avc"
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/avc"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // AvcCBox - AVCConfigurationBox (ISO/IEC 14496-15 5.4.2.1.2 and 5.3.3.1.2)
@@ -80,14 +80,14 @@ func (a *AvcCBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (a *AvcCBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, a, -1, 0)
-	bd.write(" - AVCProfileIndication: %d", a.AVCProfileIndication)
-	bd.write(" - profileCompatibility: %02x", a.ProfileCompatibility)
-	bd.write(" - AVCLevelIndication: %d", a.AVCLevelIndication)
+	bd.writef(" - AVCProfileIndication: %d", a.AVCProfileIndication)
+	bd.writef(" - profileCompatibility: %02x", a.ProfileCompatibility)
+	bd.writef(" - AVCLevelIndication: %d", a.AVCLevelIndication)
 	for _, sps := range a.SPSnalus {
-		bd.write(" - SPS: %s", hex.EncodeToString(sps))
+		bd.writef(" - SPS: %s", hex.EncodeToString(sps))
 	}
 	for _, pps := range a.PPSnalus {
-		bd.write(" - PPS: %s", hex.EncodeToString(pps))
+		bd.writef(" - PPS: %s", hex.EncodeToString(pps))
 	}
 	return bd.err
 }

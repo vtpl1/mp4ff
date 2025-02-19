@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TfraBox - Track Fragment Random Access Box (tfra)
@@ -156,7 +156,6 @@ func (b *TfraBox) EncodeSW(sw bits.SliceWriter) error {
 	sw.WriteUint32(sizesBlock)
 	sw.WriteUint32(uint32(len(b.Entries)))
 	for _, e := range b.Entries {
-
 		if b.Version == 1 {
 			sw.WriteUint64(e.Time)
 			sw.WriteUint64(e.MoofOffset)
@@ -201,12 +200,12 @@ func (b *TfraBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - box-specific info. More for level 1
 func (b *TfraBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - trackID: %d", b.TrackID)
-	bd.write(" - nrEntries: %d", len(b.Entries))
+	bd.writef(" - trackID: %d", b.TrackID)
+	bd.writef(" - nrEntries: %d", len(b.Entries))
 	level := getInfoLevel(b, specificBoxLevels)
 	if level >= 1 {
 		for i, e := range b.Entries {
-			bd.write(" - %d: time=%d moofOffset=%d trafNr=%d trunNr=%d sampleDelta=%d",
+			bd.writef(" - %d: time=%d moofOffset=%d trafNr=%d trunNr=%d sampleDelta=%d",
 				i+1, e.Time, e.MoofOffset, e.TrafNumber, e.TrunNumber, e.SampleNumber)
 		}
 	}

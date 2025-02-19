@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // ADTSHeader - data for an unencrypted ADTS Header with one AAC frame.
@@ -45,7 +45,7 @@ func (a ADTSHeader) Encode() []byte {
 	buf := bytes.Buffer{}
 	bw := bits.NewWriter(&buf)
 	bw.Write(0xfff, 12)                         // sync word
-	bw.Write(0x01, 4)                           //ID=0 for MPEG-4 + layer + protection absent
+	bw.Write(0x01, 4)                           // ID=0 for MPEG-4 + layer + protection absent
 	bw.Write(uint(a.ObjectType)-1, 2)           // profile
 	bw.Write(uint(a.SamplingFrequencyIndex), 4) // sampling frequency index (3 = 48KHz)
 	bw.Write(0, 1)                              // private

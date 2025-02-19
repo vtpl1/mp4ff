@@ -8,7 +8,6 @@ import (
 )
 
 func TestStsc(t *testing.T) {
-
 	t.Run("test extract of chunk information", func(t *testing.T) {
 		// The following stsc data means
 		// 2 chunks with 256 samples followed
@@ -136,6 +135,7 @@ func TestStscContainingChunks(t *testing.T) {
 		}
 	}
 }
+
 func TestGetChunk(t *testing.T) {
 	stsc := &StscBox{}
 	err := stsc.AddEntry(1, 256, 1)

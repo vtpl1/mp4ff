@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/mp4"
+	"github.com/vtpl1/mp4ff/mp4"
 )
 
 func TestSttsCrop(t *testing.T) {

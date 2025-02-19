@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // TrepBox - Track Extension Properties Box (trep)
@@ -40,7 +40,7 @@ func DecodeTrepSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 		Flags:   versionAndFlags & flagsMask,
 		TrackID: trackID,
 	}
-	//Note higher startPos below since not simple container
+	// Note higher startPos below since not simple container
 	children, err := DecodeContainerChildrenSR(hdr, startPos+16, startPos+hdr.Size, sr)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (b *TrepBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 	if bd.err != nil {
 		return bd.err
 	}
-	bd.write(" - trackID: %d", b.TrackID)
+	bd.writef(" - trackID: %d", b.TrackID)
 	var err error
 	for _, c := range b.Children {
 		err = c.Info(w, specificBoxLevels, indent+indentStep, indentStep)

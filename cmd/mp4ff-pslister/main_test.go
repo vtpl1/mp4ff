@@ -21,8 +21,10 @@ func TestCommandLines(t *testing.T) {
 		expectedErr bool
 		goldenOut   string
 	}{
-		{desc: "h264 segment without PS", args: []string{appName, "-v", "-i", "../../mp4/testdata/1.m4s"},
-			expectedErr: true},
+		{
+			desc: "h264 segment without PS", args: []string{appName, "-v", "-i", "../../mp4/testdata/1.m4s"},
+			expectedErr: true,
+		},
 		{desc: "help", args: []string{appName, "-h"}, expectedErr: false},
 		{desc: "version", args: []string{appName, "-version"}, expectedErr: false},
 		{desc: "no args", args: []string{appName}, expectedErr: true},
@@ -30,22 +32,38 @@ func TestCommandLines(t *testing.T) {
 		{desc: "non-existing file", args: []string{appName, "-i", "infile.mp4"}, expectedErr: true},
 		{desc: "bad file - no ps", args: []string{appName, "-i", "main.go"}, expectedErr: true},
 		{desc: "segment wo ps", args: []string{appName, "-i", "../../mp4/testdata/1.m4s"}, expectedErr: true},
-		{desc: "h264mp4", args: []string{appName, "-i", "../../mp4/testdata/init.mp4"},
-			goldenOut: "testdata/golden_h264mp4.txt", expectedErr: false},
-		{desc: "h264mp4 verbose", args: []string{appName, "-v", "-i", "../../mp4/testdata/init.mp4"},
-			goldenOut: "testdata/golden_h264mp4_verbose.txt", expectedErr: false},
-		{desc: "h264 sps+pps", args: []string{appName, "-sps", avc_sps, "-pps", avc_pps},
-			goldenOut: "testdata/golden_avc_sps_pss.txt", expectedErr: false},
-		{desc: "h264 annexb", args: []string{appName, "-i", "testdata/4pics.264"},
-			goldenOut: "testdata/golden_annexb_h264.txt", expectedErr: false},
-		{desc: "hevcmp4", args: []string{appName, "-i", "../../mp4/testdata/ed_hevc.mp4"},
-			goldenOut: "testdata/golden_hevc_mp4.txt", expectedErr: false},
-		{desc: "hevcmp4 verbose", args: []string{appName, "-v", "-i", "../../mp4/testdata/ed_hevc.mp4"},
-			goldenOut: "testdata/golden_hevc_mp4_verbose.txt", expectedErr: false},
-		{desc: "hevc vps+sps+pps", args: []string{appName, "-vps", hevc_vps, "-sps", hevc_sps, "-pps", hevc_pps},
-			goldenOut: "testdata/golden_hevc_vps_sps_pps.txt", expectedErr: false},
-		{desc: "hevc annexb", args: []string{appName, "-c", "hevc", "-i", "testdata/hevc.265"},
-			goldenOut: "testdata/golden_hevc_265.txt", expectedErr: false},
+		{
+			desc: "h264mp4", args: []string{appName, "-i", "../../mp4/testdata/init.mp4"},
+			goldenOut: "testdata/golden_h264mp4.txt", expectedErr: false,
+		},
+		{
+			desc: "h264mp4 verbose", args: []string{appName, "-v", "-i", "../../mp4/testdata/init.mp4"},
+			goldenOut: "testdata/golden_h264mp4_verbose.txt", expectedErr: false,
+		},
+		{
+			desc: "h264 sps+pps", args: []string{appName, "-sps", avc_sps, "-pps", avc_pps},
+			goldenOut: "testdata/golden_avc_sps_pss.txt", expectedErr: false,
+		},
+		{
+			desc: "h264 annexb", args: []string{appName, "-i", "testdata/4pics.264"},
+			goldenOut: "testdata/golden_annexb_h264.txt", expectedErr: false,
+		},
+		{
+			desc: "hevcmp4", args: []string{appName, "-i", "../../mp4/testdata/ed_hevc.mp4"},
+			goldenOut: "testdata/golden_hevc_mp4.txt", expectedErr: false,
+		},
+		{
+			desc: "hevcmp4 verbose", args: []string{appName, "-v", "-i", "../../mp4/testdata/ed_hevc.mp4"},
+			goldenOut: "testdata/golden_hevc_mp4_verbose.txt", expectedErr: false,
+		},
+		{
+			desc: "hevc vps+sps+pps", args: []string{appName, "-vps", hevc_vps, "-sps", hevc_sps, "-pps", hevc_pps},
+			goldenOut: "testdata/golden_hevc_vps_sps_pps.txt", expectedErr: false,
+		},
+		{
+			desc: "hevc annexb", args: []string{appName, "-c", "hevc", "-i", "testdata/hevc.265"},
+			goldenOut: "testdata/golden_hevc_265.txt", expectedErr: false,
+		},
 	}
 	for _, c := range cases {
 		t.Run(c.desc, func(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/aac"
+	"github.com/vtpl1/mp4ff/aac"
 )
 
 func TestStsd(t *testing.T) {

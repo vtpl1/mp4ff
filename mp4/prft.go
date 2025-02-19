@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 const (
@@ -122,10 +122,10 @@ func (b *PrftBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *PrftBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - referenceTrackID: %d", b.ReferenceTrackID)
-	bd.write(" - type: %s", b.InterpretFlags())
-	bd.write(" - ntpTimestamp: %s (%d)", b.NTPTimestamp, b.NTPTimestamp)
-	bd.write(" - mediaTime: %d", b.MediaTime)
+	bd.writef(" - referenceTrackID: %d", b.ReferenceTrackID)
+	bd.writef(" - type: %s", b.InterpretFlags())
+	bd.writef(" - ntpTimestamp: %s (%d)", b.NTPTimestamp, b.NTPTimestamp)
+	bd.writef(" - mediaTime: %d", b.MediaTime)
 	return bd.err
 }
 

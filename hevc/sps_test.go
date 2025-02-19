@@ -380,11 +380,13 @@ func TestSPSParser3(t *testing.T) {
 
 // TestParseSPSWithNonZeroNumDeltaPocs checks that parsing succeeds (Github issue #279)
 func TestParseSPSWithNonZeroNumDeltaPocs(t *testing.T) {
-	data := []byte{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+	data := []byte{
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
 		3, 32, 0, 1, 0, 25, 64, 1, 12, 1, 255, 255, 1, 96, 0, 0, 3, 0, 0, 3, 0, 0, 3,
 		0, 0, 3, 0, 153, 53, 2, 64, 33, 0, 1, 0, 40, 66, 1, 1, 1, 96, 0, 0, 3, 0, 0, 3,
 		0, 0, 3, 0, 0, 3, 0, 153, 160, 2, 128, 128, 45, 22, 141, 82, 187, 34, 186, 173,
-		146, 169, 119, 53, 1, 1, 1, 0, 128, 34, 0, 1, 0, 8, 68, 1, 192, 36, 103, 192, 204, 100}
+		146, 169, 119, 53, 1, 1, 1, 0, 128, 34, 0, 1, 0, 8, 68, 1, 192, 36, 103, 192, 204, 100,
+	}
 	hevcd, err := DecodeHEVCDecConfRec(data)
 	if err != nil {
 		t.Error(err)
@@ -437,7 +439,7 @@ func TestSPSandPPS(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.desc, func(t *testing.T) {
-			//vpsBytes, _ := hex.DecodeString(c.vps)
+			// vpsBytes, _ := hex.DecodeString(c.vps)
 			spsBytes, _ := hex.DecodeString(c.sps)
 			ppsBytes, _ := hex.DecodeString(c.pps)
 
@@ -456,5 +458,4 @@ func TestSPSandPPS(t *testing.T) {
 			}
 		})
 	}
-
 }

@@ -9,9 +9,11 @@ import (
 	"github.com/go-test/deep"
 )
 
-const avcDecoderConfigRecord = "0164001effe100196764001eacd940a02ff9610000030001000003003c8f162d9601000568ebecb22cfdf8f800"
-const sps = "6764001eacd940a02ff9610000030001000003003c8f162d96"
-const pps = "68ebecb22c"
+const (
+	avcDecoderConfigRecord = "0164001effe100196764001eacd940a02ff9610000030001000003003c8f162d9601000568ebecb22cfdf8f800"
+	sps                    = "6764001eacd940a02ff9610000030001000003003c8f162d96"
+	pps                    = "68ebecb22c"
+)
 
 func TestAvcDecoderConfigRecord(t *testing.T) {
 	byteData, _ := hex.DecodeString(avcDecoderConfigRecord)

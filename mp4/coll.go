@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // CoLLBox - Content Light Level Box (coll)
@@ -96,7 +96,7 @@ func (b *CoLLBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *CoLLBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - maxCLL: %d", b.MaxCLL)
-	bd.write(" - maxFALL: %d", b.MaxFALL)
+	bd.writef(" - maxCLL: %d", b.MaxCLL)
+	bd.writef(" - maxFALL: %d", b.MaxFALL)
 	return bd.err
 }

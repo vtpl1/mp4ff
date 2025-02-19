@@ -3,7 +3,7 @@ package mp4
 import (
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // BtrtBox - BitRateBox - ISO/IEC 14496-12 Section 8.5.2.2
@@ -69,8 +69,8 @@ func (b *BtrtBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *BtrtBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.write(" - bufferSizeDB: %d", b.BufferSizeDB)
-	bd.write(" - maxBitrate: %d", b.MaxBitrate)
-	bd.write(" - AvgBitrate: %d", b.AvgBitrate)
+	bd.writef(" - bufferSizeDB: %d", b.BufferSizeDB)
+	bd.writef(" - maxBitrate: %d", b.MaxBitrate)
+	bd.writef(" - AvgBitrate: %d", b.AvgBitrate)
 	return bd.err
 }

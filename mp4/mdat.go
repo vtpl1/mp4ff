@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MdatBox - Media Data Box (mdat)
@@ -214,7 +214,6 @@ func (m *MdatBox) ReadData(start, size int64, rs io.ReadSeeker) ([]byte, error) 
 		return nil, fmt.Errorf("extraction of range from dataParts not yet implemented")
 	}
 	return m.Data[offsetInMdatData : offsetInMdatData+uint64(size)], nil
-
 }
 
 // CopyData - copy data range from mdat to w.

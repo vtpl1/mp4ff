@@ -6,14 +6,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Eyevinn/mp4ff/bits"
 	"github.com/go-test/deep"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
-const badSizeDescriptor = `031900010004134015000000000000000001f40005021190060102`
-const missingSLConfig = `031600010004114015000000000000000001d40005021190`
-const partOfEsdsProgIn = `03808080250002000480808017401500000000010d88000003f80580808005128856e500068080800102`
-const missingDecSpecificInfo = `0315000100040d4015000000000000000001d400060102`
+const (
+	badSizeDescriptor      = `031900010004134015000000000000000001f40005021190060102`
+	missingSLConfig        = `031600010004114015000000000000000001d40005021190`
+	partOfEsdsProgIn       = `03808080250002000480808017401500000000010d88000003f80580808005128856e500068080800102`
+	missingDecSpecificInfo = `0315000100040d4015000000000000000001d400060102`
+)
 
 func TestDecodeDescriptor(t *testing.T) {
 	cases := []struct {
@@ -59,7 +61,8 @@ func TestDescriptorInfo(t *testing.T) {
 		data       string
 		wantedInfo string
 	}{
-		{"badSizeDescriptor", badSizeDescriptor,
+		{
+			"badSizeDescriptor", badSizeDescriptor,
 			`Descriptor "tag=3 ES" size=2+25
 			- EsID: 1
 			- DependsOnEsID: 0
@@ -77,8 +80,10 @@ func TestDescriptorInfo(t *testing.T) {
 			  - UnknownData (2B): 0601
 			- Missing SLConfigDescriptor
 			- UnknownData (1B): 02
-			`},
-		{"missingSLConfig", missingSLConfig,
+			`,
+		},
+		{
+			"missingSLConfig", missingSLConfig,
 			`Descriptor "tag=3 ES" size=2+22
 		- EsID: 1
 		- DependsOnEsID: 0
@@ -94,8 +99,10 @@ func TestDescriptorInfo(t *testing.T) {
 		   Descriptor "tag=5 DecoderSpecificInfo" size=2+2
 			- DecConfig (2B): 1190
 		- Missing SLConfigDescriptor
-		`},
-		{"missingDecSpecificInfo", missingDecSpecificInfo,
+		`,
+		},
+		{
+			"missingDecSpecificInfo", missingDecSpecificInfo,
 			`Descriptor "tag=3 ES" size=2+21
 		- EsID: 1
 		- DependsOnEsID: 0
@@ -110,7 +117,8 @@ func TestDescriptorInfo(t *testing.T) {
 		  - AvgBitrate: 119808
 		 Descriptor "tag=6 SLConfig" size=2+1
 		  - ConfigValue: 2
-		`},
+		`,
+		},
 	}
 	for _, c := range cases {
 		t.Run(c.desc, func(t *testing.T) {

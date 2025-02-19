@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Eyevinn/mp4ff/bits"
+	"github.com/vtpl1/mp4ff/bits"
 )
 
 // MfroBox - Movie Fragment Random Access Offset Box (mfro)
@@ -90,6 +90,6 @@ func (b *MfroBox) EncodeSW(sw bits.SliceWriter) error {
 // Info - write box-specific information
 func (b *MfroBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.write(" - parentSize: %d", b.ParentSize)
+	bd.writef(" - parentSize: %d", b.ParentSize)
 	return bd.err
 }
