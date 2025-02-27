@@ -9,6 +9,13 @@
 		"ghcr.io/devcontainers/features/python:1": {
 			"toolsToInstall": "bump2version"
 		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"wmaurer.change-case"
+			]
+		}
 	}
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

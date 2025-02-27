@@ -49,7 +49,26 @@ clean:
 	rm -f out/*
 	rm -r examples-out/*
 
-install: all
+install:
+	@go install golang.org/x/vuln/cmd/govulncheck@latest
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	@go install mvdan.cc/gofumpt@latest
+	@go install golang.org/x/lint/golint@latest
+	@go install honnef.co/go/tools/cmd/staticcheck@latest
+	@go install github.com/client9/misspell/cmd/misspell@latest
+	@go install github.com/securego/gosec/v2/cmd/gosec@latest
+	@go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+	@go install gotest.tools/gotestsum@latest
+
+lintverify:
+	@golangci-lint config verify
+
+lint:
+	@golangci-lint run ./...
+	
+install1: all
 	cp out/* $(GOPATH)/bin/
 
 .PHONY: fmt

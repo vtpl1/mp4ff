@@ -10,47 +10,52 @@ linters-settings:
     # tab width in spaces. Default to 1.
     tab-width: 4
 
+  interfacebloat:
+    # The maximum number of methods allowed for an interface.
+    # Default: 10
+    max: 25
+
 linters:
   enable-all: true
   disable:
-    - cyclop
+    # - cyclop
     - depguard
-    - dupl
-    - dupword
-    - err113
-    - exhaustive
-    - exhaustruct
-    - forcetypeassert
-    - funlen
-    - gochecknoglobals
-    - gochecknoinits
-    - gocognit
-    - goconst
+    # - dupl
+    # - dupword
+    # # - err113
+    # - exhaustive
+    # - exhaustruct
+    # - forcetypeassert
+    # - funlen
+    # # - gochecknoglobals
+    # # - gochecknoinits
+    # - gocognit
+    # # - goconst
     # - gocritic
-    - gocyclo
-    - godot
-    - godox
-    - gosec
-    - interfacebloat  
-    - intrange
-    - ireturn
-    - maintidx
+    # # - gocyclo
+    # - godot
+    # - godox
+    # # - gosec
+    # # - interfacebloat  
+    # # - intrange
+    # # - ireturn
+    # - maintidx
     - misspell
     - mnd
-    - nakedret
-    - nestif
+    # # - nakedret
+    # # - nestif
     - nilerr
     - nlreturn
-    - nonamedreturns  
-    - perfsprint
-    - prealloc
-    - revive
-    - tagliatelle
+    # # - nonamedreturns  
+    # # - perfsprint
+    # # - prealloc
+    # # - revive
+    # # - tagliatelle
     - tenv
-    - unconvert
-    - unparam
+    # # - unconvert
+    # # - unparam
     - varnamelen
-    - wastedassign
+    # # - wastedassign
     - wrapcheck
     - wsl
 
