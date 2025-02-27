@@ -107,17 +107,17 @@ func flagFrom(flags uint64, bitNr uint) bool {
 func parseProfileTierLevel(r *bits.EBSPReader, profilePresentFlag bool, maxNumSubLayersMinus1 byte) ProfileTierLevel {
 	ptl := ProfileTierLevel{}
 	if profilePresentFlag {
-		ptl.GeneralProfileSpace = byte(r.Read(2))
+		ptl.GeneralProfileSpace = byte(r.ReadBits(2))
 		ptl.GeneralTierFlag = r.ReadFlag()
-		ptl.GeneralProfileIDC = byte(r.Read(5))
-		ptl.GeneralProfileCompatibilityFlags = uint32(r.Read(32))
-		ptl.GeneralConstraintIndicatorFlags = uint64(r.Read(48))
+		ptl.GeneralProfileIDC = byte(r.ReadBits(5))
+		ptl.GeneralProfileCompatibilityFlags = uint32(r.ReadBits(32))
+		ptl.GeneralConstraintIndicatorFlags = uint64(r.ReadBits(48))
 		ptl.GeneralProgressiveSourceFlag = flagFrom(ptl.GeneralConstraintIndicatorFlags, 47)
 		ptl.GeneralInterlacedSourceFlag = flagFrom(ptl.GeneralConstraintIndicatorFlags, 46)
 		ptl.GeneralNonPackedConstraintFlag = flagFrom(ptl.GeneralConstraintIndicatorFlags, 45)
 		ptl.GeneralFrameOnlyConstraintFlag = flagFrom(ptl.GeneralConstraintIndicatorFlags, 44)
 	}
-	ptl.GeneralLevelIDC = byte(r.Read(8))
+	ptl.GeneralLevelIDC = byte(r.ReadBits(8))
 	if maxNumSubLayersMinus1 > 0 {
 		ptl.SubLayers = make([]SubLayer, maxNumSubLayersMinus1)
 		for i := byte(0); i < maxNumSubLayersMinus1; i++ {
@@ -126,22 +126,22 @@ func parseProfileTierLevel(r *bits.EBSPReader, profilePresentFlag bool, maxNumSu
 		}
 		if maxNumSubLayersMinus1 < 8 {
 			nrReservedZeroBits := 2 * (8 - int(maxNumSubLayersMinus1))
-			_ = r.Read(nrReservedZeroBits)
+			_ = r.ReadBits(nrReservedZeroBits)
 		}
 		for i := byte(0); i < maxNumSubLayersMinus1; i++ {
 			if ptl.SubLayers[i].ProfilePresentFlag {
-				ptl.SubLayers[i].ProfileSpace = byte(r.Read(2))
+				ptl.SubLayers[i].ProfileSpace = byte(r.ReadBits(2))
 				ptl.SubLayers[i].TierFlag = r.ReadFlag()
-				ptl.SubLayers[i].ProfileIDC = byte(r.Read(5))
-				ptl.SubLayers[i].ProfileCompatibilityFlags = uint32(r.Read(32))
-				ptl.SubLayers[i].ConstraintFlags = uint64(r.Read(48)) // Including 4 flags from ProgressiveSourceFlag and forward
+				ptl.SubLayers[i].ProfileIDC = byte(r.ReadBits(5))
+				ptl.SubLayers[i].ProfileCompatibilityFlags = uint32(r.ReadBits(32))
+				ptl.SubLayers[i].ConstraintFlags = uint64(r.ReadBits(48)) // Including 4 flags from ProgressiveSourceFlag and forward
 				ptl.SubLayers[i].ProgressiveSourceFlag = flagFrom(ptl.SubLayers[i].ConstraintFlags, 47)
 				ptl.SubLayers[i].InterlacedSourceFlag = flagFrom(ptl.SubLayers[i].ConstraintFlags, 46)
 				ptl.SubLayers[i].NonPackedConstraintFlag = flagFrom(ptl.SubLayers[i].ConstraintFlags, 45)
 				ptl.SubLayers[i].FrameOnlyConstraintFlag = flagFrom(ptl.SubLayers[i].ConstraintFlags, 44)
 			}
 			if ptl.SubLayers[i].LevelPresentFlag {
-				ptl.SubLayers[i].LayerIDC = byte(r.Read(8))
+				ptl.SubLayers[i].LayerIDC = byte(r.ReadBits(8))
 			}
 		}
 	}
@@ -313,13 +313,13 @@ func ParseSPSNALUnit(data []byte) (*SPS, error) {
 	r := bits.NewEBSPReader(rd)
 	// Note! First two bytes are NALU Header
 
-	naluHdrBits := r.Read(16)
+	naluHdrBits := r.ReadBits(16)
 	naluType := GetNaluType(byte(naluHdrBits >> 8))
 	if naluType != NALU_SPS {
 		return nil, fmt.Errorf("NALU type is %s not SPS", naluType)
 	}
-	sps.VpsID = byte(r.Read(4))
-	sps.MaxSubLayersMinus1 = byte(r.Read(3))
+	sps.VpsID = byte(r.ReadBits(4))
+	sps.MaxSubLayersMinus1 = byte(r.ReadBits(3))
 	sps.TemporalIDNestingFlag = r.ReadFlag()
 	sps.ProfileTierLevel = parseProfileTierLevel(r, true, sps.MaxSubLayersMinus1)
 	sps.SpsID = byte(r.ReadExpGolomb())
@@ -372,8 +372,8 @@ func ParseSPSNALUnit(data []byte) (*SPS, error) {
 	sps.SampleAdaptiveOffsetEnabledFlag = r.ReadFlag()
 	sps.PCMEnabledFlag = r.ReadFlag()
 	if sps.PCMEnabledFlag {
-		sps.PcmSampleBitDepthLumaMinus1 = byte(r.Read(4))
-		sps.PcmSampleBitDepthChromaMinus1 = byte(r.Read(4))
+		sps.PcmSampleBitDepthLumaMinus1 = byte(r.ReadBits(4))
+		sps.PcmSampleBitDepthChromaMinus1 = byte(r.ReadBits(4))
 		sps.Log2MinPcmLumaCodingBlockSize = uint16(r.ReadExpGolomb())
 		sps.Log2DiffMaxMinPcmLumaCodingBlockSize = uint16(r.ReadExpGolomb())
 		sps.PcmLoopFilterDisabledFlag = r.ReadFlag()
@@ -396,7 +396,7 @@ func ParseSPSNALUnit(data []byte) (*SPS, error) {
 			sps.LongTermRefPicSets = make([]LongTermRPS, sps.NumLongTermRefPics)
 			for i := uint8(0); i < sps.NumLongTermRefPics; i++ {
 				sps.LongTermRefPicSets[i] = LongTermRPS{
-					PocLsbLt:            uint16(r.Read(int(sps.Log2MaxPicOrderCntLsbMinus4 + 4))),
+					PocLsbLt:            uint16(r.ReadBits(int(sps.Log2MaxPicOrderCntLsbMinus4 + 4))),
 					UsedByCurrPicLtFlag: r.ReadFlag(),
 				}
 			}
@@ -419,7 +419,7 @@ func ParseSPSNALUnit(data []byte) (*SPS, error) {
 		sps.MultilayerExtensionFlag = r.ReadFlag()
 		sps.D3ExtensionFlag = r.ReadFlag()
 		sps.SccExtensionFlag = r.ReadFlag()
-		sps.Extension4bits = uint8(r.Read(4))
+		sps.Extension4bits = uint8(r.ReadBits(4))
 	}
 
 	if sps.RangeExtensionFlag {
@@ -472,7 +472,7 @@ func ParseSPSNALUnit(data []byte) (*SPS, error) {
 	if r.AccError() != nil {
 		return nil, r.AccError()
 	}
-	_ = r.Read(1)
+	_ = r.ReadBits(1)
 	if !errors.Is(r.AccError(), io.EOF) {
 		return nil, fmt.Errorf("not at end after reading rbsp_trailing_bits")
 	}
@@ -501,10 +501,10 @@ func parseVUI(r *bits.EBSPReader, maxSubLayersMinus1 byte) *VUIParameters {
 	vui := &VUIParameters{}
 	aspectRatioInfoPresentFlag := r.ReadFlag()
 	if aspectRatioInfoPresentFlag {
-		aspectRatioIDC := r.Read(8)
+		aspectRatioIDC := r.ReadBits(8)
 		if aspectRatioIDC == avc.ExtendedSAR {
-			vui.SampleAspectRatioWidth = r.Read(16)
-			vui.SampleAspectRatioHeight = r.Read(16)
+			vui.SampleAspectRatioWidth = r.ReadBits(16)
+			vui.SampleAspectRatioHeight = r.ReadBits(16)
 		} else {
 			var err error
 			vui.SampleAspectRatioWidth, vui.SampleAspectRatioHeight, err = avc.GetSARfromIDC(aspectRatioIDC)
@@ -519,13 +519,13 @@ func parseVUI(r *bits.EBSPReader, maxSubLayersMinus1 byte) *VUIParameters {
 	}
 	vui.VideoSignalTypePresentFlag = r.ReadFlag()
 	if vui.VideoSignalTypePresentFlag {
-		vui.VideoFormat = byte(r.Read(3))
+		vui.VideoFormat = byte(r.ReadBits(3))
 		vui.VideoFullRangeFlag = r.ReadFlag()
 		vui.ColourDescriptionFlag = r.ReadFlag()
 		if vui.ColourDescriptionFlag {
-			vui.ColourPrimaries = byte(r.Read(8))
-			vui.TransferCharacteristics = byte(r.Read(8))
-			vui.MatrixCoefficients = byte(r.Read(8))
+			vui.ColourPrimaries = byte(r.ReadBits(8))
+			vui.TransferCharacteristics = byte(r.ReadBits(8))
+			vui.MatrixCoefficients = byte(r.ReadBits(8))
 		}
 	}
 	vui.ChromaLocInfoPresentFlag = r.ReadFlag()
@@ -545,8 +545,8 @@ func parseVUI(r *bits.EBSPReader, maxSubLayersMinus1 byte) *VUIParameters {
 	}
 	vui.TimingInfoPresentFlag = r.ReadFlag()
 	if vui.TimingInfoPresentFlag {
-		vui.NumUnitsInTick = r.Read(32)
-		vui.TimeScale = r.Read(32)
+		vui.NumUnitsInTick = r.ReadBits(32)
+		vui.TimeScale = r.ReadBits(32)
 		vui.PocProportionalToTimingFlag = r.ReadFlag()
 		if vui.PocProportionalToTimingFlag {
 			vui.NumTicksPocDiffOneMinus1 = r.ReadExpGolomb()
@@ -574,19 +574,19 @@ func parseHrdParameters(r *bits.EBSPReader,
 		if hp.NalHrdParametersPresentFlag || hp.VclHrdParametersPresentFlag {
 			hp.SubPicHrdParamsPresentFlag = r.ReadFlag()
 			if hp.SubPicHrdParamsPresentFlag {
-				hp.TickDivisorMinus2 = uint8(r.Read(8))
-				hp.DuCpbRemovalDelayIncrementLengthMinus1 = uint8(r.Read(5))
+				hp.TickDivisorMinus2 = uint8(r.ReadBits(8))
+				hp.DuCpbRemovalDelayIncrementLengthMinus1 = uint8(r.ReadBits(5))
 				hp.SubPicCpbParamsInPicTimingSeiFlag = r.ReadFlag()
-				hp.DpbOutputDelayDuLengthMinus1 = uint8(r.Read(5))
+				hp.DpbOutputDelayDuLengthMinus1 = uint8(r.ReadBits(5))
 			}
-			hp.BitRateScale = uint8(r.Read(4))
-			hp.CpbSizeScale = uint8(r.Read(4))
+			hp.BitRateScale = uint8(r.ReadBits(4))
+			hp.CpbSizeScale = uint8(r.ReadBits(4))
 			if hp.SubPicHrdParamsPresentFlag {
-				hp.CpbSizeDuScale = uint8(r.Read(4))
+				hp.CpbSizeDuScale = uint8(r.ReadBits(4))
 			}
-			hp.InitialCpbRemovalDelayLengthMinus1 = uint8(r.Read(5))
-			hp.AuCpbRemovalDelayLengthMinus1 = uint8(r.Read(5))
-			hp.DpbOutputDelayLengthMinus1 = uint8(r.Read(5))
+			hp.InitialCpbRemovalDelayLengthMinus1 = uint8(r.ReadBits(5))
+			hp.AuCpbRemovalDelayLengthMinus1 = uint8(r.ReadBits(5))
+			hp.DpbOutputDelayLengthMinus1 = uint8(r.ReadBits(5))
 		}
 	}
 	hp.SubLayerHrd = make([]SubLayerHrd, maxNumSubLayersMinus1+1)
@@ -701,7 +701,7 @@ func parseShortTermRPS(r *bits.EBSPReader, idx, numSTRefPicSets byte, sps *SPS) 
 		if deltaIdx > idx {
 			r.SetError(fmt.Errorf("deltaIdx > idx in parseShortTermRPS"))
 		}
-		/* deltaRpsSign */ _ = r.Read(1)
+		/* deltaRpsSign */ _ = r.ReadBits(1)
 		/* absDeltaRpsMinus1*/ _ = r.ReadExpGolomb()
 		// deltaRps := (1 - (deltaRpsSign << 1)) * (absDeltaRpsMinus1 + 1)
 		refIdx := idx - deltaIdx
@@ -814,18 +814,18 @@ func parseSPSSccExtension(r *bits.EBSPReader, chromaFormatIDC,
 			ext.PalettePredictorInitializer = make([][]uint, numComps)
 			// Fill luma
 			for i := uint(0); i <= ext.NumPalettePredictorInitializersMinus1; i++ {
-				ext.PalettePredictorInitializer[0] = append(ext.PalettePredictorInitializer[0], r.Read(int(bitDepthLumaMinus8+8)))
+				ext.PalettePredictorInitializer[0] = append(ext.PalettePredictorInitializer[0], r.ReadBits(int(bitDepthLumaMinus8+8)))
 			}
 			// Fill chroma if any
 			for comp := 1; comp < numComps; comp++ {
 				for i := uint(0); i <= ext.NumPalettePredictorInitializersMinus1; i++ {
 					ext.PalettePredictorInitializer[comp] = append(ext.PalettePredictorInitializer[comp],
-						r.Read(int(bitDepthChromaMinus8+8)))
+						r.ReadBits(int(bitDepthChromaMinus8+8)))
 				}
 			}
 		}
 	}
-	ext.MotionVectorResolutionControlIdc = uint8(r.Read(2))
+	ext.MotionVectorResolutionControlIdc = uint8(r.ReadBits(2))
 	ext.IntraBoundaryFilteringDisabledFlag = r.ReadFlag()
 
 	return ext

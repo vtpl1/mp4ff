@@ -46,32 +46,32 @@ func DecodeClockTS(br *bits.Reader) ClockTS {
 	c.ClockTimeStampFlag = br.ReadFlag()
 	if c.ClockTimeStampFlag {
 		c.UnitsFieldBasedFlag = br.ReadFlag()
-		c.CountingType = byte(br.Read(5))
+		c.CountingType = byte(br.ReadBits(5))
 		c.FullTimeStampFlag = br.ReadFlag()
 		c.DiscontinuityFlag = br.ReadFlag()
 		c.CntDroppedFlag = br.ReadFlag()
-		c.NFrames = uint16(br.Read(9))
+		c.NFrames = uint16(br.ReadBits(9))
 		if c.FullTimeStampFlag {
-			c.Seconds = byte(br.Read(6))
-			c.Minutes = byte(br.Read(6))
-			c.Hours = byte(br.Read(5))
+			c.Seconds = byte(br.ReadBits(6))
+			c.Minutes = byte(br.ReadBits(6))
+			c.Hours = byte(br.ReadBits(5))
 		} else {
 			c.SecondsFlag = br.ReadFlag()
 			if c.SecondsFlag {
-				c.Seconds = byte(br.Read(6))
+				c.Seconds = byte(br.ReadBits(6))
 				c.MinutesFlag = br.ReadFlag()
 				if c.MinutesFlag {
-					c.Minutes = byte(br.Read(6))
+					c.Minutes = byte(br.ReadBits(6))
 					c.HoursFlag = br.ReadFlag()
 					if c.HoursFlag {
-						c.Hours = byte(br.Read(5))
+						c.Hours = byte(br.ReadBits(5))
 					}
 				}
 			}
 		}
-		c.TimeOffsetLength = byte(br.Read(5))
+		c.TimeOffsetLength = byte(br.ReadBits(5))
 		if c.TimeOffsetLength > 0 {
-			c.TimeOffsetValue = uint32(br.Read(int(c.TimeOffsetLength)))
+			c.TimeOffsetValue = uint32(br.ReadBits(int(c.TimeOffsetLength)))
 		}
 	}
 	return c
@@ -81,7 +81,7 @@ func DecodeClockTS(br *bits.Reader) ClockTS {
 func DecodeTimeCodeSEI(sd *SEIData) (SEIMessage, error) {
 	buf := bytes.NewBuffer(sd.Payload())
 	br := bits.NewReader(buf)
-	numClockTS := int(br.Read(2))
+	numClockTS := int(br.ReadBits(2))
 	tc := TimeCodeSEI{make([]ClockTS, 0, numClockTS)}
 	for i := 0; i < numClockTS; i++ {
 		c := DecodeClockTS(br)

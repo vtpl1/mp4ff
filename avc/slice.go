@@ -129,7 +129,7 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 	sh := SliceHeader{}
 	buf := bytes.NewBuffer(nalu)
 	r := bits.NewEBSPReader(buf)
-	nalHdr := r.Read(8)
+	nalHdr := r.ReadBits(8)
 	naluType := GetNaluType(byte(nalHdr))
 	switch naluType {
 	case 1, 2, 5, 19:
@@ -153,9 +153,9 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 		return nil, fmt.Errorf("sps ID %d unknown", spsID)
 	}
 	if sps.SeparateColourPlaneFlag {
-		sh.ColorPlaneID = uint32(r.Read(2))
+		sh.ColorPlaneID = uint32(r.ReadBits(2))
 	}
-	sh.FrameNum = uint32(r.Read(int(sps.Log2MaxFrameNumMinus4 + 4)))
+	sh.FrameNum = uint32(r.ReadBits(int(sps.Log2MaxFrameNumMinus4 + 4)))
 	if !sps.FrameMbsOnlyFlag {
 		sh.FieldPicFlag = r.ReadFlag()
 		if sh.FieldPicFlag {
@@ -166,7 +166,7 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 		sh.IDRPicID = uint32(r.ReadExpGolomb())
 	}
 	if sps.PicOrderCntType == 0 {
-		sh.PicOrderCntLsb = uint32(r.Read(int(sps.Log2MaxPicOrderCntLsbMinus4 + 4)))
+		sh.PicOrderCntLsb = uint32(r.ReadBits(int(sps.Log2MaxPicOrderCntLsbMinus4 + 4)))
 		if pps.BottomFieldPicOrderInFramePresentFlag && !sh.FieldPicFlag {
 			sh.DeltaPicOrderCntBottom = int32(r.ReadSignedGolomb())
 		}
@@ -352,7 +352,7 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 		picSizeInMapUnits := pps.PicSizeInMapUnitsMinus1 + 1
 		sliceGroupChangeRate := pps.SliceGroupChangeRateMinus1 + 1
 		nrBits := int(math.Ceil(math.Log2(float64(picSizeInMapUnits/sliceGroupChangeRate + 1))))
-		sh.SliceGroupChangeCycle = uint32(r.Read(nrBits))
+		sh.SliceGroupChangeCycle = uint32(r.ReadBits(nrBits))
 	}
 
 	// compute the size in bytes. The last byte may not be fully parsed

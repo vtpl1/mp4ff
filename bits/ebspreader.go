@@ -59,8 +59,8 @@ func (r *EBSPReader) NrBitsReadInCurrentByte() int {
 	return 8 - r.n
 }
 
-// Read reads n bits and respects and accumulates errors. If error, returns 0.
-func (r *EBSPReader) Read(n int) uint {
+// ReadBits reads n bits and respects and accumulates errors. If error, returns 0.
+func (r *EBSPReader) ReadBits(n int) uint {
 	if r.err != nil {
 		return 0
 	}
@@ -107,7 +107,7 @@ func (r *EBSPReader) ReadBytes(n int) []byte {
 	}
 	payload := make([]byte, n)
 	for i := 0; i < n; i++ {
-		b := byte(r.Read(8))
+		b := byte(r.ReadBits(8))
 		payload[i] = b
 	}
 	if r.err != nil {
@@ -118,7 +118,7 @@ func (r *EBSPReader) ReadBytes(n int) []byte {
 
 // ReadFlag reads 1 bit and translates a bool.
 func (r *EBSPReader) ReadFlag() bool {
-	return r.Read(1) == 1
+	return r.ReadBits(1) == 1
 }
 
 // ReadExpGolomb reads one unsigned exponential Golomb code.
@@ -129,7 +129,7 @@ func (r *EBSPReader) ReadExpGolomb() uint {
 	leadingZeroBits := 0
 
 	for {
-		b := r.Read(1)
+		b := r.ReadBits(1)
 		if r.err != nil {
 			return 0
 		}
@@ -141,7 +141,7 @@ func (r *EBSPReader) ReadExpGolomb() uint {
 
 	var res uint = (1 << leadingZeroBits) - 1
 
-	endBits := r.Read(leadingZeroBits)
+	endBits := r.ReadBits(leadingZeroBits)
 	if r.err != nil {
 		return 0
 	}
@@ -180,7 +180,7 @@ func (r *EBSPReader) MoreRbspData() (bool, error) {
 	// Find out if next position is the last 1
 	stateCopy := *r
 
-	firstBit := r.Read(1)
+	firstBit := r.ReadBits(1)
 	if r.err != nil {
 		return false, nil
 	}
@@ -194,7 +194,7 @@ func (r *EBSPReader) MoreRbspData() (bool, error) {
 	// If all remainging bits are zero, there is no more rbsp data
 	more := false
 	for {
-		b := r.Read(1)
+		b := r.ReadBits(1)
 		if errors.Is(r.err, io.EOF) {
 			r.err = nil // Reset
 			break
@@ -234,7 +234,7 @@ func (r *EBSPReader) ReadRbspTrailingBits() error {
 	if r.err != nil {
 		return nil
 	}
-	firstBit := r.Read(1)
+	firstBit := r.ReadBits(1)
 	if r.err != nil {
 		return nil
 	}
@@ -242,7 +242,7 @@ func (r *EBSPReader) ReadRbspTrailingBits() error {
 		return fmt.Errorf("rbspTrailingBits don't start with 1")
 	}
 	for {
-		b := r.Read(1)
+		b := r.ReadBits(1)
 		if errors.Is(r.err, io.EOF) {
 			r.err = nil // Reset
 			return nil

@@ -49,26 +49,26 @@ func DecodePicTimingHevcSEI(sd *SEIData, exPar HEVCPicTimingParams) (SEIMessage,
 	}
 	if exPar.FrameFieldInfoPresentFlag {
 		frameFieldInfo := &HEVCFrameFieldInfo{}
-		frameFieldInfo.PicStruct = uint8(br.Read(4))
-		frameFieldInfo.SourceScanType = uint8(br.Read(2))
+		frameFieldInfo.PicStruct = uint8(br.ReadBits(4))
+		frameFieldInfo.SourceScanType = uint8(br.ReadBits(2))
 		frameFieldInfo.DuplicateFlag = br.ReadFlag()
 		pt.FrameFieldInfo = frameFieldInfo
 	}
 	if exPar.CpbDpbDelaysPresentFlag {
-		pt.AuCpbRemovalDelayMinus1 = uint32(br.Read(int(exPar.AuCbpRemovalDelayLengthMinus1) + 1))
-		pt.PicDpbOutputDelay = uint32(br.Read(int(exPar.DpbOutputDelayLengthMinus1) + 1))
+		pt.AuCpbRemovalDelayMinus1 = uint32(br.ReadBits(int(exPar.AuCbpRemovalDelayLengthMinus1) + 1))
+		pt.PicDpbOutputDelay = uint32(br.ReadBits(int(exPar.DpbOutputDelayLengthMinus1) + 1))
 		if exPar.SubPicHrdParamsPresentFlag {
-			pt.PicDpbOutputDuDelay = uint32(br.Read(int(exPar.DpbOutputDelayDuLengthMinus1) + 1))
+			pt.PicDpbOutputDuDelay = uint32(br.ReadBits(int(exPar.DpbOutputDelayDuLengthMinus1) + 1))
 			if exPar.SubPicCpbParamsInPicTimingSeiFlag {
 				pt.NumDecodingUnitsMinus1 = uint32(br.ReadExpGolomb())
 				pt.DuCommonCpbRemovalDelayFlag = br.ReadFlag()
 				if pt.DuCommonCpbRemovalDelayFlag {
-					pt.DuCommonCpbRemovalDelayIncrementMinus1 = uint32(br.Read(int(exPar.DuCpbRemovalDelayIncrementLengthMinus1) + 1))
+					pt.DuCommonCpbRemovalDelayIncrementMinus1 = uint32(br.ReadBits(int(exPar.DuCpbRemovalDelayIncrementLengthMinus1) + 1))
 				}
 				for i := uint32(0); i <= pt.NumDecodingUnitsMinus1; i++ {
 					pt.NumNalusInDuMinus1[i] = uint32(br.ReadExpGolomb())
 					if !pt.DuCommonCpbRemovalDelayFlag && i < pt.NumDecodingUnitsMinus1 {
-						pt.DuCpbRemovalDelayIncrementMinus1[i] = uint32(br.Read(int(exPar.DuCpbRemovalDelayIncrementLengthMinus1) + 1))
+						pt.DuCpbRemovalDelayIncrementMinus1[i] = uint32(br.ReadBits(int(exPar.DuCpbRemovalDelayIncrementLengthMinus1) + 1))
 					}
 				}
 			}

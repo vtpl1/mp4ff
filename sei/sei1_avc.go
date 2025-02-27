@@ -49,11 +49,11 @@ func DecodePicTimingAvcSEIHRD(sd *SEIData, cbpDbpDelay *CbpDbpDelay, timeOffsetL
 	var outCbDbpDelay CbpDbpDelay
 	if cbpDbpDelay != nil {
 		outCbDbpDelay = *cbpDbpDelay
-		outCbDbpDelay.CpbRemovalDelay = uint(br.Read(int(cbpDbpDelay.CpbRemovalDelayLengthMinus1) + 1))
-		outCbDbpDelay.DpbOutputDelay = uint(br.Read(int(cbpDbpDelay.DpbOutputDelayLengthMinus1) + 1))
+		outCbDbpDelay.CpbRemovalDelay = uint(br.ReadBits(int(cbpDbpDelay.CpbRemovalDelayLengthMinus1) + 1))
+		outCbDbpDelay.DpbOutputDelay = uint(br.ReadBits(int(cbpDbpDelay.DpbOutputDelayLengthMinus1) + 1))
 	}
 
-	pictStruct := uint8(br.Read(4))
+	pictStruct := uint8(br.ReadBits(4))
 	var numClockTS int
 	switch {
 	case pictStruct <= 2:
@@ -172,33 +172,33 @@ func DecodeClockTSAvc(br *bits.Reader, timeOffsetLen byte) ClockTSAvc {
 	c := CreateClockTSAvc(timeOffsetLen)
 	c.ClockTimeStampFlag = br.ReadFlag()
 	if c.ClockTimeStampFlag {
-		c.CtType = byte(br.Read(2)) // 0 progressive, 1 interlaced, 2 unknown, 3 reserved
+		c.CtType = byte(br.ReadBits(2)) // 0 progressive, 1 interlaced, 2 unknown, 3 reserved
 		c.NuitFieldBasedFlag = br.ReadFlag()
-		c.CountingType = byte(br.Read(5))
+		c.CountingType = byte(br.ReadBits(5))
 		c.FullTimeStampFlag = br.ReadFlag()
 		c.DiscontinuityFlag = br.ReadFlag()
 		c.CntDroppedFlag = br.ReadFlag()
-		c.NFrames = byte(br.Read(8))
+		c.NFrames = byte(br.ReadBits(8))
 		if c.FullTimeStampFlag {
-			c.Seconds = byte(br.Read(6))
-			c.Minutes = byte(br.Read(6))
-			c.Hours = byte(br.Read(5))
+			c.Seconds = byte(br.ReadBits(6))
+			c.Minutes = byte(br.ReadBits(6))
+			c.Hours = byte(br.ReadBits(5))
 		} else {
 			c.SecondsFlag = br.ReadFlag()
 			if c.SecondsFlag {
-				c.Seconds = byte(br.Read(6))
+				c.Seconds = byte(br.ReadBits(6))
 				c.MinutesFlag = br.ReadFlag()
 				if c.MinutesFlag {
-					c.Minutes = byte(br.Read(6))
+					c.Minutes = byte(br.ReadBits(6))
 					c.HoursFlag = br.ReadFlag()
 					if c.HoursFlag {
-						c.Hours = byte(br.Read(5))
+						c.Hours = byte(br.ReadBits(5))
 					}
 				}
 			}
 		}
 		if c.TimeOffsetLength > 0 {
-			c.TimeOffsetValue = br.ReadSigned(int(c.TimeOffsetLength))
+			c.TimeOffsetValue = br.ReadBitsSigned(int(c.TimeOffsetLength))
 		}
 	}
 	return c

@@ -42,7 +42,7 @@ func TestEBSPReader(t *testing.T) {
 				if r.AccError() != nil {
 					t.Errorf("expected no error, got %v", r.AccError())
 				}
-				v := r.Read(tc.readBits)
+				v := r.ReadBits(tc.readBits)
 				if tc.expectedError != "" {
 					gotErr := r.AccError().Error()
 					if r.AccError().Error() != tc.expectedError {
@@ -190,7 +190,7 @@ func TestEBSPReader(t *testing.T) {
 			r := bits.NewEBSPReader(buf)
 			got := []byte{}
 			for {
-				b := r.Read(8)
+				b := r.ReadBits(8)
 				if r.AccError() == io.EOF {
 					break
 				}
@@ -226,7 +226,7 @@ func TestEBSPReader(t *testing.T) {
 			t.Run(c.name, func(t *testing.T) {
 				buf := bytes.NewBuffer(c.inBytes)
 				r := bits.NewEBSPReader(buf)
-				_ = r.Read(c.nrBitsToRead)
+				_ = r.ReadBits(c.nrBitsToRead)
 				if r.AccError() != nil {
 					t.Error(r.AccError())
 				}
@@ -286,7 +286,7 @@ func TestEBSPReader(t *testing.T) {
 			t.Run(c.name, func(t *testing.T) {
 				brd := bytes.NewReader(c.inBytes)
 				r := bits.NewEBSPReader(brd)
-				_ = r.Read(c.nrBitsBefore)
+				_ = r.ReadBits(c.nrBitsBefore)
 				if r.AccError() != nil {
 					t.Error(r.AccError())
 				}
@@ -297,7 +297,7 @@ func TestEBSPReader(t *testing.T) {
 				if moreRbsp != c.moreRbsp {
 					t.Errorf("%s: got %t want %t", c.name, moreRbsp, c.moreRbsp)
 				}
-				got := r.Read(c.nrBitsAfter)
+				got := r.ReadBits(c.nrBitsAfter)
 				if r.AccError() != nil {
 					t.Error(r.AccError())
 				}
@@ -315,7 +315,7 @@ func TestEBSPReader(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		_ = r.Read(1)
+		_ = r.ReadBits(1)
 		if r.AccError() != io.EOF {
 			t.Errorf("Not at end after reading rbsp_trailing_bits")
 		}
@@ -327,7 +327,7 @@ func TestEBSPReader(t *testing.T) {
 		r.SetError(io.ErrUnexpectedEOF)
 		// Read shold never result in panic
 		// Error should be preservedd
-		_ = r.Read(100)
+		_ = r.ReadBits(100)
 		if r.AccError() != io.ErrUnexpectedEOF {
 			t.Errorf("Expected error not found")
 		}

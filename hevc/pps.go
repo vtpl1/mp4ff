@@ -185,7 +185,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 	r := bits.NewEBSPReader(rd)
 	// Note! First two bytes are NALU Header
 
-	naluHdrBits := r.Read(16)
+	naluHdrBits := r.ReadBits(16)
 	naluType := GetNaluType(byte(naluHdrBits >> 8))
 	if naluType != NALU_PPS {
 		return nil, ErrNotPPS
@@ -199,7 +199,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 
 	pps.DependentSliceSegmentsEnabledFlag = r.ReadFlag()
 	pps.OutputFlagPresentFlag = r.ReadFlag()
-	pps.NumExtraSliceHeaderBits = uint8(r.Read(3))
+	pps.NumExtraSliceHeaderBits = uint8(r.ReadBits(3))
 	pps.SignDataHidingEnabledFlag = r.ReadFlag()
 	pps.CabacInitPresentFlag = r.ReadFlag()
 	// value shall be in the range of 0 to 14, inclusive
@@ -260,7 +260,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 		pps.MultilayerExtensionFlag = r.ReadFlag()
 		pps.D3ExtensionFlag = r.ReadFlag()
 		pps.SccExtensionFlag = r.ReadFlag()
-		pps.Extension4bits = uint8(r.Read(4))
+		pps.Extension4bits = uint8(r.ReadBits(4))
 	}
 
 	if r.AccError() != nil {
@@ -316,7 +316,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 	if r.AccError() != nil {
 		return nil, r.AccError()
 	}
-	_ = r.Read(1)
+	_ = r.ReadBits(1)
 	if !errors.Is(r.AccError(), io.EOF) {
 		return nil, fmt.Errorf("not at end after reading rbsp_trailing_bits")
 	}
@@ -354,12 +354,12 @@ func parseMultilayerExtension(r *bits.EBSPReader) (*MultilayerExtension, error) 
 	ext.PocResetInfoPresentFlag = r.ReadFlag()
 	ext.InferScalingListFlag = r.ReadFlag()
 	if ext.InferScalingListFlag {
-		ext.ScalingListRefLayerId = uint8(r.Read(6))
+		ext.ScalingListRefLayerId = uint8(r.ReadBits(6))
 	}
 	ext.NumRefLocOffsets = r.ReadExpGolomb()
 	ext.RefLocOffsets = make(map[uint8]RefLocOffset, int(ext.NumRefLocOffsets))
 	for i := uint(0); i < ext.NumRefLocOffsets; i++ {
-		ext.RefLocOffsetLayerIds = append(ext.RefLocOffsetLayerIds, uint8(r.Read(6)))
+		ext.RefLocOffsetLayerIds = append(ext.RefLocOffsetLayerIds, uint8(r.ReadBits(6)))
 
 		off := RefLocOffset{}
 		off.ScaledRefLayerOffsetPresentFlag = r.ReadFlag()
@@ -409,16 +409,16 @@ func parseColourMappingTable(r *bits.EBSPReader) (*ColourMappingTable, error) {
 	// value shall be in the range of 0 to 61, inclusive
 	cm.NumCmRefLayersMinus1 = uint8(r.ReadExpGolomb())
 	for i := uint8(0); i <= cm.NumCmRefLayersMinus1; i++ {
-		cm.RefLayerId = append(cm.RefLayerId, uint8(r.Read(6)))
+		cm.RefLayerId = append(cm.RefLayerId, uint8(r.ReadBits(6)))
 	}
-	cm.OctantDepth = uint8(r.Read(2))
-	cm.YPartNumLog2 = uint8(r.Read(2))
+	cm.OctantDepth = uint8(r.ReadBits(2))
+	cm.YPartNumLog2 = uint8(r.ReadBits(2))
 	cm.LumaBitDepthCmInputMinus8 = r.ReadExpGolomb()
 	cm.ChromaBitDepthCmInputMinus8 = r.ReadExpGolomb()
 	cm.LumaBitDepthCmOutputMinus8 = r.ReadExpGolomb()
 	cm.ChromaBitDepthCmOutputMinus8 = r.ReadExpGolomb()
-	cm.ResQuantBits = uint8(r.Read(2))
-	cm.DeltaFlcBitsMinus1 = uint8(r.Read(2))
+	cm.ResQuantBits = uint8(r.ReadBits(2))
+	cm.DeltaFlcBitsMinus1 = uint8(r.ReadBits(2))
 	if cm.OctantDepth == 1 {
 		cm.AdaptThresholdUDelta = r.ReadSignedGolomb()
 		cm.AdaptThresholdVDelta = r.ReadSignedGolomb()
@@ -481,7 +481,7 @@ func parseColourMappingOctants(r *bits.EBSPReader, octantDepth uint, partNumY ui
 				if oct[j].CodedResFlag {
 					for c := 0; c < 3; c++ {
 						oct[j].CodedRes[c].ResCoeffQ = r.ReadExpGolomb()
-						oct[j].CodedRes[c].ResCoeffR = r.Read(resLsBits)
+						oct[j].CodedRes[c].ResCoeffR = r.ReadBits(resLsBits)
 						if oct[j].CodedRes[c].ResCoeffQ != 0 || oct[j].CodedRes[c].ResCoeffR != 0 {
 							oct[j].CodedRes[c].ResCoeffS = r.ReadFlag()
 						}
@@ -527,13 +527,13 @@ func parseSccExtension(r *bits.EBSPReader) (*SccExtension, error) {
 			ext.PalettePredictorInitializer = make([][]uint, numComps)
 			// Fill luma
 			for i := uint(0); i < ext.NumPalettePredictorInitializers; i++ {
-				ext.PalettePredictorInitializer[0] = append(ext.PalettePredictorInitializer[0], r.Read(int(ext.LumaBitDepthEntryMinus8+8)))
+				ext.PalettePredictorInitializer[0] = append(ext.PalettePredictorInitializer[0], r.ReadBits(int(ext.LumaBitDepthEntryMinus8+8)))
 			}
 			// Fill chroma if any
 			for comp := 1; comp < numComps; comp++ {
 				for i := uint(0); i < ext.NumPalettePredictorInitializers; i++ {
 					ext.PalettePredictorInitializer[comp] = append(ext.PalettePredictorInitializer[comp],
-						r.Read(int(ext.ChromaBitDepthEntryMinus8+8)))
+						r.ReadBits(int(ext.ChromaBitDepthEntryMinus8+8)))
 				}
 			}
 		}
@@ -550,8 +550,8 @@ func parse3dExtension(r *bits.EBSPReader) (*D3Extension, error) {
 	ext := &D3Extension{}
 	ext.DltsPresentFlag = r.ReadFlag()
 	if ext.DltsPresentFlag {
-		ext.NumDepthLayersMinus1 = uint8(r.Read(6))
-		ext.BitDepthForDepthLayersMinus8 = uint8(r.Read(4))
+		ext.NumDepthLayersMinus1 = uint8(r.ReadBits(6))
+		ext.BitDepthForDepthLayersMinus8 = uint8(r.ReadBits(4))
 		for i := uint8(0); i <= ext.NumDepthLayersMinus1; i++ {
 			layer := DepthLayer{}
 			layer.DltFlag = r.ReadFlag()
@@ -587,22 +587,22 @@ func parse3dExtension(r *bits.EBSPReader) (*D3Extension, error) {
 
 func parseDeltaDlt(r *bits.EBSPReader, bitDepthForDepthLayers int) (*DeltaDlt, error) {
 	dd := &DeltaDlt{}
-	dd.NumValDeltaDlt = r.Read(bitDepthForDepthLayers)
+	dd.NumValDeltaDlt = r.ReadBits(bitDepthForDepthLayers)
 	if dd.NumValDeltaDlt > 0 {
 		if dd.NumValDeltaDlt > 1 {
-			dd.MaxDiff = r.Read(bitDepthForDepthLayers)
+			dd.MaxDiff = r.ReadBits(bitDepthForDepthLayers)
 		}
 		if dd.NumValDeltaDlt > 2 && dd.MaxDiff > 0 {
-			dd.MinDiffMinus1 = r.Read(bits.CeilLog2(dd.MaxDiff + 1))
+			dd.MinDiffMinus1 = r.ReadBits(bits.CeilLog2(dd.MaxDiff + 1))
 		} else {
 			dd.MinDiffMinus1 = dd.MaxDiff - 1
 		}
-		dd.DeltaDltVal0 = r.Read(bitDepthForDepthLayers)
+		dd.DeltaDltVal0 = r.ReadBits(bitDepthForDepthLayers)
 		if dd.MaxDiff > (dd.MinDiffMinus1 + 1) {
 			for k := uint(1); k < dd.NumValDeltaDlt; k++ {
 				// variable minDiff is set equal to ( min_diff_minus1 + 1 )
 				// length of delta_val_diff_minus_min[ k ] syntax element is Ceil( Log2( max_diff − minDiff + 1 ) ) bits
-				dd.DeltaValDiffMinusMin = append(dd.DeltaValDiffMinusMin, r.Read(bits.CeilLog2(dd.MaxDiff-(dd.MinDiffMinus1+1)+1)))
+				dd.DeltaValDiffMinusMin = append(dd.DeltaValDiffMinusMin, r.ReadBits(bits.CeilLog2(dd.MaxDiff-(dd.MinDiffMinus1+1)+1)))
 			}
 		}
 	}

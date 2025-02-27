@@ -116,7 +116,7 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 	buf := bytes.NewBuffer(nalu)
 	r := bits.NewEBSPReader(buf)
 
-	naluHdrBits := r.Read(16)
+	naluHdrBits := r.ReadBits(16)
 	naluType := GetNaluType(byte(naluHdrBits >> 8))
 	sh.FirstSliceSegmentInPicFlag = r.ReadFlag()
 	if naluType >= NALU_BLA_W_LP && naluType <= NALU_IRAP_VCL23 {
@@ -149,7 +149,7 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 		CtbSizeY := uint(1 << (sps.Log2MinLumaCodingBlockSizeMinus3 + 3 + sps.Log2DiffMaxMinLumaCodingBlockSize))
 		PicSizeInCtbsY := ceilDiv(uint(sps.PicWidthInLumaSamples), CtbSizeY) *
 			ceilDiv(uint(sps.PicHeightInLumaSamples), CtbSizeY)
-		sh.SegmentAddress = r.Read(bits.CeilLog2(PicSizeInCtbsY))
+		sh.SegmentAddress = r.ReadBits(bits.CeilLog2(PicSizeInCtbsY))
 	}
 
 	if !sh.DependentSliceSegmentFlag {
@@ -187,11 +187,11 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 			sh.PicOutputFlag = r.ReadFlag()
 		}
 		if sps.SeparateColourPlaneFlag {
-			sh.ColourPlaneId = uint8(r.Read(2))
+			sh.ColourPlaneId = uint8(r.ReadBits(2))
 		}
 		if naluType != NALU_IDR_W_RADL && naluType != NALU_IDR_N_LP {
 			// value of log2_max_pic_order_cnt_lsb_minus4 shall be in the range of 0 to 12, inclusive
-			sh.PicOrderCntLsb = uint16(r.Read(int(sps.Log2MaxPicOrderCntLsbMinus4 + 4)))
+			sh.PicOrderCntLsb = uint16(r.ReadBits(int(sps.Log2MaxPicOrderCntLsbMinus4 + 4)))
 			sh.ShortTermRefPicSetSpsFlag = r.ReadFlag()
 
 			if !sh.ShortTermRefPicSetSpsFlag {
@@ -201,7 +201,7 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 					return sh, r.AccError()
 				}
 			} else if sps.NumShortTermRefPicSets > 1 {
-				sh.ShortTermRefPicSetIdx = byte(r.Read(bits.CeilLog2(uint(sps.NumShortTermRefPicSets))))
+				sh.ShortTermRefPicSetIdx = byte(r.ReadBits(bits.CeilLog2(uint(sps.NumShortTermRefPicSets))))
 				if int(sh.ShortTermRefPicSetIdx) >= len(sps.ShortTermRefPicSets) {
 					return sh, fmt.Errorf("short_term_ref_pic_set_idx > num_short_term_ref_pic_sets")
 				}
@@ -219,14 +219,14 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 					var lt LongTermRPS
 					if i < uint(sh.NumLongTermSps) {
 						if sps.NumLongTermRefPics > 1 {
-							LtIdxSps := r.Read(bits.CeilLog2(uint(sps.NumLongTermRefPics)))
+							LtIdxSps := r.ReadBits(bits.CeilLog2(uint(sps.NumLongTermRefPics)))
 							if int(LtIdxSps) >= len(sps.LongTermRefPicSets) {
 								return sh, fmt.Errorf("lt_idx_sps > num_long_term_ref_pics_sps")
 							}
 							lt = sps.LongTermRefPicSets[LtIdxSps]
 						}
 					} else {
-						lt.PocLsbLt = uint16(r.Read(int(sps.Log2MaxPicOrderCntLsbMinus4 + 4)))
+						lt.PocLsbLt = uint16(r.ReadBits(int(sps.Log2MaxPicOrderCntLsbMinus4 + 4)))
 						lt.UsedByCurrPicLtFlag = r.ReadFlag()
 					}
 					if lt.UsedByCurrPicLtFlag {
@@ -348,7 +348,7 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 			if sh.NumEntryPointOffsets > 0 {
 				sh.EntryPointOffsetMinus1 = make([]uint32, sh.NumEntryPointOffsets)
 				for i := uint(0); i < sh.NumEntryPointOffsets; i++ {
-					sh.EntryPointOffsetMinus1[i] = uint32(r.Read(int(sh.OffsetLenMinus1 + 1)))
+					sh.EntryPointOffsetMinus1[i] = uint32(r.ReadBits(int(sh.OffsetLenMinus1 + 1)))
 				}
 			}
 		}
@@ -359,7 +359,7 @@ func ParseSliceHeader(nalu []byte, spsMap map[uint32]*SPS, ppsMap map[uint32]*PP
 		if sh.SegmentHeaderExtensionLength > 0 {
 			sh.SegmentHeaderExtensionDataByte = make([]byte, sh.SegmentHeaderExtensionLength)
 			for i := uint16(0); i < sh.SegmentHeaderExtensionLength; i++ {
-				sh.SegmentHeaderExtensionDataByte[i] = byte(r.Read(8))
+				sh.SegmentHeaderExtensionDataByte[i] = byte(r.ReadBits(8))
 			}
 		}
 	}
@@ -392,7 +392,7 @@ func parseRefPicListsModification(r *bits.EBSPReader, sliceType SliceType,
 	if rplm.RefPicListModificationFlagL0 {
 		rplm.ListEntryL0 = make([]uint8, refIdxL0Minus1+1)
 		for i := uint8(0); i <= refIdxL0Minus1; i++ {
-			rplm.ListEntryL0[i] = uint8(r.Read(bits.CeilLog2(uint(numPicTotalCurr))))
+			rplm.ListEntryL0[i] = uint8(r.ReadBits(bits.CeilLog2(uint(numPicTotalCurr))))
 		}
 	}
 	if sliceType == SLICE_B {
@@ -400,7 +400,7 @@ func parseRefPicListsModification(r *bits.EBSPReader, sliceType SliceType,
 		if rplm.RefPicListModificationFlagL1 {
 			rplm.ListEntryL1 = make([]uint8, refIdxL1Minus1+1)
 			for i := uint8(0); i <= refIdxL1Minus1; i++ {
-				rplm.ListEntryL1[i] = uint8(r.Read(bits.CeilLog2(uint(numPicTotalCurr))))
+				rplm.ListEntryL1[i] = uint8(r.ReadBits(bits.CeilLog2(uint(numPicTotalCurr))))
 			}
 		}
 	}

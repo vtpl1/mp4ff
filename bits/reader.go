@@ -29,8 +29,8 @@ func NewReader(rd io.Reader) *Reader {
 	}
 }
 
-// Read - read n bits. Return 0, if error now or previously
-func (r *Reader) Read(n int) uint {
+// ReadBits - read n bits. Return 0, if error now or previously
+func (r *Reader) ReadBits(n int) uint {
 	if r.err != nil {
 		return 0
 	}
@@ -56,9 +56,9 @@ func (r *Reader) Read(n int) uint {
 	return value
 }
 
-// ReadSigned reads a 2-complemented signed int with n bits.
-func (r *Reader) ReadSigned(n int) int {
-	nr := int(r.Read(n))
+// ReadBitsSigned reads a 2-complemented signed int with n bits.
+func (r *Reader) ReadBitsSigned(n int) int {
+	nr := int(r.ReadBits(n))
 	firstBit := nr >> (n - 1)
 	if firstBit == 1 {
 		nr |= -1 << n
@@ -68,7 +68,7 @@ func (r *Reader) ReadSigned(n int) int {
 
 // ReadFlag reads 1 bit and interprets as a boolean flag. Returns false if error now or previously.
 func (r *Reader) ReadFlag() bool {
-	bit := r.Read(1)
+	bit := r.ReadBits(1)
 	if r.err != nil {
 		return false
 	}

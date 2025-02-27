@@ -28,7 +28,7 @@ func TestAccErrReader(t *testing.T) {
 		}
 
 		for _, tc := range cases {
-			got := reader.Read(tc.readNrBits)
+			got := reader.ReadBits(tc.readNrBits)
 
 			if got != tc.want {
 				t.Errorf("Read(%d)=%b, want=%b", tc.readNrBits, got, tc.want)
@@ -62,7 +62,7 @@ func TestAccErrReader(t *testing.T) {
 		}
 
 		for _, tc := range cases {
-			got := reader.Read(tc.n)
+			got := reader.ReadBits(tc.n)
 
 			if got != tc.want {
 				t.Errorf("Read(%d)=%b, want=%b", tc.n, got, tc.want)
@@ -128,7 +128,7 @@ func TestAccErrReaderSigned(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		got := reader.ReadSigned(tc.readNrBits)
+		got := reader.ReadBitsSigned(tc.readNrBits)
 
 		if got != tc.want {
 			t.Errorf("Read(%d)=%b, want=%b", tc.readNrBits, got, tc.want)
@@ -159,7 +159,7 @@ func TestBadAccErrReader(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		got := reader.Read(tc.n)
+		got := reader.ReadBits(tc.n)
 
 		if got != tc.want {
 			t.Errorf("Read(%d)=%b, want=%b", tc.n, got, tc.want)

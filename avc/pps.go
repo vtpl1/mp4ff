@@ -55,7 +55,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 	reader := bits.NewEBSPReader(rd)
 	// Note! First byte is NAL Header
 
-	naluHdr := reader.Read(8)
+	naluHdr := reader.ReadBits(8)
 	naluType := GetNaluType(byte(naluHdr))
 	if naluType != NALU_PPS {
 		return nil, ErrNotPPS
@@ -90,7 +90,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 			nrBits := bits.CeilLog2(pps.NumSliceGroupsMinus1 + 1)
 
 			for iGroup := uint(0); iGroup <= pps.NumSliceGroupsMinus1; iGroup++ {
-				sgi := reader.Read(nrBits)
+				sgi := reader.ReadBits(nrBits)
 				pps.SliceGroupID = append(pps.SliceGroupID, sgi)
 			}
 		}
@@ -98,7 +98,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 	pps.NumRefIdxI0DefaultActiveMinus1 = reader.ReadExpGolomb()
 	pps.NumRefIdxI1DefaultActiveMinus1 = reader.ReadExpGolomb()
 	pps.WeightedPredFlag = reader.ReadFlag()
-	pps.WeightedBipredIDC = reader.Read(2)
+	pps.WeightedBipredIDC = reader.ReadBits(2)
 	pps.PicInitQpMinus26 = reader.ReadSignedGolomb()
 	pps.PicInitQsMinus26 = reader.ReadSignedGolomb()
 	pps.ChromaQpIndexOffset = reader.ReadSignedGolomb()
@@ -161,7 +161,7 @@ func ParsePPSNALUnit(data []byte, spsMap map[uint32]*SPS) (*PPS, error) {
 	if reader.AccError() != nil {
 		return nil, reader.AccError()
 	}
-	_ = reader.Read(1)
+	_ = reader.ReadBits(1)
 	if !errors.Is(reader.AccError(), io.EOF) {
 		return nil, fmt.Errorf("Not at end after reading rbsp_trailing_bits")
 	}

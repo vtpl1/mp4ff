@@ -66,13 +66,13 @@ func DecodeADTSHeader(r io.Reader) (header *ADTSHeader, offset int, err error) {
 	var sync1, sync2, mpegID, layer, protectionAbsent byte
 	for i := 0; i < tsPacketSize; i++ {
 		if sync2 != 0xff {
-			sync1 = byte(br.Read(8))
+			sync1 = byte(br.ReadBits(8))
 		} else {
 			sync1 = sync2
 			offset--
 		}
 		if sync1 == 0xff {
-			sync2 = byte(br.Read(8))
+			sync2 = byte(br.ReadBits(8))
 			startPattern := sync2 >> 4
 			mpegID = (sync2 >> 3) & 1
 			layer = (sync2 >> 1) & 3
@@ -100,21 +100,21 @@ func DecodeADTSHeader(r io.Reader) (header *ADTSHeader, offset int, err error) {
 		ah.HeaderLength += 2 // 16-bit CRC
 	}
 
-	profile := br.Read(2)
+	profile := br.ReadBits(2)
 	ah.ObjectType = byte(profile + 1)
-	ah.SamplingFrequencyIndex = byte(br.Read(4))
-	_ = br.Read(1) // ignore private
-	ah.ChannelConfig = byte(br.Read(3))
-	_ = br.Read(4) // ignore original/copy, home, copyright
-	frameLength := br.Read(13)
+	ah.SamplingFrequencyIndex = byte(br.ReadBits(4))
+	_ = br.ReadBits(1) // ignore private
+	ah.ChannelConfig = byte(br.ReadBits(3))
+	_ = br.ReadBits(4) // ignore original/copy, home, copyright
+	frameLength := br.ReadBits(13)
 	ah.PayloadLength = uint16(frameLength) - uint16(ah.HeaderLength)
-	ah.BufferFullness = uint16(br.Read(11))
-	nrRawBlocksMinus1 := br.Read(2)
+	ah.BufferFullness = uint16(br.ReadBits(11))
+	nrRawBlocksMinus1 := br.ReadBits(2)
 	if nrRawBlocksMinus1 != 0 {
 		return nil, 0, fmt.Errorf("only 1 raw block supported")
 	}
 	if protectionAbsent != 1 {
-		_ = br.Read(16) // CRC
+		_ = br.ReadBits(16) // CRC
 	}
 
 	if br.AccError() != nil {

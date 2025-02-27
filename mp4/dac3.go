@@ -88,18 +88,18 @@ func decodeDac3FromData(data []byte) (Box, error) {
 	buf := bytes.NewBuffer(data)
 	br := bits.NewReader(buf)
 	for i := 0; i < int(b.InitialZeroes); i++ {
-		if zero := br.Read(8); zero != 0 {
+		if zero := br.ReadBits(8); zero != 0 {
 			return nil, fmt.Errorf("dac3 box, extra initial bytes are not zero")
 		}
 	}
-	b.FSCod = byte(br.Read(2))
-	b.BSID = byte(br.Read(5))
-	b.BSMod = byte(br.Read(3))
-	b.ACMod = byte(br.Read(3))
-	b.LFEOn = byte(br.Read(1))
-	b.BitRateCode = byte(br.Read(5))
+	b.FSCod = byte(br.ReadBits(2))
+	b.BSID = byte(br.ReadBits(5))
+	b.BSMod = byte(br.ReadBits(3))
+	b.ACMod = byte(br.ReadBits(3))
+	b.LFEOn = byte(br.ReadBits(1))
+	b.BitRateCode = byte(br.ReadBits(5))
 	// 5 bits reserved follows
-	b.Reserved = byte(br.Read(5))
+	b.Reserved = byte(br.ReadBits(5))
 	return &b, nil
 }
 

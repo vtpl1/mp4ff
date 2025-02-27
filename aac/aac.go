@@ -78,7 +78,7 @@ func DecodeAudioSpecificConfig(r io.Reader) (*AudioSpecificConfig, error) {
 	br := bits.NewReader(r)
 
 	asc := &AudioSpecificConfig{}
-	audioObjectType := byte(br.Read(5))
+	audioObjectType := byte(br.ReadBits(5))
 	asc.ObjectType = audioObjectType
 	switch audioObjectType {
 	case AAClc:
@@ -96,7 +96,7 @@ func DecodeAudioSpecificConfig(r io.Reader) (*AudioSpecificConfig, error) {
 		return asc, fmt.Errorf("strange frequency index")
 	}
 	asc.SamplingFrequency = frequency
-	asc.ChannelConfiguration = byte(br.Read(4))
+	asc.ChannelConfiguration = byte(br.ReadBits(4))
 	switch audioObjectType {
 	case HEAACv1, HEAACv2:
 		extFrequency, ok := getFrequency(br)
@@ -104,13 +104,13 @@ func DecodeAudioSpecificConfig(r io.Reader) (*AudioSpecificConfig, error) {
 			return asc, fmt.Errorf("strange frequency index")
 		}
 		asc.ExtensionFrequency = extFrequency
-		audioObjectType = byte(br.Read(5)) // Shall be set to AAC-LC here again
+		audioObjectType = byte(br.ReadBits(5)) // Shall be set to AAC-LC here again
 	}
 	if audioObjectType != AAClc {
 		return nil, fmt.Errorf("base audioObjectType is %d instead of AAC-LC (2)", audioObjectType)
 	}
 	// GASpecificConfig()
-	_ = br.Read(3) // GASpecificConfig
+	_ = br.ReadBits(3) // GASpecificConfig
 	// Done (there may be trailing bits)
 	return asc, nil
 }
@@ -151,9 +151,9 @@ func (a *AudioSpecificConfig) Encode(w io.Writer) error {
 
 // getFrequency - either from 4-bit index or 24-bit value
 func getFrequency(br *bits.Reader) (frequency int, ok bool) {
-	frequencyIndex := br.Read(4)
+	frequencyIndex := br.ReadBits(4)
 	if frequencyIndex == 0x0f {
-		f := br.Read(24)
+		f := br.ReadBits(24)
 		if br.AccError() != nil {
 			return 0, false
 		}

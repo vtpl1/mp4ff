@@ -119,15 +119,15 @@ func ParseSPSNALUnit(data []byte, parseVUIBeyondAspectRatio bool) (*SPS, error) 
 	reader := bits.NewEBSPReader(rd)
 	// Note! First byte is NAL Header
 
-	nalHdr := reader.Read(8)
+	nalHdr := reader.ReadBits(8)
 	nalType := GetNaluType(byte(nalHdr))
 	if nalType != NALU_SPS {
 		return nil, ErrNotSPS
 	}
 
-	sps.Profile = uint32(reader.Read(8))
-	sps.ProfileCompatibility = uint32(reader.Read(8))
-	sps.Level = uint32(reader.Read(8))
+	sps.Profile = uint32(reader.ReadBits(8))
+	sps.ProfileCompatibility = uint32(reader.ReadBits(8))
+	sps.Level = uint32(reader.ReadBits(8))
 	sps.ParameterID = uint32(reader.ReadExpGolomb())
 	sps.ChromaFormatIDC = 1 // Default value if no explicit value present
 
@@ -275,10 +275,10 @@ func parseVUI(reader *bits.EBSPReader, parseVUIBeyondAspectRatio bool) *VUIParam
 	var err error
 	aspectRatioInfoPresentFlag := reader.ReadFlag()
 	if aspectRatioInfoPresentFlag {
-		aspectRatioIDC := reader.Read(8)
+		aspectRatioIDC := reader.ReadBits(8)
 		if aspectRatioIDC == ExtendedSAR {
-			vui.SampleAspectRatioWidth = reader.Read(16)
-			vui.SampleAspectRatioHeight = reader.Read(16)
+			vui.SampleAspectRatioWidth = reader.ReadBits(16)
+			vui.SampleAspectRatioHeight = reader.ReadBits(16)
 		} else {
 			vui.SampleAspectRatioWidth, vui.SampleAspectRatioHeight, err = GetSARfromIDC(aspectRatioIDC)
 			if err != nil {
@@ -295,13 +295,13 @@ func parseVUI(reader *bits.EBSPReader, parseVUIBeyondAspectRatio bool) *VUIParam
 	}
 	vui.VideoSignalTypePresentFlag = reader.ReadFlag()
 	if vui.VideoSignalTypePresentFlag {
-		vui.VideoFormat = reader.Read(3)
+		vui.VideoFormat = reader.ReadBits(3)
 		vui.VideoFullRangeFlag = reader.ReadFlag()
 		vui.ColourDescriptionFlag = reader.ReadFlag()
 		if vui.ColourDescriptionFlag {
-			vui.ColourPrimaries = reader.Read(8)
-			vui.TransferCharacteristics = reader.Read(8)
-			vui.MatrixCoefficients = reader.Read(8)
+			vui.ColourPrimaries = reader.ReadBits(8)
+			vui.TransferCharacteristics = reader.ReadBits(8)
+			vui.MatrixCoefficients = reader.ReadBits(8)
 		}
 	}
 	vui.ChromaLocInfoPresentFlag = reader.ReadFlag()
@@ -311,8 +311,8 @@ func parseVUI(reader *bits.EBSPReader, parseVUIBeyondAspectRatio bool) *VUIParam
 	}
 	vui.TimingInfoPresentFlag = reader.ReadFlag()
 	if vui.TimingInfoPresentFlag {
-		vui.NumUnitsInTick = reader.Read(32)
-		vui.TimeScale = reader.Read(32)
+		vui.NumUnitsInTick = reader.ReadBits(32)
+		vui.TimeScale = reader.ReadBits(32)
 		vui.FixedFrameRateFlag = reader.ReadFlag()
 	}
 	vui.NalHrdParametersPresentFlag = reader.ReadFlag()
@@ -345,8 +345,8 @@ func parseHrdParameters(r *bits.EBSPReader) *HrdParameters {
 	hp := &HrdParameters{}
 	hp.CpbCountMinus1 = r.ReadExpGolomb()
 
-	hp.BitRateScale = r.Read(4)
-	hp.CpbSizeScale = r.Read(4)
+	hp.BitRateScale = r.ReadBits(4)
+	hp.CpbSizeScale = r.ReadBits(4)
 	for schedSelIdx := uint(0); schedSelIdx <= hp.CpbCountMinus1; schedSelIdx++ {
 		ce := CpbEntry{}
 		ce.BitRateValueMinus1 = r.ReadExpGolomb()
@@ -354,10 +354,10 @@ func parseHrdParameters(r *bits.EBSPReader) *HrdParameters {
 		ce.CbrFlag = r.ReadFlag()
 		hp.CpbEntries = append(hp.CpbEntries, ce)
 	}
-	hp.InitialCpbRemovalDelayLengthMinus1 = r.Read(5)
-	hp.CpbRemovalDelayLengthMinus1 = r.Read(5)
-	hp.DpbOutputDelayLengthMinus1 = r.Read(5)
-	hp.TimeOffsetLength = r.Read(5)
+	hp.InitialCpbRemovalDelayLengthMinus1 = r.ReadBits(5)
+	hp.CpbRemovalDelayLengthMinus1 = r.ReadBits(5)
+	hp.DpbOutputDelayLengthMinus1 = r.ReadBits(5)
+	hp.TimeOffsetLength = r.ReadBits(5)
 	return hp
 }
 

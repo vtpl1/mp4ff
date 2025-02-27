@@ -553,7 +553,7 @@ func ExtractSEIData(r io.ReadSeeker) (seiData []SEIData, err error) {
 	for {
 		payloadType := uint(0)
 		for {
-			nextByte := ar.Read(8)
+			nextByte := ar.ReadBits(8)
 			payloadType += uint(nextByte)
 			if nextByte != 0xff {
 				break
@@ -561,7 +561,7 @@ func ExtractSEIData(r io.ReadSeeker) (seiData []SEIData, err error) {
 		}
 		payloadSize := uint32(0)
 		for {
-			nextByte := ar.Read(8)
+			nextByte := ar.ReadBits(8)
 			payloadSize += uint32(nextByte)
 			if nextByte != 0xff {
 				break

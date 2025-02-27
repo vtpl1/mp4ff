@@ -86,23 +86,23 @@ func decodeDec3FromData(data []byte) (Box, error) {
 	buf := bytes.NewBuffer(data)
 	br := bits.NewReader(buf)
 	b := Dec3Box{}
-	b.DataRate = uint16(br.Read(13))
-	nrSubs := br.Read(3) + 1 // There must be one base stream
+	b.DataRate = uint16(br.ReadBits(13))
+	nrSubs := br.ReadBits(3) + 1 // There must be one base stream
 	for i := 0; i < int(nrSubs); i++ {
 		es := EC3Sub{}
-		es.FSCod = byte(br.Read(2))
-		es.BSID = byte(br.Read(5))
-		_ = br.Read(1) // Reserved 0
-		es.ASVC = byte(br.Read(1))
-		es.BSMod = byte(br.Read(3))
-		es.ACMod = byte(br.Read(3))
-		es.LFEOn = byte(br.Read(1))
-		_ = br.Read(3) // Reserved 000
-		es.NumDepSub = byte(br.Read(4))
+		es.FSCod = byte(br.ReadBits(2))
+		es.BSID = byte(br.ReadBits(5))
+		_ = br.ReadBits(1) // Reserved 0
+		es.ASVC = byte(br.ReadBits(1))
+		es.BSMod = byte(br.ReadBits(3))
+		es.ACMod = byte(br.ReadBits(3))
+		es.LFEOn = byte(br.ReadBits(1))
+		_ = br.ReadBits(3) // Reserved 000
+		es.NumDepSub = byte(br.ReadBits(4))
 		if es.NumDepSub > 0 {
-			es.ChanLoc = uint16(br.Read(9))
+			es.ChanLoc = uint16(br.ReadBits(9))
 		} else {
-			_ = br.Read(1) // Reserved 0
+			_ = br.ReadBits(1) // Reserved 0
 		}
 		if br.AccError() != nil {
 			return nil, br.AccError()
