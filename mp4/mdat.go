@@ -16,7 +16,7 @@ type MdatBox struct {
 	StartPos     uint64
 	Data         []byte
 	DataParts    [][]byte
-	lazyDataSize uint64
+	LazyDataSize uint64
 	LargeSize    bool
 }
 
@@ -43,7 +43,7 @@ func DecodeMdatSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 
 // IsLazy - is the mdat data handled lazily (with separate writer/reader).
 func (m *MdatBox) IsLazy() bool {
-	return m.lazyDataSize > 0
+	return m.LazyDataSize > 0
 }
 
 // DecodeMdatLazily - box-specific decode but Data is not in memory
@@ -56,12 +56,12 @@ func DecodeMdatLazily(hdr BoxHeader, startPos uint64) (Box, error) {
 // SetLazyDataSize - set size of mdat lazy data so that the data can be written separately
 // Don't put any data in m.Data in this mode.
 func (m *MdatBox) SetLazyDataSize(newSize uint64) {
-	m.lazyDataSize = newSize
+	m.LazyDataSize = newSize
 }
 
 // GetLazyDataSize - size of the box if filled with data
 func (m *MdatBox) GetLazyDataSize() uint64 {
-	return m.lazyDataSize
+	return m.LazyDataSize
 }
 
 // Type - return box type
@@ -73,8 +73,8 @@ func (m *MdatBox) Type() string {
 func (m *MdatBox) Size() uint64 {
 	dataSize := m.DataLength()
 
-	if m.lazyDataSize > 0 {
-		dataSize = m.lazyDataSize
+	if m.LazyDataSize > 0 {
+		dataSize = m.LazyDataSize
 	}
 	if dataSize > maxNormalPayloadSize {
 		m.LargeSize = true
@@ -94,7 +94,7 @@ func (m *MdatBox) AddSampleData(s []byte) {
 // SetData - set the mdat data to given slice. No copying is done
 func (m *MdatBox) SetData(data []byte) {
 	m.Data = data
-	m.lazyDataSize = 0
+	m.LazyDataSize = 0
 }
 
 // AddSampleDataPart - add a data part (for output)
@@ -167,7 +167,7 @@ func (m *MdatBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 func (m *MdatBox) HeaderSize() uint64 {
 	hSize := boxHeaderSize
 	if m.LargeSize {
-		hSize += largeSizeLen
+		hSize += LargeSizeLen
 	}
 	return uint64(hSize)
 }
@@ -182,7 +182,7 @@ func (m *MdatBox) PayloadAbsoluteOffset() uint64 {
 // The ReadSeeker is used for lazily loaded mdat case.
 func (m *MdatBox) ReadData(start, size int64, rs io.ReadSeeker) ([]byte, error) {
 	// The Mdat box was decoded lazily
-	if m.lazyDataSize > 0 {
+	if m.LazyDataSize > 0 {
 		if rs == nil {
 			return nil, errors.New("lazy mdat mode - expects non-nil readseeker to read data")
 		}
@@ -220,7 +220,7 @@ func (m *MdatBox) ReadData(start, size int64, rs io.ReadSeeker) ([]byte, error) 
 // The ReadSeeker is used for lazily loaded mdat case.
 func (m *MdatBox) CopyData(start, size int64, rs io.ReadSeeker, w io.Writer) (nrWritten int64, err error) {
 	// The Mdat box was decoded lazily
-	if m.lazyDataSize > 0 {
+	if m.LazyDataSize > 0 {
 		if rs == nil {
 			return 0, errors.New("lazy mdat mode - expects non-nil readseeker to read data")
 		}

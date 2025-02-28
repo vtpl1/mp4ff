@@ -28,32 +28,32 @@ func NewGenericContainerBox(name string) *GenericContainerBox {
 	return &GenericContainerBox{name: name}
 }
 
-func (b *GenericContainerBox) Type() string {
-	return b.name
+func (g *GenericContainerBox) Type() string {
+	return g.name
 }
 
-func (b *GenericContainerBox) Size() uint64 {
-	return containerSize(b.Children)
+func (g *GenericContainerBox) Size() uint64 {
+	return containerSize(g.Children)
 }
 
 // Encode - write GenericContainerBox to w
-func (b *GenericContainerBox) Encode(w io.Writer) error {
-	return EncodeContainer(b, w)
+func (g *GenericContainerBox) Encode(w io.Writer) error {
+	return EncodeContainer(g, w)
 }
 
 // Encode - write minf container to sw
-func (b *GenericContainerBox) EncodeSW(sw bits.SliceWriter) error {
-	return EncodeContainerSW(b, sw)
+func (g *GenericContainerBox) EncodeSW(sw bits.SliceWriter) error {
+	return EncodeContainerSW(g, sw)
 }
 
 // Info - write box-specific information
-func (b *GenericContainerBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	return ContainerInfo(b, w, specificBoxLevels, indent, indentStep)
+func (g *GenericContainerBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
+	return ContainerInfo(g, w, specificBoxLevels, indent, indentStep)
 }
 
 // GetChildren - list of child boxes
-func (b *GenericContainerBox) GetChildren() []Box {
-	return b.Children
+func (g *GenericContainerBox) GetChildren() []Box {
+	return g.Children
 }
 
 // DecodeGenericContainerBox - box-specific decode
@@ -83,8 +83,8 @@ func DecodeGenericContainerBoxSR(hdr BoxHeader, startPos uint64, sr bits.SliceRe
 }
 
 // AddChild - Add a child box
-func (b *GenericContainerBox) AddChild(child Box) {
-	b.Children = append(b.Children, child)
+func (g *GenericContainerBox) AddChild(child Box) {
+	g.Children = append(g.Children, child)
 }
 
 func containerSize(children []Box) uint64 {

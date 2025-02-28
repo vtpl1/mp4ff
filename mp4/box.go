@@ -11,7 +11,7 @@ import (
 const (
 	// boxHeaderSize - standard size + name header
 	boxHeaderSize = 8
-	largeSizeLen  = 8          // Length of largesize exension
+	LargeSizeLen  = 8          // Length of largesize exension
 	flagsMask     = 0x00ffffff // Flags for masks from full header
 )
 
@@ -193,13 +193,13 @@ func DecodeHeader(r io.Reader) (BoxHeader, error) {
 	size := uint64(binary.BigEndian.Uint32(buf[0:4]))
 	headerLen := boxHeaderSize
 	if size == 1 {
-		buf := make([]byte, largeSizeLen)
+		buf := make([]byte, LargeSizeLen)
 		_, err = io.ReadFull(r, buf)
 		if err != nil {
 			return BoxHeader{}, err
 		}
 		size = binary.BigEndian.Uint64(buf)
-		headerLen += largeSizeLen
+		headerLen += LargeSizeLen
 	} else if size == 0 {
 		return BoxHeader{}, fmt.Errorf("Size 0, meaning to end of file, not supported")
 	}

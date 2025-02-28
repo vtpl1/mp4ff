@@ -184,7 +184,7 @@ func (f *Fragment) AddFullSampleToTrack(s FullSample, trackID uint32) error {
 		return err
 	}
 	mdat := f.Mdat
-	mdat.lazyDataSize = 0
+	mdat.LazyDataSize = 0
 	mdat.AddSampleData(s.Data)
 
 	return nil
@@ -199,7 +199,7 @@ func (f *Fragment) AddSample(s Sample, baseMediaDecodeTime uint64) {
 		tfdt.SetBaseMediaDecodeTime(baseMediaDecodeTime)
 	}
 	trun.AddSample(s)
-	f.Mdat.lazyDataSize += uint64(s.Size)
+	f.Mdat.LazyDataSize += uint64(s.Size)
 }
 
 // AddSamples - add a slice of Sample to the first (and only) trun of a track
@@ -214,7 +214,7 @@ func (f *Fragment) AddSamples(ss []Sample, baseMediaDecodeTime uint64) {
 	for _, s := range ss {
 		accSize += uint64(s.Size)
 	}
-	f.Mdat.lazyDataSize += accSize
+	f.Mdat.LazyDataSize += accSize
 }
 
 // AddSampleToTrack - allows for adding samples to any track
@@ -253,7 +253,7 @@ func (f *Fragment) AddSampleToTrack(s Sample, trackID uint32, baseMediaDecodeTim
 		}
 	}
 	trun.AddSample(s)
-	f.Mdat.lazyDataSize += uint64(s.Size)
+	f.Mdat.LazyDataSize += uint64(s.Size)
 	return nil
 }
 

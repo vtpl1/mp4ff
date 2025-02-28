@@ -43,23 +43,23 @@ func DecodeSchmSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 }
 
 // Type - return box type
-func (b *SchmBox) Type() string {
+func (s *SchmBox) Type() string {
 	return "schm"
 }
 
 // Size - return calculated size
-func (b *SchmBox) Size() uint64 {
+func (s *SchmBox) Size() uint64 {
 	size := uint64(20)
-	if b.Flags&0x01 != 0 {
-		size += uint64(len(b.SchemeURI) + 1)
+	if s.Flags&0x01 != 0 {
+		size += uint64(len(s.SchemeURI) + 1)
 	}
 	return size
 }
 
 // Encode - write box to w
-func (b *SchmBox) Encode(w io.Writer) error {
-	sw := bits.NewFixedSliceWriter(int(b.Size()))
-	err := b.EncodeSW(sw)
+func (s *SchmBox) Encode(w io.Writer) error {
+	sw := bits.NewFixedSliceWriter(int(s.Size()))
+	err := s.EncodeSW(sw)
 	if err != nil {
 		return err
 	}
@@ -68,28 +68,28 @@ func (b *SchmBox) Encode(w io.Writer) error {
 }
 
 // EncodeSW - box-specific encode to slicewriter
-func (b *SchmBox) EncodeSW(sw bits.SliceWriter) error {
-	err := EncodeHeaderSW(b, sw)
+func (s *SchmBox) EncodeSW(sw bits.SliceWriter) error {
+	err := EncodeHeaderSW(s, sw)
 	if err != nil {
 		return err
 	}
-	versionAndFlags := (uint32(b.Version) << 24) + b.Flags
+	versionAndFlags := (uint32(s.Version) << 24) + s.Flags
 	sw.WriteUint32(versionAndFlags)
-	sw.WriteString(b.SchemeType, false)
-	sw.WriteUint32(b.SchemeVersion)
-	if b.Flags&0x01 != 0 {
-		sw.WriteString(b.SchemeURI, true)
+	sw.WriteString(s.SchemeType, false)
+	sw.WriteUint32(s.SchemeVersion)
+	if s.Flags&0x01 != 0 {
+		sw.WriteString(s.SchemeURI, true)
 	}
 	return sw.AccError()
 }
 
 // Info - write box info to w
-func (b *SchmBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
-	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	bd.writef(" - schemeType: %s", b.SchemeType)
-	bd.writef(" - schemeVersion: %d  (%d.%d)", b.SchemeVersion, b.SchemeVersion>>16, b.SchemeVersion&0xffff)
-	if b.Flags&0x01 != 0 {
-		bd.writef(" - schemeURI: %q", b.SchemeURI)
+func (s *SchmBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
+	bd := newInfoDumper(w, indent, s, int(s.Version), s.Flags)
+	bd.writef(" - schemeType: %s", s.SchemeType)
+	bd.writef(" - schemeVersion: %d  (%d.%d)", s.SchemeVersion, s.SchemeVersion>>16, s.SchemeVersion&0xffff)
+	if s.Flags&0x01 != 0 {
+		bd.writef(" - schemeURI: %q", s.SchemeURI)
 	}
 	return bd.err
 }

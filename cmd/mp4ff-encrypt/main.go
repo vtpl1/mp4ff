@@ -154,7 +154,7 @@ func encryptFile(ifh io.Reader, ofh io.Writer, initSeg *mp4.InitSegment,
 		return fmt.Errorf("invalid key %s, %w", keyStr, err)
 	}
 
-	var kidUUID mp4.UUID
+	var kidUUID mp4.UUIDType
 	if initSeg == nil {
 		kid, err := mp4.UnpackKey(kidStr)
 		if err != nil {

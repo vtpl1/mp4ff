@@ -49,7 +49,7 @@ type SeigSampleGroupEntry struct {
 	SkipByteBlock   byte
 	IsProtected     byte
 	PerSampleIVSize byte
-	KID             UUID
+	KID             UUIDType
 	// ConstantIVSize byte given by len(ConstantIV)
 	ConstantIV []byte
 }
@@ -63,7 +63,7 @@ func DecodeSeigSampleGroupEntry(name string, length uint32, sr bits.SliceReader)
 	s.SkipByteBlock = byteTwo & 0xf
 	s.IsProtected = sr.ReadUint8()
 	s.PerSampleIVSize = sr.ReadUint8()
-	s.KID = UUID(sr.ReadBytes(16))
+	s.KID = UUIDType(sr.ReadBytes(16))
 	if s.IsProtected == 1 && s.PerSampleIVSize == 0 {
 		constantIVSize := int(sr.ReadUint8())
 		s.ConstantIV = sr.ReadBytes(constantIVSize)

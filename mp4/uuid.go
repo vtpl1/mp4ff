@@ -11,10 +11,10 @@ import (
 	"github.com/vtpl1/mp4ff/bits"
 )
 
-// UUID - 16-byte KeyID or SystemID
-type UUID []byte
+// UUIDType - 16-byte KeyID or SystemID
+type UUIDType []byte
 
-func (u UUID) String() string {
+func (u UUIDType) String() string {
 	if len(u) != 16 {
 		return fmt.Sprintf("bad uuid %q", hex.EncodeToString(u))
 	}
@@ -23,12 +23,12 @@ func (u UUID) String() string {
 }
 
 // Equal compares with other UUID
-func (u UUID) Equal(a UUID) bool {
+func (u UUIDType) Equal(a UUIDType) bool {
 	return bytes.Equal(u[:], a[:])
 }
 
 // NewUUIDFromString creates a UUID from a hexadecimal, uuid-string or base64 string
-func NewUUIDFromString(h string) (UUID, error) {
+func NewUUIDFromString(h string) (UUIDType, error) {
 	return createUUID(h)
 }
 
@@ -52,16 +52,16 @@ const (
 )
 
 // createUUID - create uuid from hex, uuid-formatted hex, or base64 string
-func createUUID(u string) (UUID, error) {
+func createUUID(u string) (UUIDType, error) {
 	b, err := UnpackKey(u)
 	if err != nil {
 		return nil, err
 	}
-	return UUID(b), nil
+	return UUIDType(b), nil
 }
 
-// mustCreateUUID - create uuid from string. Panic for bad string
-func mustCreateUUID(u string) UUID {
+// MustCreateUUID - create uuid from string. Panic for bad string
+func MustCreateUUID(u string) UUIDType {
 	b, err := createUUID(u)
 	if err != nil {
 		panic(err.Error())
@@ -70,15 +70,15 @@ func mustCreateUUID(u string) UUID {
 }
 
 var (
-	uuidTfxd     UUID = mustCreateUUID(UUIDTfxd)
-	uuidTfrf     UUID = mustCreateUUID(UUIDTfrf)
-	uuidPiffSenc UUID = mustCreateUUID(UUIDPiffSenc)
+	uuidTfxd     UUIDType = MustCreateUUID(UUIDTfxd)
+	uuidTfrf     UUIDType = MustCreateUUID(UUIDTfrf)
+	uuidPiffSenc UUIDType = MustCreateUUID(UUIDPiffSenc)
 )
 
 // UUIDBox - Used as container for MSS boxes tfxd and tfrf
 // For unknown UUID, the data after the UUID is stored as UnknownPayload
 type UUIDBox struct {
-	uuid           UUID
+	UUID           UUIDType
 	Tfxd           *TfxdData
 	Tfrf           *TfrfData
 	Senc           *SencBox
@@ -86,15 +86,15 @@ type UUIDBox struct {
 	UnknownPayload []byte
 }
 
-// UUID - Return UUID as formatted string
-func (b *UUIDBox) UUID() string {
-	return b.uuid.String()
+// UUIDStr - Return UUIDStr as formatted string
+func (b *UUIDBox) UUIDStr() string {
+	return b.UUID.String()
 }
 
 // UUID - Set UUID from string corresponding to 16 bytes.
 // The input should be a UUID-formatted hex string, plain hex or baset64 encoded.
 func (b *UUIDBox) SetUUID(uuid string) (err error) {
-	b.uuid, err = createUUID(uuid)
+	b.UUID, err = createUUID(uuid)
 	return err
 }
 
@@ -131,9 +131,9 @@ func DecodeUUIDBox(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 func DecodeUUIDBoxSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, error) {
 	b := &UUIDBox{
 		StartPos: startPos,
-		uuid:     sr.ReadBytes(16),
+		UUID:     sr.ReadBytes(16),
 	}
-	switch b.UUID() {
+	switch b.UUIDStr() {
 	case UUIDTfxd:
 		tfxd, err := decodeTfxd(sr)
 		if err != nil {
@@ -175,7 +175,7 @@ func (b *UUIDBox) Type() string {
 // Size - return calculated size including tfxd/tfrf
 func (b *UUIDBox) Size() uint64 {
 	var size uint64 = 8 + 16
-	switch u := b.uuid; {
+	switch u := b.UUID; {
 	case u.Equal(uuidTfxd):
 		size += b.Tfxd.size()
 	case u.Equal(uuidTfrf):
@@ -205,8 +205,8 @@ func (b *UUIDBox) EncodeSW(sw bits.SliceWriter) error {
 	if err != nil {
 		return err
 	}
-	sw.WriteBytes(b.uuid[:])
-	switch u := b.uuid; {
+	sw.WriteBytes(b.UUID[:])
+	switch u := b.UUID; {
 	case u.Equal(uuidTfxd):
 		err = b.Tfxd.encode(sw)
 	case u.Equal(uuidTfrf):
@@ -224,7 +224,7 @@ func (b *UUIDBox) EncodeSW(sw bits.SliceWriter) error {
 
 // SubType - interpret the UUID as a known sub type or unknown
 func (b *UUIDBox) SubType() string {
-	switch u := b.uuid; {
+	switch u := b.UUID; {
 	case u.Equal(uuidTfxd):
 		return "tfxd"
 	case u.Equal(uuidTfrf):
@@ -322,7 +322,7 @@ func (t *TfrfData) encode(sw bits.SliceWriter) error {
 // Info - box-specific info
 func (b *UUIDBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.writef(" - uuid: %s", b.uuid)
+	bd.writef(" - uuid: %s", b.UUID)
 	bd.writef(" - subType: %s", b.SubType())
 	level := getInfoLevel(b, specificBoxLevels)
 	if level > 0 {

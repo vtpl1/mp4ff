@@ -51,7 +51,7 @@ func TestEncodeDecodePSSH(t *testing.T) {
 	pssh = &PsshBox{
 		Version:  1,
 		SystemID: pr,
-		KIDs:     []UUID{ku},
+		KIDs:     []UUIDType{ku},
 		Data:     []byte("some data"),
 	}
 	boxDiffAfterEncodeAndDecode(t, pssh)

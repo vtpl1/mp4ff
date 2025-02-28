@@ -59,7 +59,7 @@ func TestUUIDVariants(t *testing.T) {
 func TestSetUUID(t *testing.T) {
 	testCases := []struct {
 		uuidStr    string
-		expected   UUID
+		expected   UUIDType
 		shouldFail bool
 	}{
 		{
@@ -80,15 +80,15 @@ func TestSetUUID(t *testing.T) {
 			}
 			continue
 		}
-		if u.UUID() != tc.uuidStr {
-			t.Errorf("got %s instead of %s", u.UUID(), tc.uuidStr)
+		if u.UUIDStr() != tc.uuidStr {
+			t.Errorf("got %s instead of %s", u.UUIDStr(), tc.uuidStr)
 		}
 	}
 }
 
 func TestUUIDEncodeDecoder(t *testing.T) {
 	tfrf := &UUIDBox{
-		uuid: mustCreateUUID(UUIDTfrf),
+		UUID: MustCreateUUID(UUIDTfrf),
 		Tfrf: &TfrfData{
 			FragmentCount:             1,
 			FragmentAbsoluteTimes:     []uint64{0},
@@ -99,7 +99,7 @@ func TestUUIDEncodeDecoder(t *testing.T) {
 	boxDiffAfterEncodeAndDecode(t, tfrf)
 
 	tfxd := &UUIDBox{
-		uuid: mustCreateUUID(UUIDTfxd),
+		UUID: MustCreateUUID(UUIDTfxd),
 		Tfxd: &TfxdData{
 			FragmentAbsoluteTime:     0,
 			FragmentAbsoluteDuration: 1000000,

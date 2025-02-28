@@ -300,7 +300,7 @@ type (
 )
 
 // InitProtect modifies the init segment to add protection information and return what is needed to encrypt fragments.
-func InitProtect(init *InitSegment, key, iv []byte, scheme string, kid UUID, psshBoxes []*PsshBox) (*InitProtectData, error) {
+func InitProtect(init *InitSegment, key, iv []byte, scheme string, kid UUIDType, psshBoxes []*PsshBox) (*InitProtectData, error) {
 	ipd := InitProtectData{Scheme: scheme}
 	moov := init.Moov
 	if len(moov.Traks) != 1 {

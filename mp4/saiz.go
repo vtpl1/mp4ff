@@ -65,52 +65,52 @@ func NewSaizBox(capacity int) *SaizBox {
 
 // AddSampleInfo adds a sampleinfo info based on parameters provided.
 // If no length field, don't update the sample field (typicall audio cbcs)
-func (b *SaizBox) AddSampleInfo(iv []byte, subsamplePatterns []SubSamplePattern) {
+func (s *SaizBox) AddSampleInfo(iv []byte, subsamplePatterns []SubSamplePattern) {
 	size := len(iv)
 	if len(subsamplePatterns) > 0 {
 		size += 2 + len(subsamplePatterns)*6
-		b.SampleInfo = append(b.SampleInfo, byte(size))
+		s.SampleInfo = append(s.SampleInfo, byte(size))
 	} else if size > 0 {
-		switch b.DefaultSampleInfoSize {
+		switch s.DefaultSampleInfoSize {
 		case 0:
-			b.DefaultSampleInfoSize = byte(size)
+			s.DefaultSampleInfoSize = byte(size)
 		default:
-			if byte(size) != b.DefaultSampleInfoSize {
+			if byte(size) != s.DefaultSampleInfoSize {
 				panic("inconsistent sample info size")
 			}
 		}
 	}
 	if size > 0 {
-		b.SampleCount++
+		s.SampleCount++
 	}
 }
 
 // Type - return box type
-func (b *SaizBox) Type() string {
+func (s *SaizBox) Type() string {
 	return "saiz"
 }
 
 // Size - return calculated size
-func (b *SaizBox) Size() uint64 {
-	return b.expectedSize()
+func (s *SaizBox) Size() uint64 {
+	return s.expectedSize()
 }
 
 // expectedSize - calculate size based on flags and sample count
-func (b *SaizBox) expectedSize() uint64 {
+func (s *SaizBox) expectedSize() uint64 {
 	size := uint64(boxHeaderSize + 9) // 9 = version + flags(4) + defaultSampleInfoSize(1) + sampleCount(4)
-	if b.Flags&0x01 != 0 {
+	if s.Flags&0x01 != 0 {
 		size += 8 // auxInfoType(4) + auxInfoTypeParameter(4)
 	}
-	if b.DefaultSampleInfoSize == 0 {
-		size += uint64(b.SampleCount) // 1 byte per sample info when default size is 0
+	if s.DefaultSampleInfoSize == 0 {
+		size += uint64(s.SampleCount) // 1 byte per sample info when default size is 0
 	}
 	return size
 }
 
 // Encode - write box to w
-func (b *SaizBox) Encode(w io.Writer) error {
-	sw := bits.NewFixedSliceWriter(int(b.Size()))
-	err := b.EncodeSW(sw)
+func (s *SaizBox) Encode(w io.Writer) error {
+	sw := bits.NewFixedSliceWriter(int(s.Size()))
+	err := s.EncodeSW(sw)
 	if err != nil {
 		return err
 	}
@@ -119,41 +119,41 @@ func (b *SaizBox) Encode(w io.Writer) error {
 }
 
 // EncodeSW - box-specific encode to slicewriter
-func (b *SaizBox) EncodeSW(sw bits.SliceWriter) error {
-	err := EncodeHeaderSW(b, sw)
+func (s *SaizBox) EncodeSW(sw bits.SliceWriter) error {
+	err := EncodeHeaderSW(s, sw)
 	if err != nil {
 		return err
 	}
-	versionAndFlags := (uint32(b.Version) << 24) + b.Flags
+	versionAndFlags := (uint32(s.Version) << 24) + s.Flags
 	sw.WriteUint32(versionAndFlags)
-	if b.Flags&0x01 != 0 {
-		sw.WriteString(b.AuxInfoType, false)
-		sw.WriteUint32(b.AuxInfoTypeParameter)
+	if s.Flags&0x01 != 0 {
+		sw.WriteString(s.AuxInfoType, false)
+		sw.WriteUint32(s.AuxInfoTypeParameter)
 	}
-	sw.WriteUint8(b.DefaultSampleInfoSize)
-	sw.WriteUint32(b.SampleCount)
-	if b.DefaultSampleInfoSize == 0 {
-		for i := uint32(0); i < b.SampleCount; i++ {
-			sw.WriteUint8(b.SampleInfo[i])
+	sw.WriteUint8(s.DefaultSampleInfoSize)
+	sw.WriteUint32(s.SampleCount)
+	if s.DefaultSampleInfoSize == 0 {
+		for i := uint32(0); i < s.SampleCount; i++ {
+			sw.WriteUint8(s.SampleInfo[i])
 		}
 	}
 	return sw.AccError()
 }
 
 // Info - write SaizBox details. Get sampleInfo list with level >= 1
-func (b *SaizBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
-	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	if b.Flags&0x01 != 0 {
-		bd.writef(" - auxInfoType: %s", b.AuxInfoType)
-		bd.writef(" - auxInfoTypeParameter: %d", b.AuxInfoTypeParameter)
+func (s *SaizBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
+	bd := newInfoDumper(w, indent, s, int(s.Version), s.Flags)
+	if s.Flags&0x01 != 0 {
+		bd.writef(" - auxInfoType: %s", s.AuxInfoType)
+		bd.writef(" - auxInfoTypeParameter: %d", s.AuxInfoTypeParameter)
 	}
-	bd.writef(" - defaultSampleInfoSize: %d", b.DefaultSampleInfoSize)
-	bd.writef(" - sampleCount: %d", b.SampleCount)
-	level := getInfoLevel(b, specificBoxLevels)
+	bd.writef(" - defaultSampleInfoSize: %d", s.DefaultSampleInfoSize)
+	bd.writef(" - sampleCount: %d", s.SampleCount)
+	level := getInfoLevel(s, specificBoxLevels)
 	if level > 0 {
-		if b.DefaultSampleInfoSize == 0 {
-			for i := uint32(0); i < b.SampleCount; i++ {
-				bd.writef(" - sampleInfo[%d]=%d", i+1, b.SampleInfo[i])
+		if s.DefaultSampleInfoSize == 0 {
+			for i := uint32(0); i < s.SampleCount; i++ {
+				bd.writef(" - sampleInfo[%d]=%d", i+1, s.SampleInfo[i])
 			}
 		}
 	}

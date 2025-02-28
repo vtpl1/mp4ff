@@ -20,7 +20,7 @@ const (
 )
 
 // ProtectionSystemName returns name of protection system if known.
-func ProtectionSystemName(systemID UUID) string {
+func ProtectionSystemName(systemID UUIDType) string {
 	uStr := systemID.String()
 	uStr = strings.ToLower(uStr)
 	switch uStr {
@@ -44,8 +44,8 @@ func ProtectionSystemName(systemID UUID) string {
 type PsshBox struct {
 	Version  byte
 	Flags    uint32
-	SystemID UUID
-	KIDs     []UUID
+	SystemID UUIDType
+	KIDs     []UUIDType
 	Data     []byte
 }
 
@@ -68,11 +68,11 @@ func DecodePsshSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 		Version: version,
 		Flags:   versionAndFlags & flagsMask,
 	}
-	b.SystemID = UUID(sr.ReadFixedLengthString(16))
+	b.SystemID = UUIDType(sr.ReadFixedLengthString(16))
 	if b.Version > 0 {
 		kidCount := sr.ReadUint32()
 		for i := uint32(0); i < kidCount; i++ {
-			b.KIDs = append(b.KIDs, UUID(sr.ReadFixedLengthString(16)))
+			b.KIDs = append(b.KIDs, UUIDType(sr.ReadFixedLengthString(16)))
 			if sr.AccError() != nil {
 				return nil, sr.AccError()
 			}

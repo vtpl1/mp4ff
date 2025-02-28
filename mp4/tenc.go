@@ -16,7 +16,7 @@ type TencBox struct {
 	DefaultSkipByteBlock   byte
 	DefaultIsProtected     byte
 	DefaultPerSampleIVSize byte
-	DefaultKID             UUID
+	DefaultKID             UUIDType
 	// DefaultConstantIVSize  byte given by len(DefaultConstantIV)
 	DefaultConstantIV []byte
 }
@@ -50,7 +50,7 @@ func DecodeTencSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 	}
 	b.DefaultIsProtected = sr.ReadUint8()
 	b.DefaultPerSampleIVSize = sr.ReadUint8()
-	b.DefaultKID = UUID(sr.ReadBytes(16))
+	b.DefaultKID = UUIDType(sr.ReadBytes(16))
 	if b.DefaultIsProtected == 1 && b.DefaultPerSampleIVSize == 0 {
 		defaultConstantIVSize := int(sr.ReadUint8())
 		b.DefaultConstantIV = sr.ReadBytes(defaultConstantIVSize)
@@ -59,23 +59,23 @@ func DecodeTencSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 }
 
 // Type - return box type
-func (b *TencBox) Type() string {
+func (t *TencBox) Type() string {
 	return "tenc"
 }
 
 // Size - return calculated size
-func (b *TencBox) Size() uint64 {
+func (t *TencBox) Size() uint64 {
 	var size uint64 = 32
-	if b.DefaultIsProtected == 1 && b.DefaultPerSampleIVSize == 0 {
-		size += uint64(1 + len(b.DefaultConstantIV))
+	if t.DefaultIsProtected == 1 && t.DefaultPerSampleIVSize == 0 {
+		size += uint64(1 + len(t.DefaultConstantIV))
 	}
 	return size
 }
 
 // Encode - write box to w
-func (b *TencBox) Encode(w io.Writer) error {
-	sw := bits.NewFixedSliceWriter(int(b.Size()))
-	err := b.EncodeSW(sw)
+func (t *TencBox) Encode(w io.Writer) error {
+	sw := bits.NewFixedSliceWriter(int(t.Size()))
+	err := t.EncodeSW(sw)
 	if err != nil {
 		return err
 	}
@@ -84,41 +84,41 @@ func (b *TencBox) Encode(w io.Writer) error {
 }
 
 // EncodeSW - box-specific encode to slicewriter
-func (b *TencBox) EncodeSW(sw bits.SliceWriter) error {
-	err := EncodeHeaderSW(b, sw)
+func (t *TencBox) EncodeSW(sw bits.SliceWriter) error {
+	err := EncodeHeaderSW(t, sw)
 	if err != nil {
 		return err
 	}
-	versionAndFlags := (uint32(b.Version) << 24) + b.Flags
+	versionAndFlags := (uint32(t.Version) << 24) + t.Flags
 	sw.WriteUint32(versionAndFlags)
 	sw.WriteUint8(0) // reserved
-	if b.Version == 0 {
+	if t.Version == 0 {
 		sw.WriteUint8(0) // reserved
 	} else {
-		sw.WriteUint8(b.DefaultCryptByteBlock<<4 | b.DefaultSkipByteBlock)
+		sw.WriteUint8(t.DefaultCryptByteBlock<<4 | t.DefaultSkipByteBlock)
 	}
-	sw.WriteUint8(b.DefaultIsProtected)
-	sw.WriteUint8(b.DefaultPerSampleIVSize)
-	sw.WriteBytes(b.DefaultKID)
-	if b.DefaultIsProtected == 1 && b.DefaultPerSampleIVSize == 0 {
-		sw.WriteUint8(byte(len(b.DefaultConstantIV)))
-		sw.WriteBytes(b.DefaultConstantIV)
+	sw.WriteUint8(t.DefaultIsProtected)
+	sw.WriteUint8(t.DefaultPerSampleIVSize)
+	sw.WriteBytes(t.DefaultKID)
+	if t.DefaultIsProtected == 1 && t.DefaultPerSampleIVSize == 0 {
+		sw.WriteUint8(byte(len(t.DefaultConstantIV)))
+		sw.WriteBytes(t.DefaultConstantIV)
 	}
 	return sw.AccError()
 }
 
 // Info - write box info to w
-func (b *TencBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
-	bd := newInfoDumper(w, indent, b, int(b.Version), b.Flags)
-	if b.Version > 0 {
-		bd.writef(" - defaultCryptByteBlock: %d", b.DefaultCryptByteBlock)
-		bd.writef(" - defaultSkipByteBlock: %d", b.DefaultSkipByteBlock)
+func (t *TencBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
+	bd := newInfoDumper(w, indent, t, int(t.Version), t.Flags)
+	if t.Version > 0 {
+		bd.writef(" - defaultCryptByteBlock: %d", t.DefaultCryptByteBlock)
+		bd.writef(" - defaultSkipByteBlock: %d", t.DefaultSkipByteBlock)
 	}
-	bd.writef(" - defaultIsProtected: %d", b.DefaultIsProtected)
-	bd.writef(" - defaultPerSampleIVSize: %d", b.DefaultPerSampleIVSize)
-	bd.writef(" - defaultKID: %s", b.DefaultKID)
-	if b.DefaultIsProtected == 1 && b.DefaultPerSampleIVSize == 0 {
-		bd.writef(" - defaultConstantIV: %s", hex.EncodeToString(b.DefaultConstantIV))
+	bd.writef(" - defaultIsProtected: %d", t.DefaultIsProtected)
+	bd.writef(" - defaultPerSampleIVSize: %d", t.DefaultPerSampleIVSize)
+	bd.writef(" - defaultKID: %s", t.DefaultKID)
+	if t.DefaultIsProtected == 1 && t.DefaultPerSampleIVSize == 0 {
+		bd.writef(" - defaultConstantIV: %s", hex.EncodeToString(t.DefaultConstantIV))
 	}
 	return bd.err
 }

@@ -63,10 +63,10 @@ func (t *TrafBox) ContainsSencBox() (ok, parsed bool) {
 	for _, c := range t.Children {
 		switch box := c.(type) {
 		case *SencBox:
-			return true, !box.readButNotParsed
+			return true, !box.ReadButNotParsed
 		case *UUIDBox: // PIFF
 			if box.SubType() == "senc" {
-				return true, !box.Senc.readButNotParsed
+				return true, !box.Senc.ReadButNotParsed
 			}
 		}
 	}

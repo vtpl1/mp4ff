@@ -81,42 +81,42 @@ func DecodeDac3SR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 }
 
 func decodeDac3FromData(data []byte) (Box, error) {
-	b := Dac3Box{}
+	d := Dac3Box{}
 	if len(data) > 3 {
-		b.InitialZeroes = byte(len(data) - 3)
+		d.InitialZeroes = byte(len(data) - 3)
 	}
 	buf := bytes.NewBuffer(data)
 	br := bits.NewReader(buf)
-	for i := 0; i < int(b.InitialZeroes); i++ {
+	for i := 0; i < int(d.InitialZeroes); i++ {
 		if zero := br.ReadBits(8); zero != 0 {
 			return nil, fmt.Errorf("dac3 box, extra initial bytes are not zero")
 		}
 	}
-	b.FSCod = byte(br.ReadBits(2))
-	b.BSID = byte(br.ReadBits(5))
-	b.BSMod = byte(br.ReadBits(3))
-	b.ACMod = byte(br.ReadBits(3))
-	b.LFEOn = byte(br.ReadBits(1))
-	b.BitRateCode = byte(br.ReadBits(5))
+	d.FSCod = byte(br.ReadBits(2))
+	d.BSID = byte(br.ReadBits(5))
+	d.BSMod = byte(br.ReadBits(3))
+	d.ACMod = byte(br.ReadBits(3))
+	d.LFEOn = byte(br.ReadBits(1))
+	d.BitRateCode = byte(br.ReadBits(5))
 	// 5 bits reserved follows
-	b.Reserved = byte(br.ReadBits(5))
-	return &b, nil
+	d.Reserved = byte(br.ReadBits(5))
+	return &d, nil
 }
 
 // Type - box type
-func (b *Dac3Box) Type() string {
+func (d *Dac3Box) Type() string {
 	return "dac3"
 }
 
 // Size - calculated size of box
-func (b *Dac3Box) Size() uint64 {
-	return uint64(boxHeaderSize + 3 + uint(b.InitialZeroes))
+func (d *Dac3Box) Size() uint64 {
+	return uint64(boxHeaderSize + 3 + uint(d.InitialZeroes))
 }
 
 // Encode - write box to w
-func (b *Dac3Box) Encode(w io.Writer) error {
-	sw := bits.NewFixedSliceWriter(int(b.Size()))
-	err := b.EncodeSW(sw)
+func (d *Dac3Box) Encode(w io.Writer) error {
+	sw := bits.NewFixedSliceWriter(int(d.Size()))
+	err := d.EncodeSW(sw)
 	if err != nil {
 		return err
 	}
@@ -125,28 +125,28 @@ func (b *Dac3Box) Encode(w io.Writer) error {
 }
 
 // Encode - write box to sw
-func (b *Dac3Box) EncodeSW(sw bits.SliceWriter) error {
-	err := EncodeHeaderSW(b, sw)
+func (d *Dac3Box) EncodeSW(sw bits.SliceWriter) error {
+	err := EncodeHeaderSW(d, sw)
 	if err != nil {
 		return err
 	}
-	for i := 0; i < int(b.InitialZeroes); i++ {
+	for i := 0; i < int(d.InitialZeroes); i++ {
 		sw.WriteBits(0, 8)
 	}
-	sw.WriteBits(uint(b.FSCod), 2)
-	sw.WriteBits(uint(b.BSID), 5)
-	sw.WriteBits(uint(b.BSMod), 3)
-	sw.WriteBits(uint(b.ACMod), 3)
-	sw.WriteBits(uint(b.LFEOn), 1)
-	sw.WriteBits(uint(b.BitRateCode), 5)
-	sw.WriteBits(uint(b.Reserved), 5) // 5-bits reserved
+	sw.WriteBits(uint(d.FSCod), 2)
+	sw.WriteBits(uint(d.BSID), 5)
+	sw.WriteBits(uint(d.BSMod), 3)
+	sw.WriteBits(uint(d.ACMod), 3)
+	sw.WriteBits(uint(d.LFEOn), 1)
+	sw.WriteBits(uint(d.BitRateCode), 5)
+	sw.WriteBits(uint(d.Reserved), 5) // 5-bits reserved
 	return sw.AccError()
 }
 
 // ChannelInfo - number of channels and channelmap according to E.1.3.1.8
-func (b *Dac3Box) ChannelInfo() (nrChannels int, chanmap uint16) {
-	speakers := GetChannelListFromACMod(b.ACMod)
-	if b.LFEOn == 1 {
+func (d *Dac3Box) ChannelInfo() (nrChannels int, chanmap uint16) {
+	speakers := GetChannelListFromACMod(d.ACMod)
+	if d.LFEOn == 1 {
 		speakers = append(speakers, "LFE")
 	}
 	nrChannels = len(speakers)
@@ -156,30 +156,30 @@ func (b *Dac3Box) ChannelInfo() (nrChannels int, chanmap uint16) {
 	return nrChannels, chanmap
 }
 
-func (b *Dac3Box) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.writef(" - sampleRateCode=%d => sampleRate=%d", b.FSCod, AC3SampleRates[b.FSCod])
-	bd.writef(" - bitStreamInformation=%d", b.BSID)
-	bd.writef(" - audioCodingMode=%d => channelConfiguration=%q", b.ACMod, AC3acmodChannelTable[b.ACMod])
-	bd.writef(" - lowFrequencyEffectsChannelOn=%d", b.LFEOn)
-	bd.writef(" - bitRateCode=%d => bitrate=%dkbps", b.BitRateCode, AC3BitrateCodesKbps[b.BitRateCode])
-	nrChannels, chanmap := b.ChannelInfo()
+func (d *Dac3Box) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
+	bd := newInfoDumper(w, indent, d, -1, 0)
+	bd.writef(" - sampleRateCode=%d => sampleRate=%d", d.FSCod, AC3SampleRates[d.FSCod])
+	bd.writef(" - bitStreamInformation=%d", d.BSID)
+	bd.writef(" - audioCodingMode=%d => channelConfiguration=%q", d.ACMod, AC3acmodChannelTable[d.ACMod])
+	bd.writef(" - lowFrequencyEffectsChannelOn=%d", d.LFEOn)
+	bd.writef(" - bitRateCode=%d => bitrate=%dkbps", d.BitRateCode, AC3BitrateCodesKbps[d.BitRateCode])
+	nrChannels, chanmap := d.ChannelInfo()
 	bd.writef(" - nrChannels=%d, chanmap=%04x", nrChannels, chanmap)
-	if b.Reserved != 0 {
-		bd.writef(" - reserved=%d", b.Reserved)
+	if d.Reserved != 0 {
+		bd.writef(" - reserved=%d", d.Reserved)
 	}
-	if b.InitialZeroes > 0 {
-		bd.writef(" - weird initial zero bytes=%d", b.InitialZeroes)
+	if d.InitialZeroes > 0 {
+		bd.writef(" - weird initial zero bytes=%d", d.InitialZeroes)
 	}
 	return bd.err
 }
 
-func (b *Dac3Box) BitrateBps() int {
-	return int(AC3BitrateCodesKbps[b.BitRateCode]) * 1000
+func (d *Dac3Box) BitrateBps() int {
+	return int(AC3BitrateCodesKbps[d.BitRateCode]) * 1000
 }
 
-func (b *Dac3Box) SamplingFrequency() int {
-	return int(AC3SampleRates[b.FSCod])
+func (d *Dac3Box) SamplingFrequency() int {
+	return int(AC3SampleRates[d.FSCod])
 }
 
 // GetChannelListFromACMod - get list of channels from acmod byte

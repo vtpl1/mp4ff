@@ -52,7 +52,7 @@ func TestEncodeAndDecodeMdatLargeSize(t *testing.T) {
 	mdat.AddSampleData(sample)
 	mdat.LargeSize = true
 
-	expectedMdatSize := 15 + largeSizeLen
+	expectedMdatSize := 15 + LargeSizeLen
 	mdatSize := mdat.Size()
 	if mdatSize != uint64(expectedMdatSize) {
 		t.Errorf("mdat size is %d instead of expected %d", mdatSize, expectedMdatSize)
@@ -111,7 +111,7 @@ func TestReadData_LazyMdatMode(t *testing.T) {
 
 	lazyMdat := &MdatBox{
 		StartPos:     0,
-		lazyDataSize: 6,
+		LazyDataSize: 6,
 	}
 
 	// test ReadData with provided ReadSeeker
@@ -165,7 +165,7 @@ func TestCopyData_LazyMdatMode(t *testing.T) {
 
 	lazyMdat := &MdatBox{
 		StartPos:     0,
-		lazyDataSize: 6,
+		LazyDataSize: 6,
 	}
 
 	// test ReadData with provided ReadSeeker

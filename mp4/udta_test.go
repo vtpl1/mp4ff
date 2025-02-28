@@ -5,9 +5,9 @@ import "testing"
 func TestUdta(t *testing.T) {
 	udta := &UdtaBox{}
 	unknown := &UnknownBox{
-		name:       "\xa9enc",
-		size:       12,
-		notDecoded: []byte{0, 0, 0, 0},
+		Name:       "\xa9enc",
+		SizeN:      12,
+		NotDecoded: []byte{0, 0, 0, 0},
 	}
 
 	udta.AddChild(unknown) // Any arbitrary box

@@ -21,7 +21,7 @@ func TestSencDirectValues(t *testing.T) {
 				Version:         0,
 				Flags:           0,
 				SampleCount:     431, // No perSampleIVs
-				perSampleIVSize: 0,
+				PerSampleIVSize: 0,
 			},
 		},
 		{
@@ -30,7 +30,7 @@ func TestSencDirectValues(t *testing.T) {
 				Version:         0,
 				Flags:           0,
 				SampleCount:     1,
-				perSampleIVSize: 8,
+				PerSampleIVSize: 8,
 				IVs:             []InitializationVector{iv8},
 				SubSamples:      [][]SubSamplePattern{{{10, 1000}}},
 			},
@@ -41,7 +41,7 @@ func TestSencDirectValues(t *testing.T) {
 				Version:         0,
 				Flags:           0,
 				SampleCount:     1,
-				perSampleIVSize: 16,
+				PerSampleIVSize: 16,
 				IVs:             []InitializationVector{iv16},
 				SubSamples:      [][]SubSamplePattern{{{10, 1000}, {20, 2000}}},
 			},
@@ -52,7 +52,7 @@ func TestSencDirectValues(t *testing.T) {
 				Version:         0,
 				Flags:           0,
 				SampleCount:     2,
-				perSampleIVSize: 16,
+				PerSampleIVSize: 16,
 				IVs:             []InitializationVector{iv16, iv16},
 				SubSamples:      [][]SubSamplePattern{{{10, 1000}}, {{20, 2000}}},
 			},
@@ -62,7 +62,7 @@ func TestSencDirectValues(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.desc, func(t *testing.T) {
 			sencDiffAfterEncodeAndDecode(t, c.senc, 0)
-			sencDiffAfterEncodeAndDecode(t, c.senc, c.senc.perSampleIVSize)
+			sencDiffAfterEncodeAndDecode(t, c.senc, c.senc.PerSampleIVSize)
 		})
 	}
 }
@@ -82,7 +82,7 @@ func sencDiffAfterEncodeAndDecode(t *testing.T, senc *SencBox, perSampleIVSize b
 	decSenc := boxDec.(*SencBox)
 	var saizBox *SaizBox
 
-	if decSenc.readButNotParsed {
+	if decSenc.ReadButNotParsed {
 		err = decSenc.ParseReadBox(perSampleIVSize, saizBox)
 		if err != nil {
 			t.Error(err)

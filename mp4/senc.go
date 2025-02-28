@@ -28,8 +28,8 @@ type InitializationVector []byte
 // Full Box + SampleCount
 type SencBox struct {
 	Version          byte
-	readButNotParsed bool
-	perSampleIVSize  byte
+	ReadButNotParsed bool
+	PerSampleIVSize  byte
 	Flags            uint32
 	SampleCount      uint32
 	StartPos         uint64
@@ -66,8 +66,8 @@ type SencSample struct {
 func (s *SencBox) AddSample(sample SencSample) error {
 	if len(sample.IV) != 0 {
 		if s.SampleCount == 0 {
-			s.perSampleIVSize = byte(len(sample.IV))
-		} else if len(sample.IV) != int(s.perSampleIVSize) {
+			s.PerSampleIVSize = byte(len(sample.IV))
+		} else if len(sample.IV) != int(s.PerSampleIVSize) {
 			return fmt.Errorf("mix of IV lengths")
 		}
 
@@ -112,7 +112,7 @@ func DecodeSenc(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 		Flags:            flags,
 		StartPos:         startPos,
 		SampleCount:      sampleCount,
-		readButNotParsed: true,
+		ReadButNotParsed: true,
 		readBoxSize:      hdr.Size,
 	}
 
@@ -122,7 +122,7 @@ func DecodeSenc(hdr BoxHeader, startPos uint64, r io.Reader) (Box, error) {
 	}
 
 	if senc.SampleCount == 0 || len(senc.rawData) == 0 {
-		senc.readButNotParsed = false
+		senc.ReadButNotParsed = false
 		return &senc, nil
 	}
 	return &senc, nil
@@ -153,12 +153,12 @@ func DecodeSencSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 		Flags:            flags,
 		StartPos:         startPos,
 		SampleCount:      sampleCount,
-		readButNotParsed: true,
+		ReadButNotParsed: true,
 		readBoxSize:      hdr.Size,
 	}
 
 	if senc.SampleCount == 0 || len(senc.rawData) == 0 {
-		senc.readButNotParsed = false
+		senc.ReadButNotParsed = false
 		return &senc, sr.AccError()
 	}
 	return &senc, sr.AccError()
@@ -167,11 +167,11 @@ func DecodeSencSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 // ParseReadBox - second phase when perSampleIVSize should be known from tenc or sgpd boxes
 // if perSampleIVSize is 0, we try to find the appropriate error given data length
 func (s *SencBox) ParseReadBox(perSampleIVSize byte, saiz *SaizBox) error {
-	if !s.readButNotParsed {
+	if !s.ReadButNotParsed {
 		return fmt.Errorf("senc box already parsed")
 	}
 	if perSampleIVSize != 0 {
-		s.perSampleIVSize = byte(perSampleIVSize)
+		s.PerSampleIVSize = byte(perSampleIVSize)
 	}
 	sr := bits.NewFixedSliceReader(s.rawData)
 	nrBytesLeft := uint32(sr.NrRemainingBytes())
@@ -180,7 +180,7 @@ func (s *SencBox) ParseReadBox(perSampleIVSize byte, saiz *SaizBox) error {
 		// No subsamples
 		if perSampleIVSize == 0 { // Infer the size
 			perSampleIVSize = byte(nrBytesLeft / s.SampleCount)
-			s.perSampleIVSize = perSampleIVSize
+			s.PerSampleIVSize = perSampleIVSize
 		}
 
 		s.IVs = make([]InitializationVector, 0, s.SampleCount)
@@ -198,7 +198,7 @@ func (s *SencBox) ParseReadBox(perSampleIVSize byte, saiz *SaizBox) error {
 		default:
 			return fmt.Errorf("strange derived PerSampleIVSize: %d", perSampleIVSize)
 		}
-		s.readButNotParsed = false
+		s.ReadButNotParsed = false
 		return nil
 	}
 	// 6 bytes of subsamplecount per subsample and known perSampleIVSize
@@ -209,7 +209,7 @@ func (s *SencBox) ParseReadBox(perSampleIVSize byte, saiz *SaizBox) error {
 		if ok := s.parseAndFillSamples(sr, perSampleIVSize); !ok {
 			return fmt.Errorf("error decoding senc with perSampleIVSize = %d", perSampleIVSize)
 		}
-		s.readButNotParsed = false
+		s.ReadButNotParsed = false
 		return nil
 	}
 
@@ -226,7 +226,7 @@ func (s *SencBox) ParseReadBox(perSampleIVSize byte, saiz *SaizBox) error {
 	if !ok {
 		return fmt.Errorf("could not decode senc")
 	}
-	s.readButNotParsed = false
+	s.ReadButNotParsed = false
 	return nil
 }
 
@@ -263,7 +263,7 @@ func (s *SencBox) parseAndFillSamples(sr bits.SliceReader, perSampleIVSize byte)
 		s.SubSamples = nil
 		ok = false
 	}
-	s.perSampleIVSize = byte(perSampleIVSize)
+	s.PerSampleIVSize = byte(perSampleIVSize)
 	return ok
 }
 
@@ -331,7 +331,7 @@ func (s *SencBox) EncodeSWNoHdr(sw bits.SliceWriter) error {
 	versionAndFlags := (uint32(s.Version) << 24) + s.Flags
 	sw.WriteUint32(versionAndFlags)
 	sw.WriteUint32(s.SampleCount)
-	if s.readButNotParsed {
+	if s.ReadButNotParsed {
 		sw.WriteBytes(s.rawData)
 		return sw.AccError()
 	}
@@ -355,7 +355,7 @@ func (s *SencBox) EncodeSWNoHdr(sw bits.SliceWriter) error {
 func (s *SencBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, s, int(s.Version), s.Flags)
 	bd.writef(" - sampleCount: %d", s.SampleCount)
-	if s.readButNotParsed {
+	if s.ReadButNotParsed {
 		bd.writef(" - NOT YET PARSED, call ParseReadBox to parse it")
 		return nil
 	}
@@ -387,5 +387,5 @@ func (s *SencBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 
 // GetPerSampleIVSize - return perSampleIVSize
 func (s *SencBox) GetPerSampleIVSize() int {
-	return int(s.perSampleIVSize)
+	return int(s.PerSampleIVSize)
 }

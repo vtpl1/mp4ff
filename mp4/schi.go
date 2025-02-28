@@ -13,12 +13,12 @@ type SchiBox struct {
 }
 
 // AddChild - Add a child box
-func (b *SchiBox) AddChild(child Box) {
+func (s *SchiBox) AddChild(child Box) {
 	switch box := child.(type) { //nolint:gocritic
 	case *TencBox:
-		b.Tenc = box
+		s.Tenc = box
 	}
-	b.Children = append(b.Children, child)
+	s.Children = append(s.Children, child)
 }
 
 // DecodeSchi - box-specific decode
@@ -48,31 +48,31 @@ func DecodeSchiSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 }
 
 // Type - box type
-func (b *SchiBox) Type() string {
+func (s *SchiBox) Type() string {
 	return "schi"
 }
 
 // Size - calculated size of box
-func (b *SchiBox) Size() uint64 {
-	return containerSize(b.Children)
+func (s *SchiBox) Size() uint64 {
+	return containerSize(s.Children)
 }
 
 // GetChildren - list of child boxes
-func (b *SchiBox) GetChildren() []Box {
-	return b.Children
+func (s *SchiBox) GetChildren() []Box {
+	return s.Children
 }
 
 // Encode - write minf container to w
-func (b *SchiBox) Encode(w io.Writer) error {
-	return EncodeContainer(b, w)
+func (s *SchiBox) Encode(w io.Writer) error {
+	return EncodeContainer(s, w)
 }
 
 // Encode - write minf container to sw
-func (b *SchiBox) EncodeSW(sw bits.SliceWriter) error {
-	return EncodeContainerSW(b, sw)
+func (s *SchiBox) EncodeSW(sw bits.SliceWriter) error {
+	return EncodeContainerSW(s, sw)
 }
 
 // Info - write box-specific information
-func (b *SchiBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	return ContainerInfo(b, w, specificBoxLevels, indent, indentStep)
+func (s *SchiBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
+	return ContainerInfo(s, w, specificBoxLevels, indent, indentStep)
 }

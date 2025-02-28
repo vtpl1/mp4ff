@@ -114,27 +114,27 @@ func decodeDec3FromData(data []byte) (Box, error) {
 }
 
 // Type - box type
-func (b *Dec3Box) Type() string {
+func (d *Dec3Box) Type() string {
 	return "dec3"
 }
 
 // Size - calculated size of box
-func (b *Dec3Box) Size() uint64 {
+func (d *Dec3Box) Size() uint64 {
 	size := boxHeaderSize + 2
-	for _, es := range b.EC3Subs {
+	for _, es := range d.EC3Subs {
 		size += 3
 		if es.NumDepSub > 0 {
 			size += 1
 		}
 	}
-	size += len(b.Reserved)
+	size += len(d.Reserved)
 	return uint64(size)
 }
 
 // Encode - write box to w
-func (b *Dec3Box) Encode(w io.Writer) error {
-	sw := bits.NewFixedSliceWriter(int(b.Size()))
-	err := b.EncodeSW(sw)
+func (d *Dec3Box) Encode(w io.Writer) error {
+	sw := bits.NewFixedSliceWriter(int(d.Size()))
+	err := d.EncodeSW(sw)
 	if err != nil {
 		return err
 	}
@@ -143,14 +143,14 @@ func (b *Dec3Box) Encode(w io.Writer) error {
 }
 
 // EncodeSW - write box to sw
-func (b *Dec3Box) EncodeSW(sw bits.SliceWriter) error {
-	err := EncodeHeaderSW(b, sw)
+func (d *Dec3Box) EncodeSW(sw bits.SliceWriter) error {
+	err := EncodeHeaderSW(d, sw)
 	if err != nil {
 		return err
 	}
-	sw.WriteBits(uint(b.DataRate), 13)
-	sw.WriteBits(uint(len(b.EC3Subs))-1, 3)
-	for _, es := range b.EC3Subs {
+	sw.WriteBits(uint(d.DataRate), 13)
+	sw.WriteBits(uint(len(d.EC3Subs))-1, 3)
+	for _, es := range d.EC3Subs {
 		sw.WriteBits(uint(es.FSCod), 2)
 		sw.WriteBits(uint(es.BSID), 5)
 		sw.WriteBits(0, 1) // reserved 0
@@ -166,31 +166,31 @@ func (b *Dec3Box) EncodeSW(sw bits.SliceWriter) error {
 			sw.WriteBits(0, 1) // Reserved 0d
 		}
 	}
-	if len(b.Reserved) > 0 {
-		sw.WriteBytes(b.Reserved)
+	if len(d.Reserved) > 0 {
+		sw.WriteBytes(d.Reserved)
 	}
 	return sw.AccError()
 }
 
-func (b *Dec3Box) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.writef(" - bitrate=%dkbps", b.DataRate)
-	fscod := b.EC3Subs[0].FSCod
+func (d *Dec3Box) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
+	bd := newInfoDumper(w, indent, d, -1, 0)
+	bd.writef(" - bitrate=%dkbps", d.DataRate)
+	fscod := d.EC3Subs[0].FSCod
 	bd.writef(" - sampleRateCode=%d => sampleRate=%d", fscod, AC3SampleRates[fscod])
-	nrChannels, chanmap := b.ChannelInfo()
+	nrChannels, chanmap := d.ChannelInfo()
 	bd.writef(" - nrChannels=%d, chanmap=%04x", nrChannels, chanmap)
-	bd.writef(" - nrSubstreams=%d", len(b.EC3Subs))
-	for i, es := range b.EC3Subs {
+	bd.writef(" - nrSubstreams=%d", len(d.EC3Subs))
+	for i, es := range d.EC3Subs {
 		bd.writef("   - %d fscod=%d bsid=%d asvc=%d bsmod=%d acmod=%d lfeon=%d num_dep_sub=%d chan_loc=%x",
 			i+1, es.FSCod, es.BSID, es.ASVC, es.BSMod, es.ACMod, es.LFEOn, es.NumDepSub, es.ChanLoc)
 	}
 	return bd.err
 }
 
-func (b *Dec3Box) ChannelInfo() (nrChannels int, chanmap uint16) {
+func (d *Dec3Box) ChannelInfo() (nrChannels int, chanmap uint16) {
 	// All Enhanced AC-3 bit streams shall contain an independent substream
 	// assigned substream ID 0 (E.1.3.1.2)
-	substream := b.EC3Subs[0]
+	substream := d.EC3Subs[0]
 
 	// Get base channel configuration according to acmod
 	channels := GetChannelListFromACMod(substream.ACMod)

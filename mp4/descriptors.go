@@ -16,7 +16,7 @@ const (
 	// Following Table 1 of Class Tags for descriptors in ISO/IEC 14496-1. There are more types
 	ObjectDescrTag        = 1
 	InitialObjectDescrTag = 2
-	ES_DescrTag           = 3
+	ESDescrTag            = 3
 	DecoderConfigDescrTag = 4
 	DecSpecificInfoTag    = 5
 	SLConfigDescrTag      = 6
@@ -28,7 +28,7 @@ func TagType(tag byte) string {
 		return "tag=1 Object"
 	case InitialObjectDescrTag:
 		return "tag=2 InitialObject"
-	case ES_DescrTag:
+	case ESDescrTag:
 		return "tag=3 ES"
 	case DecoderConfigDescrTag:
 		return "tag=4 DecoderConfig"
@@ -62,7 +62,7 @@ type Descriptor interface {
 /*
 ESDescriptor is defined in ISO/IEC 14496-1 7.2.6.5
 
-	class ES_Descriptor extends BaseDescriptor : bit(8) tag=ES_DescrTag {
+	class ES_Descriptor extends BaseDescriptor : bit(8) tag=ESDescrTag {
 	  bit(16) ES_ID;
 	  bit(1) streamDependenceFlag;
 	  bit(1) URL_Flag;
@@ -114,7 +114,7 @@ func DecodeDescriptor(sr bits.SliceReader, maxNrBytes int) (Descriptor, error) {
 		return nil, sr.AccError()
 	}
 	switch tag {
-	case ES_DescrTag:
+	case ESDescrTag:
 		return nil, fmt.Errorf("use DecodeESDescriptor instead")
 	case DecoderConfigDescrTag:
 		return DecodeDecoderConfigDescriptor(tag, sr, maxNrBytes)
@@ -130,8 +130,8 @@ func DecodeDescriptor(sr bits.SliceReader, maxNrBytes int) (Descriptor, error) {
 func DecodeESDescriptor(sr bits.SliceReader, descSize uint32) (ESDescriptor, error) {
 	ed := ESDescriptor{}
 	tag := sr.ReadUint8()
-	if tag != ES_DescrTag {
-		return ed, fmt.Errorf("got tag %d instead of ESDescriptorTag %d", tag, ES_DescrTag)
+	if tag != ESDescrTag {
+		return ed, fmt.Errorf("got tag %d instead of ESDescriptorTag %d", tag, ESDescrTag)
 	}
 
 	sizeFieldSizeMinus1, size, err := readSizeSize(sr)
@@ -204,7 +204,7 @@ func DecodeESDescriptor(sr bits.SliceReader, descSize uint32) (ESDescriptor, err
 }
 
 func (e *ESDescriptor) Tag() byte {
-	return ES_DescrTag
+	return ESDescrTag
 }
 
 func (e *ESDescriptor) Type() string {

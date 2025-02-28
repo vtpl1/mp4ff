@@ -38,7 +38,7 @@ func TestDecodeDescriptor(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			if desc.Tag() != ES_DescrTag {
+			if desc.Tag() != ESDescrTag {
 				t.Error("tag is not 3")
 			}
 			out := make([]byte, len(data))

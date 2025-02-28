@@ -91,7 +91,7 @@ func TestGetSampleInterval(t *testing.T) {
 		{0, 700, 7000, 0},
 	})
 
-	mdat := MdatBox{lazyDataSize: 28000}
+	mdat := MdatBox{LazyDataSize: 28000}
 
 	testCases := []struct {
 		startSampleNr  uint32

@@ -9,9 +9,9 @@ import (
 
 // UnknownBox - box that we don't know how to parse
 type UnknownBox struct {
-	name       string
-	size       uint64
-	notDecoded []byte
+	Name       string
+	SizeN      uint64
+	NotDecoded []byte
 }
 
 // DecodeUnknown - decode an unknown box
@@ -31,12 +31,12 @@ func DecodeUnknownSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, 
 
 // Type - return box type
 func (b *UnknownBox) Type() string {
-	return b.name
+	return b.Name
 }
 
 // Size - return calculated size
 func (b *UnknownBox) Size() uint64 {
-	return b.size
+	return b.SizeN
 }
 
 // Encode - write box to w
@@ -56,7 +56,7 @@ func (b *UnknownBox) EncodeSW(sw bits.SliceWriter) error {
 	if err != nil {
 		return err
 	}
-	sw.WriteBytes(b.notDecoded)
+	sw.WriteBytes(b.NotDecoded)
 	return sw.AccError()
 }
 
@@ -66,7 +66,7 @@ func (b *UnknownBox) Info(w io.Writer, specificBoxLevels, indent, indentStep str
 	bd.writef(" - not implemented or unknown box")
 	level := getInfoLevel(b, specificBoxLevels)
 	if level > 0 {
-		bd.writef(" - %s", hex.EncodeToString(b.notDecoded))
+		bd.writef(" - %s", hex.EncodeToString(b.NotDecoded))
 	}
 
 	return bd.err

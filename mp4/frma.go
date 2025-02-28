@@ -41,9 +41,9 @@ func (b *FrmaBox) Size() uint64 {
 }
 
 // Encode - write box to w
-func (b *FrmaBox) Encode(w io.Writer) error {
-	sw := bits.NewFixedSliceWriter(int(b.Size()))
-	err := b.EncodeSW(sw)
+func (f *FrmaBox) Encode(w io.Writer) error {
+	sw := bits.NewFixedSliceWriter(int(f.Size()))
+	err := f.EncodeSW(sw)
 	if err != nil {
 		return err
 	}
@@ -52,18 +52,18 @@ func (b *FrmaBox) Encode(w io.Writer) error {
 }
 
 // EncodeSW - box-specific encode to slicewriter
-func (b *FrmaBox) EncodeSW(sw bits.SliceWriter) error {
-	err := EncodeHeaderSW(b, sw)
+func (f *FrmaBox) EncodeSW(sw bits.SliceWriter) error {
+	err := EncodeHeaderSW(f, sw)
 	if err != nil {
 		return err
 	}
-	sw.WriteString(b.DataFormat, false)
+	sw.WriteString(f.DataFormat, false)
 	return sw.AccError()
 }
 
 // Info - write box info to w
-func (b *FrmaBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
-	bd := newInfoDumper(w, indent, b, -1, 0)
-	bd.writef(" - dataFormat: %s", b.DataFormat)
+func (f *FrmaBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) (err error) {
+	bd := newInfoDumper(w, indent, f, -1, 0)
+	bd.writef(" - dataFormat: %s", f.DataFormat)
 	return bd.err
 }
