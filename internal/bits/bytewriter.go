@@ -43,37 +43,37 @@ func (b *ByteWriter) Offset() int {
 }
 
 // WriteBits implements SliceWriter.
-func (b *ByteWriter) WriteBits(bits uint, n int) { //nolint:revive
+func (b *ByteWriter) WriteBits(_ uint, _ int) {
 	panic("unimplemented")
 }
 
 // WriteBytes implements SliceWriter.
-func (b *ByteWriter) WriteBytes(byteSlice []byte) { //nolint:revive
+func (b *ByteWriter) WriteBytes(_ []byte) {
 	panic("unimplemented")
 }
 
 // WriteFlag implements SliceWriter.
-func (b *ByteWriter) WriteFlag(f bool) { //nolint:revive
+func (b *ByteWriter) WriteFlag(_ bool) {
 	panic("unimplemented")
 }
 
 // WriteInt16 implements SliceWriter.
-func (b *ByteWriter) WriteInt16(n int16) { //nolint:revive
+func (b *ByteWriter) WriteInt16(_ int16) {
 	panic("unimplemented")
 }
 
 // WriteInt32 implements SliceWriter.
-func (b *ByteWriter) WriteInt32(n int32) { //nolint:revive
+func (b *ByteWriter) WriteInt32(_ int32) {
 	panic("unimplemented")
 }
 
 // WriteInt64 implements SliceWriter.
-func (b *ByteWriter) WriteInt64(n int64) { //nolint:revive
+func (b *ByteWriter) WriteInt64(_ int64) {
 	panic("unimplemented")
 }
 
 // WriteString implements SliceWriter.
-func (b *ByteWriter) WriteString(s string, addZeroEnd bool) { //nolint:revive
+func (b *ByteWriter) WriteString(_ string, _ bool) {
 	panic("unimplemented")
 }
 
@@ -86,7 +86,7 @@ func (b *ByteWriter) WriteUint16(u uint16) {
 }
 
 // WriteUint24 implements SliceWriter.
-func (b *ByteWriter) WriteUint24(u uint32) { //nolint:revive
+func (b *ByteWriter) WriteUint24(_ uint32) {
 	panic("unimplemented")
 }
 
@@ -134,7 +134,7 @@ func (b *ByteWriter) WriteUnityMatrix() {
 }
 
 // WriteZeroBytes implements SliceWriter.
-func (b *ByteWriter) WriteZeroBytes(n int) { //nolint:revive
+func (b *ByteWriter) WriteZeroBytes(_ int) {
 	panic("unimplemented")
 }
 

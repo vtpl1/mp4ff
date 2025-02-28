@@ -15,22 +15,47 @@ linters-settings:
     # Default: 10
     max: 25
 
+  cyclop:
+    # The maximal code complexity to report.
+    # Default: 10
+    max-complexity: 25
+    # The maximal average package complexity.
+    # If it's higher than 0.0 (float) the check is enabled
+    # Default: 0.0
+    package-average: 3.0
+    # Should ignore tests.
+    # Default: false
+    skip-tests: true
+
+  funlen:
+    # Checks the number of lines in a function.
+    # If lower than 0, disable the check.
+    # Default: 60
+    lines: 100
+    # Checks the number of statements in a function.
+    # If lower than 0, disable the check.
+    # Default: 40
+    statements: 60
+    # Ignore comments when counting lines.
+    # Default false
+    ignore-comments: true
+
 linters:
   enable-all: true
   disable:
     # - cyclop
     - depguard
     # - dupl
-    # - dupword
-    # # - err113
+    - dupword
+    - err113
     # - exhaustive
-    # - exhaustruct
+    - exhaustruct
     # - forcetypeassert
     # - funlen
     # # - gochecknoglobals
     # # - gochecknoinits
     # - gocognit
-    # # - goconst
+    - goconst
     # - gocritic
     # # - gocyclo
     # - godot
@@ -38,7 +63,7 @@ linters:
     # # - gosec
     # # - interfacebloat  
     # # - intrange
-    # # - ireturn
+    - ireturn
     # - maintidx
     - misspell
     - mnd
