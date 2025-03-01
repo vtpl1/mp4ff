@@ -192,7 +192,7 @@ func DecodeContainerChildrenSR(hdr BoxHeader, startPos, endPos uint64, sr bits.S
 		children = append(children, child)
 		pos += child.Size()
 		relPosFromSize := sr.GetPos() - initPos
-		if int(pos-startPos) != relPosFromSize {
+		if int(pos-startPos) != relPosFromSize { //nolint:gosec
 			return nil, fmt.Errorf("child %s size mismatch in %s: %d - %d", child.Type(), hdr.Name, pos-startPos, relPosFromSize)
 		}
 	}

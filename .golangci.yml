@@ -50,7 +50,7 @@ linters:
     - err113
     # - exhaustive
     - exhaustruct
-    # - forcetypeassert
+    - forcetypeassert
     # - funlen
     # # - gochecknoglobals
     # # - gochecknoinits
@@ -58,7 +58,7 @@ linters:
     - goconst
     # - gocritic
     # # - gocyclo
-    # - godot
+    - godot
     # - godox
     # # - gosec
     # # - interfacebloat  

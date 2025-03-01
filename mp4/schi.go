@@ -7,6 +7,8 @@ import (
 )
 
 // SchiBox -  Schema Information Box.
+//
+//nolint:recvcheck
 type SchiBox struct {
 	Tenc     *TencBox
 	Children []Box

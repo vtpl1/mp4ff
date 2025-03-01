@@ -7,7 +7,6 @@ import (
 )
 
 func TestEncDecSchi(t *testing.T) {
-
 	b := &mp4.SchiBox{}
 	boxDiffAfterEncodeAndDecode(t, b)
 }

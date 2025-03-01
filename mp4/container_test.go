@@ -15,7 +15,7 @@ func TestContainerBox(t *testing.T) {
 func TestGenericContainer(t *testing.T) {
 	// Just check that it doesn't crash
 	c := mp4.NewGenericContainerBox("test")
-	// c.AddChild(&VsidBox{SourceID: 42})
+	c.AddChild(&mp4.VsidBox{SourceID: 42})
 	w := bytes.Buffer{}
 	err := c.Encode(&w)
 	if err != nil {

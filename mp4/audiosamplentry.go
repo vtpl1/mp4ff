@@ -34,7 +34,7 @@ func makeFixed32Uint(nr uint16) uint32 {
 }
 
 func makeUint16FromFixed32(nr uint32) uint16 {
-	return uint16(nr >> 16)
+	return uint16(nr >> 16) //nolint:gosec
 }
 
 // CreateAudioSampleEntryBox - Create new AudioSampleEntry such as mp4
@@ -249,7 +249,7 @@ func (a *AudioSampleEntryBox) RemoveEncryption() (*SinfBox, error) {
 	}
 	sinf := a.Sinf
 	if sinf == nil {
-		return nil, fmt.Errorf("does not have sinf box")
+		return nil, errors.New("does not have sinf box")
 	}
 	for i := range a.Children {
 		if a.Children[i].Type() == "sinf" {
