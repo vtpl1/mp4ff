@@ -9,13 +9,13 @@ import (
 
 const (
 	colrType            = "colr"
-	onScreenColors      = "nclx"
-	restrictedICCType   = "rICC"
-	unrestrictedICCType = "prof"
-	// quickTimeColorParameters defined in [nclc]
+	OnScreenColors      = "nclx"
+	RestrictedICCType   = "rICC"
+	UnrestrictedICCType = "prof"
+	// QuickTimeColorParameters defined in [nclc]
 	//
 	// [nclc]: https://developer.apple.com/library/archive/technotes/tn2162/_index.html#//apple_ref/doc/uid/DTS40013070-CH1-TNTAG10
-	quickTimeColorParameters = "nclc"
+	QuickTimeColorParameters = "nclc"
 	fullRangeBit             = 0x80
 )
 
@@ -46,15 +46,15 @@ func DecodeColrSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 		ColorType: sr.ReadFixedLengthString(4),
 	}
 	switch c.ColorType {
-	case onScreenColors:
+	case OnScreenColors:
 		c.ColorPrimaries = sr.ReadUint16()
 		c.TransferCharacteristics = sr.ReadUint16()
 		c.MatrixCoefficients = sr.ReadUint16()
 		b := sr.ReadUint8()
 		c.FullRangeFlag = (b & fullRangeBit) == fullRangeBit
-	case restrictedICCType, unrestrictedICCType:
+	case RestrictedICCType, UnrestrictedICCType:
 		c.ICCProfile = sr.RemainingBytes()
-	case quickTimeColorParameters:
+	case QuickTimeColorParameters:
 		c.ColorPrimaries = sr.ReadUint16()
 		c.TransferCharacteristics = sr.ReadUint16()
 		c.MatrixCoefficients = sr.ReadUint16()
@@ -73,11 +73,11 @@ func (c *ColrBox) Type() string {
 func (c *ColrBox) Size() uint64 {
 	var size uint64 = 8 + 4
 	switch c.ColorType {
-	case onScreenColors:
+	case OnScreenColors:
 		size += 7
-	case restrictedICCType, unrestrictedICCType:
+	case RestrictedICCType, UnrestrictedICCType:
 		size += uint64(len(c.ICCProfile))
-	case quickTimeColorParameters:
+	case QuickTimeColorParameters:
 		size += 6
 	default:
 		size += uint64(len(c.UnknownPayload))
@@ -104,7 +104,7 @@ func (c *ColrBox) EncodeSW(sw bits.SliceWriter) error {
 	}
 	sw.WriteString(c.ColorType, false)
 	switch c.ColorType {
-	case onScreenColors:
+	case OnScreenColors:
 		sw.WriteUint16(c.ColorPrimaries)
 		sw.WriteUint16(c.TransferCharacteristics)
 		sw.WriteUint16(c.MatrixCoefficients)
@@ -113,9 +113,9 @@ func (c *ColrBox) EncodeSW(sw bits.SliceWriter) error {
 			b = fullRangeBit
 		}
 		sw.WriteUint8(b)
-	case restrictedICCType, unrestrictedICCType:
+	case RestrictedICCType, UnrestrictedICCType:
 		sw.WriteBytes(c.ICCProfile)
-	case quickTimeColorParameters:
+	case QuickTimeColorParameters:
 		sw.WriteUint16(c.ColorPrimaries)
 		sw.WriteUint16(c.TransferCharacteristics)
 		sw.WriteUint16(c.MatrixCoefficients)
@@ -130,12 +130,12 @@ func (c *ColrBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string
 	bd := newInfoDumper(w, indent, c, -1, 0)
 	bd.writef(" - colorType: %s", c.ColorType)
 	switch c.ColorType {
-	case onScreenColors:
+	case OnScreenColors:
 		bd.writef(" - ColorPrimaries: %d, TransferCharacteristics: %d, MatrixCoefficients: %d, FullRange: %t",
 			c.ColorPrimaries, c.TransferCharacteristics, c.MatrixCoefficients, c.FullRangeFlag)
-	case restrictedICCType, unrestrictedICCType:
+	case RestrictedICCType, UnrestrictedICCType:
 		bd.writef(" - ICCProfile: %s", hex.EncodeToString(c.ICCProfile))
-	case quickTimeColorParameters:
+	case QuickTimeColorParameters:
 		bd.writef(" - ColorPrimaries: %d, TransferCharacteristics: %d, MatrixCoefficients: %d",
 			c.ColorPrimaries, c.TransferCharacteristics, c.MatrixCoefficients)
 	default:

@@ -11,14 +11,14 @@ import (
 //
 // Contained in : Ludt Box (ludt)
 type TlouBox struct {
-	loudnessBaseBox
+	LoudnessBaseBox
 }
 
 // TlouBox - Album loudness info Box
 //
 // Contained in : Ludt Box (ludt)
 type AlouBox struct {
-	loudnessBaseBox
+	LoudnessBaseBox
 }
 
 type LoudnessBase struct {
@@ -39,17 +39,17 @@ type Measurement struct {
 	Reliability       uint8
 }
 
-// loudnessBaseBox according to ISO/IEC 14496-12 Section 12.2.7.2
-type loudnessBaseBox struct {
+// LoudnessBaseBox according to ISO/IEC 14496-12 Section 12.2.7.2
+type LoudnessBaseBox struct {
 	Version       byte
 	Flags         uint32
 	LoudnessBases []*LoudnessBase
 }
 
-func decodeLoudnessBaseBoxSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (*loudnessBaseBox, error) {
+func decodeLoudnessBaseBoxSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (*LoudnessBaseBox, error) {
 	versionAndFlags := sr.ReadUint32()
 	version := byte(versionAndFlags >> 24)
-	b := &loudnessBaseBox{
+	b := &LoudnessBaseBox{
 		Version: version,
 		Flags:   versionAndFlags & flagsMask,
 	}
@@ -96,7 +96,7 @@ func decodeLoudnessBaseBoxSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader
 	return b, nil
 }
 
-func (b *loudnessBaseBox) size() uint64 {
+func (b *LoudnessBaseBox) size() uint64 {
 	size := 4
 	if b.Version >= 1 {
 		size += 1
@@ -111,7 +111,7 @@ func (b *loudnessBaseBox) size() uint64 {
 	return uint64(size)
 }
 
-func (b *loudnessBaseBox) encode(w io.Writer) error {
+func (b *LoudnessBaseBox) encode(w io.Writer) error {
 	sw := bits.NewFixedSliceWriter(int(b.size()))
 	err := b.encodeSW(sw)
 	if err != nil {
@@ -121,7 +121,7 @@ func (b *loudnessBaseBox) encode(w io.Writer) error {
 	return err
 }
 
-func (b *loudnessBaseBox) encodeSW(sw bits.SliceWriter) error {
+func (b *LoudnessBaseBox) encodeSW(sw bits.SliceWriter) error {
 	versionAndFlags := (uint32(b.Version) << 24) + b.Flags
 	sw.WriteUint32(versionAndFlags)
 	if b.Version >= 1 {
@@ -150,7 +150,7 @@ func (b *loudnessBaseBox) encodeSW(sw bits.SliceWriter) error {
 	return sw.AccError()
 }
 
-func (b *loudnessBaseBox) info(realBox Box, w io.Writer, specificBoxLevels, indent, indentStep string) error {
+func (b *LoudnessBaseBox) info(realBox Box, w io.Writer, specificBoxLevels, indent, indentStep string) error {
 	bd := newInfoDumper(w, indent, realBox, int(b.Version), 0)
 	bd.writef(" - LoudnessBaseCount: %d", len(b.LoudnessBases))
 	level := getInfoLevel(realBox, specificBoxLevels)
@@ -197,7 +197,7 @@ func DecodeTlouSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 	if err != nil {
 		return nil, err
 	}
-	return &TlouBox{loudnessBaseBox: *loudnessBaseBox}, nil
+	return &TlouBox{LoudnessBaseBox: *loudnessBaseBox}, nil
 }
 
 // Encode - write tlou container to w
@@ -206,7 +206,7 @@ func (b *TlouBox) Encode(w io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return b.loudnessBaseBox.encode(w)
+	return b.LoudnessBaseBox.encode(w)
 }
 
 // Encode - write tlou container to sw
@@ -215,7 +215,7 @@ func (b *TlouBox) EncodeSW(sw bits.SliceWriter) error {
 	if err != nil {
 		return err
 	}
-	return b.loudnessBaseBox.encodeSW(sw)
+	return b.LoudnessBaseBox.encodeSW(sw)
 }
 
 // Type - return box type
@@ -225,12 +225,12 @@ func (b *TlouBox) Type() string {
 
 // Size - calculated size of box
 func (b *TlouBox) Size() uint64 {
-	return b.loudnessBaseBox.size() + boxHeaderSize
+	return b.LoudnessBaseBox.size() + boxHeaderSize
 }
 
 // Info - write box-specific information
 func (b *TlouBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	return b.loudnessBaseBox.info(b, w, specificBoxLevels, indent, indentStep)
+	return b.LoudnessBaseBox.info(b, w, specificBoxLevels, indent, indentStep)
 }
 
 // DecodeAlou - box-specific decode
@@ -249,7 +249,7 @@ func DecodeAlouBoxSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, 
 	if err != nil {
 		return nil, err
 	}
-	return &AlouBox{loudnessBaseBox: *loudnessBaseBox}, nil
+	return &AlouBox{LoudnessBaseBox: *loudnessBaseBox}, nil
 }
 
 // Encode - write alou container to w
@@ -258,7 +258,7 @@ func (b *AlouBox) Encode(w io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return b.loudnessBaseBox.encode(w)
+	return b.LoudnessBaseBox.encode(w)
 }
 
 // Encode - write alou container to sw
@@ -267,7 +267,7 @@ func (b *AlouBox) EncodeSW(sw bits.SliceWriter) error {
 	if err != nil {
 		return err
 	}
-	return b.loudnessBaseBox.encodeSW(sw)
+	return b.LoudnessBaseBox.encodeSW(sw)
 }
 
 // Type - return box type
@@ -277,10 +277,10 @@ func (b *AlouBox) Type() string {
 
 // Size - calculated size of box
 func (b *AlouBox) Size() uint64 {
-	return b.loudnessBaseBox.size() + boxHeaderSize
+	return b.LoudnessBaseBox.size() + boxHeaderSize
 }
 
 // Info - write box-specific information
 func (b *AlouBox) Info(w io.Writer, specificBoxLevels, indent, indentStep string) error {
-	return b.loudnessBaseBox.info(b, w, specificBoxLevels, indent, indentStep)
+	return b.LoudnessBaseBox.info(b, w, specificBoxLevels, indent, indentStep)
 }

@@ -35,7 +35,7 @@ func (s *UnregisteredSEI) Payload() []byte {
 
 // DecodeUserDataUnregisteredSEI decodes an unregistered SEI message (type 5).
 func DecodeUserDataUnregisteredSEI(sd *SEIData) (SEIMessage, error) {
-	uuid := sd.payload[:16]
+	uuid := sd.PayloadData[:16]
 	return NewUnregisteredSEI(sd, uuid), nil
 }
 
@@ -43,6 +43,6 @@ func DecodeUserDataUnregisteredSEI(sd *SEIData) (SEIMessage, error) {
 func NewUnregisteredSEI(sd *SEIData, uuid []byte) *UnregisteredSEI {
 	return &UnregisteredSEI{
 		UUID:    uuid,
-		payload: sd.payload,
+		payload: sd.PayloadData,
 	}
 }

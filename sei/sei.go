@@ -515,8 +515,8 @@ func DecodeGeneralSEI(sd *SEIData) SEIMessage {
 
 // SEIData is raw parsed SEI message including payload rbsp data.
 type SEIData struct {
-	payloadType uint
-	payload     []byte
+	PayloadType uint
+	PayloadData []byte
 }
 
 // NewSEIData returns SEIData struct.
@@ -526,23 +526,23 @@ func NewSEIData(msgType uint, payload []byte) *SEIData {
 
 // Type returns the SEI payload type.
 func (s *SEIData) Type() uint {
-	return s.payloadType
+	return s.PayloadType
 }
 
 // Payload returns the SEI raw rbsp payload.
 func (s *SEIData) Payload() []byte {
-	return s.payload
+	return s.PayloadData
 }
 
 // String provides a description of the SEI message.
 func (s *SEIData) String() string {
 	msgType := SEIType(s.Type())
-	return fmt.Sprintf("%s, size=%d, %q", msgType, s.Size(), hex.EncodeToString(s.payload))
+	return fmt.Sprintf("%s, size=%d, %q", msgType, s.Size(), hex.EncodeToString(s.PayloadData))
 }
 
 // Size is the size in bytes of the raw SEI message rbsp payload.
 func (s *SEIData) Size() uint {
-	return uint(len(s.payload))
+	return uint(len(s.PayloadData))
 }
 
 // ExtractSEIData parses ebsp (after NALU header) and returns a slice of SEIData in rbsp format.

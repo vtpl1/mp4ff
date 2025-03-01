@@ -8,29 +8,29 @@ import (
 func TestColrEncodeDecode(t *testing.T) {
 	cases := []ColrBox{
 		{
-			ColorType:               onScreenColors,
+			ColorType:               OnScreenColors,
 			ColorPrimaries:          9,
 			TransferCharacteristics: 16,
 			MatrixCoefficients:      9,
 			FullRangeFlag:           true,
 		},
 		{
-			ColorType:               onScreenColors,
+			ColorType:               OnScreenColors,
 			ColorPrimaries:          9,
 			TransferCharacteristics: 16,
 			MatrixCoefficients:      9,
 			FullRangeFlag:           false,
 		},
 		{
-			ColorType:  restrictedICCType,
+			ColorType:  RestrictedICCType,
 			ICCProfile: []byte{1, 2, 2, 43, 4},
 		},
 		{
-			ColorType:  unrestrictedICCType,
+			ColorType:  UnrestrictedICCType,
 			ICCProfile: []byte{1, 2, 2, 43, 4, 5},
 		},
 		{
-			ColorType:               quickTimeColorParameters,
+			ColorType:               QuickTimeColorParameters,
 			ColorPrimaries:          1,
 			TransferCharacteristics: 1,
 			MatrixCoefficients:      1,
@@ -52,7 +52,7 @@ func TestColrInfo(t *testing.T) {
 	}{
 		{
 			cb: ColrBox{
-				ColorType:               onScreenColors,
+				ColorType:               OnScreenColors,
 				ColorPrimaries:          9,
 				TransferCharacteristics: 9,
 				MatrixCoefficients:      16,
@@ -63,7 +63,7 @@ func TestColrInfo(t *testing.T) {
 		},
 		{
 			cb: ColrBox{
-				ColorType:  restrictedICCType,
+				ColorType:  RestrictedICCType,
 				ICCProfile: []byte{0x02, 0x04},
 			},
 			wanted: "[colr] size=14\n - colorType: rICC\n - ICCProfile: 0204\n",

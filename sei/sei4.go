@@ -9,10 +9,10 @@ import (
 // DecodeUserDataRegisteredSEI decodes a SEI message of type 4.
 func DecodeUserDataRegisteredSEI(sd *SEIData) (SEIMessage, error) {
 	itutData := ITUData{
-		CountryCode:      sd.payload[0],
-		ProviderCode:     binary.BigEndian.Uint16(sd.payload[1:3]),
-		UserIdentifier:   binary.BigEndian.Uint32(sd.payload[3:7]),
-		UserDataTypeCode: sd.payload[7],
+		CountryCode:      sd.PayloadData[0],
+		ProviderCode:     binary.BigEndian.Uint16(sd.PayloadData[1:3]),
+		UserIdentifier:   binary.BigEndian.Uint32(sd.PayloadData[3:7]),
+		UserDataTypeCode: sd.PayloadData[7],
 	}
 	if itutData.IsCEA608() {
 		return ExtractCEA608sei(sd)
@@ -45,7 +45,7 @@ type RegisteredSEI struct {
 // NewRegisteredSEI creates an ITU-T registered SEI message (type 4).
 func NewRegisteredSEI(sd *SEIData, ituData ITUData) *RegisteredSEI {
 	return &RegisteredSEI{
-		payload:  sd.payload,
+		payload:  sd.PayloadData,
 		ITUTData: ituData,
 	}
 }
@@ -74,12 +74,12 @@ func (s *RegisteredSEI) Payload() []byte {
 // CEA-608 encapsulation in SEI nal unit is defined in ATSC-120 and further
 // in CTA-708 specification (previously CEA-708).
 func ExtractCEA608sei(sd *SEIData) (*CEA608sei, error) {
-	field1, field2, err := ParseCEA608(sd.payload[8:])
+	field1, field2, err := ParseCEA608(sd.PayloadData[8:])
 	if err != nil {
 		return nil, err
 	}
 	return &CEA608sei{
-		payload: sd.payload,
+		payload: sd.PayloadData,
 		Field1:  field1,
 		Field2:  field2,
 	}, nil

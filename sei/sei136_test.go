@@ -37,8 +37,8 @@ func TestSei136Clock(t *testing.T) {
 	}
 
 	seiData := SEIData{
-		payloadType: SEITimeCodeType,
-		payload:     pl,
+		PayloadType: SEITimeCodeType,
+		PayloadData: pl,
 	}
 	sei, err := DecodeTimeCodeSEI(&seiData)
 	if err != nil {

@@ -12,8 +12,8 @@ func TestSEI5_UnregisteredType(t *testing.T) {
 	}
 
 	us, err := DecodeUserDataUnregisteredSEI(&SEIData{
-		payloadType: SEIUserDataUnregisteredType,
-		payload:     raw,
+		PayloadType: SEIUserDataUnregisteredType,
+		PayloadData: raw,
 	})
 	if err != nil {
 		t.Error("Error decoding SEIUserDataUnregisteredType")

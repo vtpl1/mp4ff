@@ -4,7 +4,7 @@ import "testing"
 
 func TestTlou(t *testing.T) {
 	tlou := &TlouBox{
-		loudnessBaseBox: loudnessBaseBox{
+		LoudnessBaseBox: LoudnessBaseBox{
 			Version: 1,
 			Flags:   0,
 			LoudnessBases: []*LoudnessBase{
@@ -62,7 +62,7 @@ func TestTlou(t *testing.T) {
 
 func TestAlou(t *testing.T) {
 	alou := &AlouBox{
-		loudnessBaseBox: loudnessBaseBox{
+		LoudnessBaseBox: LoudnessBaseBox{
 			Version: 1,
 			Flags:   0,
 			LoudnessBases: []*LoudnessBase{

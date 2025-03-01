@@ -31,7 +31,7 @@ func parseInitFile(fileName string) (*File, error) {
 		return nil, fmt.Errorf("No ftyp present")
 	}
 
-	if f.isFragmented && len(f.Init.Moov.Traks) != 1 {
+	if f.IsFragmented() && len(f.Init.Moov.Traks) != 1 {
 		return nil, fmt.Errorf("Not exactly one track")
 	}
 	return f, nil
