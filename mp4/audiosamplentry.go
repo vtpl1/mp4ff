@@ -237,6 +237,10 @@ func (a *AudioSampleEntryBox) Info(w io.Writer, specificBoxLevels, indent, inden
 	if bd.err != nil {
 		return bd.err
 	}
+	bd.write(" - DataReferenceIndex: %d", a.DataReferenceIndex)
+	bd.write(" - ChannelCount: %d", a.ChannelCount)
+	bd.write(" - SampleSize: %d", a.SampleSize)
+	bd.write(" - SampleRate: %d", a.SampleRate)
 	var err error
 	for _, child := range a.Children {
 		err = child.Info(w, specificBoxLevels, indent+indentStep, indentStep)
