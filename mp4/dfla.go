@@ -22,8 +22,22 @@ type StreamInfo struct {
 }
 
 type Dfla struct {
-	data       []byte
+	// data       []byte
 	streamInfo StreamInfo
+}
+
+func CreateDfla(sampleRate uint32) *Dfla {
+	return &Dfla{
+		streamInfo: StreamInfo{
+			BlockSizeMin:  32768,
+			BlockSizeMax:  32768,
+			FrameSizeMin:  0,
+			FrameSizeMax:  0,
+			Channels:      1,
+			BitsPerSample: 16,
+		},
+	}
+
 }
 
 // DecodeDfla - box-specific decode
@@ -67,7 +81,7 @@ func DecodeDflaSR(hdr BoxHeader, startPos uint64, sr bits.SliceReader) (Box, err
 		MD5:           md5,
 	}
 
-	return &Dfla{data: data, streamInfo: streamInfo}, sr.AccError()
+	return &Dfla{streamInfo: streamInfo}, sr.AccError()
 }
 
 // Type implements Box.
@@ -77,7 +91,7 @@ func (b *Dfla) Type() string {
 
 // Size implements Box.
 func (b *Dfla) Size() uint64 {
-	return uint64(boxHeaderSize + len(b.data))
+	return uint64(boxHeaderSize + 42)
 }
 
 // Encode implements Box.
