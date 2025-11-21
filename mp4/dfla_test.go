@@ -8,7 +8,7 @@ import (
 
 func TestEncodeDecodeDfla(t *testing.T) {
 	t.Run("dfLa", func(t *testing.T) {
-		dfla := mp4.CreateDfla(8000)
+		dfla := mp4.CreateDfla(8000, 1, 16)
 		boxDiffAfterEncodeAndDecode(t, dfla)
 	})
 }

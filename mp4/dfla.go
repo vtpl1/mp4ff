@@ -26,15 +26,16 @@ type Dfla struct {
 	streamInfo StreamInfo
 }
 
-func CreateDfla(sampleRate uint32) *Dfla {
+func CreateDfla(sampleRate uint32, channels uint8, bitsPerSample uint8) *Dfla {
 	return &Dfla{
 		streamInfo: StreamInfo{
 			BlockSizeMin:  32768,
 			BlockSizeMax:  32768,
 			FrameSizeMin:  0,
 			FrameSizeMax:  0,
-			Channels:      1,
-			BitsPerSample: 16,
+			SampleRate:    sampleRate,
+			Channels:      channels,
+			BitsPerSample: bitsPerSample,
 		},
 	}
 
@@ -117,8 +118,12 @@ func (b *Dfla) EncodeSW(sw bits.SliceWriter) error {
 	// STREAMINFO block: 42 bytes
 	// ──────────────────────────────────────────────────────────
 
-	// 1. sync: first 8 bytes must be 0
-	sw.WriteZeroBytes(8)
+	// 1. sync: first 4 bytes must be 0
+	sw.WriteZeroBytes(4)
+
+	// https://xiph.org/flac/format.html#metadata_block_header
+	sw.WriteBits(0x80, 8) // [4] lastMetadata=1 (1 bit), blockType=0 - STREAMINFO (7 bit)
+	sw.WriteBits(34, 24)  // [5..7] blockLength=34 (24 bit)
 
 	// 2. Block sizes
 	sw.WriteUint16(si.BlockSizeMin)
